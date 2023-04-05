@@ -20,8 +20,7 @@
   </licenses>
   <scm>
     <connection>scm:git@github.com:taoguan/luaj.git</connection>
-    <developerConnection>scm:git@github.com:taoguan/luaj.git
-    </developerConnection>
+    <developerConnection>scm:git@github.com:taoguan/luaj.git</developerConnection>
     <url>https://github.com/taoguan/luaj</url>
   </scm>
   <developers>

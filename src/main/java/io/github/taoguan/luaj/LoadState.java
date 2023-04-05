@@ -61,7 +61,6 @@ import java.io.InputStream;
 * @see io.github.taoguan.luaj.compiler.LuaC
 * @see io.github.taoguan.luaj.luajc.LuaJC
 * @see io.github.taoguan.luaj.Globals#compiler
-* @see io.github.taoguan.luaj.Globals#load(InputStream, String, io.github.taoguan.luaj.LuaValue)
 */
 public class LoadState {
 

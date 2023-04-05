@@ -206,7 +206,7 @@ public class LuaString extends LuaValue {
 	 * @param bytes byte buffer
 	 * @param offset offset into the byte buffer
 	 * @param length length of the byte buffer
-	 * @return {@link LuaString} wrapping the byte buffer
+	 * wrapping the byte buffer
 	 */
 	private LuaString(byte[] bytes, int offset, int length) {
 		this.m_bytes = bytes;

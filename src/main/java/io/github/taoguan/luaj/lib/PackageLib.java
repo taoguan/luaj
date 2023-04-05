@@ -130,7 +130,7 @@ public class PackageLib extends TwoArgFunction {
 
 
 	/** Set the lua path used by this library instance to a new value.  
-	 * Merely sets the value of {@link path} to be used in subsequent searches. */
+	 * Merely sets the value of path to be used in subsequent searches. */
 	public void setLuaPath( String newLuaPath ) {
 		package_.set(_PATH, LuaValue.valueOf(newLuaPath));
 	}

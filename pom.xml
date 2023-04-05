@@ -6,7 +6,7 @@
 
   <groupId>io.github.taoguan</groupId>
   <artifactId>luaj</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>luaj</name>
   <url>https://github.com/taoguan/luaj</url>

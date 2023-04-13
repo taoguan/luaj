@@ -39,8 +39,6 @@ local namelist ['=' explist]
 
 retstat ::= return [explist] [';']
 
-label ::= '::' Name '::'
-
 funcname ::= Name {'.' Name} [':' Name]
 
 varlist ::= var {',' var}

@@ -37,9 +37,11 @@ function var52:minusVar(...)
     print('arg len = '..len)
     local result;
     for i,v in ipairs(arg) do
+      print('i='..i..';v='..v)
       if i == 1 then continue end
       if result == nil then result = v end
       result = result - v
+      print('result = '..result)
     end
     return result
 end

@@ -12,7 +12,7 @@ public class GrammarTest {
 
     @Test
     public void testAll() throws Exception {
-        String luaFileName = GrammarTest.class.getClassLoader().getResource("grammer-test.lua").toURI().getPath();
+        String luaFileName = GrammarTest.class.getClassLoader().getResource("grammar-test.lua").toURI().getPath();
         Globals globals = JsePlatform.standardGlobals();
         //LuaJC.install(globals);
         LuaValue result = globals.loadfile(luaFileName).call();

@@ -1,7 +1,6 @@
 package io.github.taoguan.luaj;
 
 import io.github.taoguan.luaj.lib.jse.JsePlatform;
-import io.github.taoguan.luaj.luajc.LuaJC;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -9,11 +8,11 @@ import java.io.FileInputStream;
 /**
  * @author taohuan
  */
-public class GrammerTest {
+public class GrammarTest {
 
     @Test
     public void testAll() throws Exception {
-        String luaFileName = GrammerTest.class.getClassLoader().getResource("grammer-test.lua").toURI().getPath();
+        String luaFileName = GrammarTest.class.getClassLoader().getResource("grammer-test.lua").toURI().getPath();
         Globals globals = JsePlatform.standardGlobals();
         //LuaJC.install(globals);
         LuaValue result = globals.loadfile(luaFileName).call();

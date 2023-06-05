@@ -82,7 +82,7 @@ unop ::= '-' | not | '#' | '~'
 
 # 3 - Examples
 ## 3.1 Lua script
-grammer-test.lua :
+grammar-test.lua :
 ```
 #!/bin/luaj
 
@@ -215,7 +215,7 @@ return var52
 
 ## 3.2 Java execute lua script
 ```
-String luaFileName = AppTest.class.getClassLoader().getResource("grammer-test.lua").toURI().getPath();
+String luaFileName = AppTest.class.getClassLoader().getResource("grammar-test.lua").toURI().getPath();
 Globals globals = JsePlatform.standardGlobals();
 //LuaJC.install(globals); // You can use LuaJC to improve performance. It will compile lua script to java bytecode using BCEL.
 LuaValue result = globals.loadfile(luaFileName).call();
@@ -226,7 +226,7 @@ LuaValue func = result.get(LuaValue.valueOf("addVar"));
 int funcResult  = func.invoke(LuaValue.varargsOf(new LuaValue[]{result, LuaValue.valueOf(1),
         LuaValue.valueOf(2), LuaValue.valueOf(3)})).arg1().checkint();
 System.out.println(String.format("funcResult=%s", funcResult));
-Prototype p = globals.compilePrototype(new FileInputStream(luaFileName), "grammer-test");
+Prototype p = globals.compilePrototype(new FileInputStream(luaFileName), "grammar-test");
 Print.print(p);
 
 ```

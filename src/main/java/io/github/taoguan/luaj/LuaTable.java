@@ -1,6 +1,9 @@
 package io.github.taoguan.luaj;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -49,29 +52,31 @@ import java.util.Vector;
  * </ul>
  * @see io.github.taoguan.luaj.LuaValue
  */
-public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatable {
+public class LuaTable extends LuaValue implements Metatable {
 	private static final int      MIN_HASH_CAPACITY = 2;
-	private static final io.github.taoguan.luaj.LuaString N = valueOf("n");
+	private static final LuaString N = valueOf("n");
 	private static final Slot[] NOBUCKETS = {};
 	/** the array values */
-	protected io.github.taoguan.luaj.LuaValue[] array;
-	
+	protected LuaValue[] array;
+
 	/** the hash part */
 	protected Slot[] hash;
-	
+
+	private Map<LuaValue, LuaValue> hashHelperMap = new HashMap<>();
+
 	/** the number of hash entries */
 	protected int hashEntries;
-	
+
 	/** metatable for this table, or null */
 	protected Metatable m_metatable;
-	
+
 	/** Construct empty table */
 	public LuaTable() {
 		array = NOVALS;
 		hash = NOBUCKETS;
 	}
-	
-	/** 
+
+	/**
 	 * Construct table with preset capacity.
 	 * @param narray capacity of array part
 	 * @param nhash capacity of hash part
@@ -81,12 +86,12 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	}
 
 	/**
-	 * Construct table with named and unnamed parts. 
+	 * Construct table with named and unnamed parts.
 	 * @param named Named elements in order {@code key-a, value-a, key-b, value-b, ... }
-	 * @param unnamed Unnamed elements in order {@code value-1, value-2, ... } 
+	 * @param unnamed Unnamed elements in order {@code value-1, value-2, ... }
 	 * @param lastarg Additional unnamed values beyond {@code unnamed.length}
 	 */
-	public LuaTable(io.github.taoguan.luaj.LuaValue[] named, io.github.taoguan.luaj.LuaValue[] unnamed, io.github.taoguan.luaj.Varargs lastarg) {
+	public LuaTable(LuaValue[] named, LuaValue[] unnamed, Varargs lastarg) {
 		int nn = (named!=null? named.length: 0);
 		int nu = (unnamed!=null? unnamed.length: 0);
 		int nl = (lastarg!=null? lastarg.narg(): 0);
@@ -102,19 +107,19 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	}
 
 	/**
-	 * Construct table of unnamed elements. 
-	 * @param varargs Unnamed elements in order {@code value-1, value-2, ... } 
+	 * Construct table of unnamed elements.
+	 * @param varargs Unnamed elements in order {@code value-1, value-2, ... }
 	 */
-	public LuaTable(io.github.taoguan.luaj.Varargs varargs) {
+	public LuaTable(Varargs varargs) {
 		this(varargs,1);
 	}
 
 	/**
-	 * Construct table of unnamed elements. 
+	 * Construct table of unnamed elements.
 	 * @param varargs Unnamed elements in order {@code value-1, value-2, ... }
-	 * @param firstarg the index in varargs of the first argument to include in the table 
+	 * @param firstarg the index in varargs of the first argument to include in the table
 	 */
-	public LuaTable(io.github.taoguan.luaj.Varargs varargs, int firstarg) {
+	public LuaTable(Varargs varargs, int firstarg) {
 		int nskip = firstarg-1;
 		int n = Math.max(varargs.narg()-nskip,0);
 		presize( n, 1 );
@@ -122,27 +127,23 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		for ( int i=1; i<=n; i++ )
 			set(i, varargs.arg(i+nskip));
 	}
-	
+
 	public int type() {
-		return io.github.taoguan.luaj.LuaValue.TTABLE;
+		return LuaValue.TTABLE;
 	}
 
 	public String typename() {
 		return "table";
 	}
-	
-	public boolean istable() { 
-		return true; 
+
+	public boolean istable() {
+		return true;
 	}
-	
+
 	public LuaTable checktable() {
 		return this;
 	}
 
-	public LuaTable opttable(LuaTable defval)  {
-		return this;
-	}
-	
 	public void presize( int narray ) {
 		if ( narray > array.length )
 			array = resize( array, 1 << log2(narray) );
@@ -152,66 +153,66 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		if ( nhash > 0 && nhash < MIN_HASH_CAPACITY )
 			nhash = MIN_HASH_CAPACITY;
 		// Size of both parts must be a power of two.
-		array = (narray>0? new io.github.taoguan.luaj.LuaValue[1 << log2(narray)]: NOVALS);
+		array = (narray>0? new LuaValue[1 << log2(narray)]: NOVALS);
 		hash = (nhash>0? new Slot[1 << log2(nhash)]: NOBUCKETS);
 		hashEntries = 0;
 	}
 
 	/** Resize the table */
-	private static io.github.taoguan.luaj.LuaValue[] resize(io.github.taoguan.luaj.LuaValue[] old, int n ) {
-		io.github.taoguan.luaj.LuaValue[] v = new io.github.taoguan.luaj.LuaValue[n];
+	private static LuaValue[] resize( LuaValue[] old, int n ) {
+		LuaValue[] v = new LuaValue[n];
 		System.arraycopy(old, 0, v, 0, old.length);
 		return v;
 	}
-	
-	/** 
-	 * Get the length of the array part of the table. 
-	 * @return length of the array part, does not relate to count of objects in the table. 
+
+	/**
+	 * Get the length of the array part of the table.
+	 * @return length of the array part, does not relate to count of objects in the table.
 	 */
-	protected int getArrayLength() {
+	public int getArrayLength() {
 		return array.length;
 	}
 
-	/** 
-	 * Get the length of the hash part of the table. 
-	 * @return length of the hash part, does not relate to count of objects in the table. 
+	/**
+	 * Get the length of the hash part of the table.
+	 * @return length of the hash part, does not relate to count of objects in the table.
 	 */
-	protected int getHashLength() {
+	public int getHashLength() {
 		return hash.length;
 	}
-	
-	public io.github.taoguan.luaj.LuaValue getmetatable() {
+
+	public LuaValue getmetatable() {
 		return ( m_metatable != null ) ? m_metatable.toLuaValue() : null;
 	}
-	
-	public io.github.taoguan.luaj.LuaValue setmetatable(io.github.taoguan.luaj.LuaValue metatable) {
+
+	public LuaValue setmetatable(LuaValue metatable) {
 		m_metatable = metatableOf( metatable );
 		return this;
 	}
-	
-	public io.github.taoguan.luaj.LuaValue get(int key ) {
-		io.github.taoguan.luaj.LuaValue v = rawget(key);
+
+	public LuaValue get( int key ) {
+		LuaValue v = rawget(key);
 		return v.isnil() && m_metatable!=null? gettable(this,valueOf(key)): v;
 	}
-	
-	public io.github.taoguan.luaj.LuaValue get(io.github.taoguan.luaj.LuaValue key ) {
-		io.github.taoguan.luaj.LuaValue v = rawget(key);
+
+	public LuaValue get( LuaValue key ) {
+		LuaValue v = rawget(key);
 		return v.isnil() && m_metatable!=null? gettable(this,key): v;
 	}
 
-	public io.github.taoguan.luaj.LuaValue rawget(int key ) {
+	public LuaValue rawget( int key ) {
 		if ( key>0 && key<=array.length ) {
-			io.github.taoguan.luaj.LuaValue v = m_metatable == null ? array[key-1] : m_metatable.arrayget(array, key-1);
+			LuaValue v = m_metatable == null ? array[key-1] : m_metatable.arrayget(array, key-1);
 			return v != null ? v : NIL;
 		}
-		return hashget( io.github.taoguan.luaj.LuaInteger.valueOf(key) );
+		return hashget( LuaInteger.valueOf(key) );
 	}
 
-	public io.github.taoguan.luaj.LuaValue rawget(io.github.taoguan.luaj.LuaValue key ) {
+	public LuaValue rawget( LuaValue key ) {
 		if ( key.isinttype() ) {
-			int ikey = key.toint();
+			int ikey = key.checkint();
 			if ( ikey>0 && ikey<=array.length ) {
-				io.github.taoguan.luaj.LuaValue v = m_metatable == null
+				LuaValue v = m_metatable == null
 						? array[ikey-1] : m_metatable.arrayget(array, ikey-1);
 				return v != null ? v : NIL;
 			}
@@ -219,65 +220,63 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		return hashget( key );
 	}
 
-	protected io.github.taoguan.luaj.LuaValue hashget(io.github.taoguan.luaj.LuaValue key) {
+	protected LuaValue hashget(LuaValue key) {
 		if ( hashEntries > 0 ) {
-			for ( Slot slot = hash[ hashSlot(key) ]; slot != null; slot = slot.rest() ) {
-				StrongSlot foundSlot;
-				if ( ( foundSlot = slot.find(key) ) != null ) {
-					return foundSlot.value();
-				}
+			LuaValue value = hashHelperMap.get(key);
+			if(value != null){
+				return value;
 			}
 		}
 		return NIL;
 	}
 
-	public void set( int key, io.github.taoguan.luaj.LuaValue value ) {
-		if ( m_metatable==null || ! rawget(key).isnil() || ! settable(this, io.github.taoguan.luaj.LuaInteger.valueOf(key),value) )
+	public void set( int key, LuaValue value ) {
+		if ( m_metatable==null || ! rawget(key).isnil() || ! settable(this,LuaInteger.valueOf(key),value) )
 			rawset(key, value);
 	}
 
 	/** caller must ensure key is not nil */
-	public void set(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value ) {
+	public void set( LuaValue key, LuaValue value ) {
 		if (key == null || !key.isvalidkey() && !metatag(NEWINDEX).isfunction())
 			throw new LuaError("value ('" + key + "') can not be used as a table index");
 		if ( m_metatable==null || ! rawget(key).isnil() ||  ! settable(this,key,value) )
 			rawset(key, value);
 	}
 
-	public void rawset( int key, io.github.taoguan.luaj.LuaValue value ) {
+	public void rawset( int key, LuaValue value ) {
 		if ( ! arrayset(key, value) )
-			hashset( io.github.taoguan.luaj.LuaInteger.valueOf(key), value );
+			hashset( LuaInteger.valueOf(key), value );
 	}
 
 	/** caller must ensure key is not nil */
-	public void rawset(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value ) {
-		if ( !key.isinttype() || !arrayset(key.toint(), value) )
+	public void rawset( LuaValue key, LuaValue value ) {
+		if ( !key.isinttype() || !arrayset(key.checkint(), value) )
 			hashset( key, value );
 	}
 
 	/** Set an array element */
-	private boolean arrayset( int key, io.github.taoguan.luaj.LuaValue value ) {
+	private boolean arrayset( int key, LuaValue value ) {
 		if ( key>0 && key<=array.length ) {
 			array[key - 1] = value.isnil() ? null :
-				(m_metatable != null ? m_metatable.wrap(value) : value);
+					(m_metatable != null ? m_metatable.wrap(value) : value);
 			return true;
 		}
 		return false;
 	}
 
 	/** Remove the element at a position in a list-table
-	 *  
+	 *
 	 * @param pos the position to remove
 	 * @return The removed item, or {@link #NONE} if not removed
 	 */
-	public io.github.taoguan.luaj.LuaValue remove(int pos) {
+	public LuaValue remove(int pos) {
 		int n = rawlen();
 		if ( pos == 0 )
 			pos = n;
 		else if (pos > n)
 			return NONE;
-		io.github.taoguan.luaj.LuaValue v = rawget(pos);
-		for (io.github.taoguan.luaj.LuaValue r = v; !r.isnil(); ) {
+		LuaValue v = rawget(pos);
+		for ( LuaValue r=v; !r.isnil(); ) {
 			r = rawget(pos+1);
 			rawset(pos++, r);
 		}
@@ -285,29 +284,29 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	}
 
 	/** Insert an element at a position in a list-table
-	 *  
+	 *
 	 * @param pos the position to remove
 	 * @param value The value to insert
 	 */
-	public void insert(int pos, io.github.taoguan.luaj.LuaValue value) {
+	public void insert(int pos, LuaValue value) {
 		if ( pos == 0 )
 			pos = rawlen()+1;
 		while ( ! value.isnil() ) {
-			io.github.taoguan.luaj.LuaValue v = rawget( pos );
+			LuaValue v = rawget( pos );
 			rawset(pos++, value);
 			value = v;
 		}
 	}
 
-	/** Concatenate the contents of a table efficiently, using {@link io.github.taoguan.luaj.Buffer}
-	 * 
-	 * @param sep {@link io.github.taoguan.luaj.LuaString} separater to apply between elements
+	/** Concatenate the contents of a table efficiently, using {@link Buffer}
+	 *
+	 * @param sep {@link LuaString} separater to apply between elements
 	 * @param i the first element index
 	 * @param j the last element index, inclusive
-	 * @return {@link io.github.taoguan.luaj.LuaString} value of the concatenation
+	 * @return {@link LuaString} value of the concatenation
 	 */
-	public io.github.taoguan.luaj.LuaValue concat(io.github.taoguan.luaj.LuaString sep, int i, int j) {
-		io.github.taoguan.luaj.Buffer sb = new io.github.taoguan.luaj.Buffer();
+	public LuaValue concat(LuaString sep, int i, int j) {
+		Buffer  sb = new Buffer ();
 		if ( i<=j ) {
 			sb.append( get(i).checkstring() );
 			while ( ++i<=j ) {
@@ -320,21 +319,21 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 
 	public int length() {
 		if (m_metatable != null) {
-			io.github.taoguan.luaj.LuaValue len = len();
+			LuaValue len = len();
 			if (!len.isint()) throw new LuaError("table length is not an integer: " + len);
-			return len.toint();
+			return len.checkint();
 		}
 		return rawlen();
 	}
-	
-	public io.github.taoguan.luaj.LuaValue len()  {
-		final io.github.taoguan.luaj.LuaValue h = metatag(LEN);
+
+	public LuaValue len()  {
+		final LuaValue h = metatag(LEN);
 		if (h.toboolean())
 			return h.call(this);
-		return io.github.taoguan.luaj.LuaInteger.valueOf(rawlen());
+		return LuaInteger.valueOf(rawlen());
 	}
 
-	public int rawlen() { 
+	public int rawlen() {
 		int a = getArrayLength();
 		int n = a+1,m=0;
 		while ( !rawget(n).isnil() ) {
@@ -352,16 +351,16 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	}
 
 	/**
-	 * Get the next element after a particular key in the table 
+	 * Get the next element after a particular key in the table
 	 * @return key,value or nil
 	 */
-	public io.github.taoguan.luaj.Varargs next(io.github.taoguan.luaj.LuaValue key ) {
+	public Varargs next( LuaValue key ) {
 		int i = 0;
 		do {
 			// find current key index
 			if ( ! key.isnil() ) {
 				if ( key.isinttype() ) {
-					i = key.toint();
+					i = key.checkint();
 					if ( i>0 && i<=array.length ) {
 						break;
 					}
@@ -390,9 +389,9 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		// check array part
 		for ( ; i<array.length; ++i ) {
 			if ( array[i] != null ) {
-				io.github.taoguan.luaj.LuaValue value = m_metatable == null ? array[i] : m_metatable.arrayget(array, i);
+				LuaValue value = m_metatable == null ? array[i] : m_metatable.arrayget(array, i);
 				if (value != null) {
-					return varargsOf(io.github.taoguan.luaj.LuaInteger.valueOf(i+1),value);
+					return varargsOf(LuaInteger.valueOf(i+1),value);
 				}
 			}
 		}
@@ -407,20 +406,20 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 				slot = slot.rest();
 			}
 		}
-		
+
 		// nothing found, push nil, return nil.
 		return NIL;
 	}
 
 	/**
-	 * Get the next element after a particular key in the 
-	 * contiguous array part of a table 
+	 * Get the next element after a particular key in the
+	 * contiguous array part of a table
 	 * @return key,value or none
 	 */
-	public io.github.taoguan.luaj.Varargs inext(io.github.taoguan.luaj.LuaValue key) {
+	public Varargs inext(LuaValue key) {
 		int k = key.checkint() + 1;
-		io.github.taoguan.luaj.LuaValue v = rawget(k);
-		return v.isnil()? NONE: varargsOf(io.github.taoguan.luaj.LuaInteger.valueOf(k),v);
+		LuaValue v = rawget(k);
+		return v.isnil()? NONE: varargsOf(LuaInteger.valueOf(k),v);
 	}
 
 	/**
@@ -428,7 +427,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	 * @param key key to set
 	 * @param value value to set
 	 */
-	public void hashset(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value) {
+	public void hashset(LuaValue key, LuaValue value) {
 		if ( value.isnil() )
 			hashRemove(key);
 		else {
@@ -444,10 +443,10 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 				}
 			}
 			if ( checkLoadFactor() ) {
-				if ( key.isinttype() && key.toint() > 0 ) {
+				if ( key.isinttype() && key.checkint() > 0 ) {
 					// a rehash might make room in the array portion for this key.
-					rehash( key.toint() );
-					if ( arrayset(key.toint(), value) )
+					rehash( key.checkint() );
+					if ( arrayset(key.checkint(), value) )
 						return;
 				} else {
 					rehash( -1 );
@@ -455,10 +454,11 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 				index = hashSlot( key );
 			}
 			Slot entry = ( m_metatable != null )
-				? m_metatable.entry( key, value )
-				: defaultEntry( key, value );
+					? m_metatable.entry( key, value )
+					: defaultEntry( key, value );
 			hash[ index ] = ( hash[index] != null )	? hash[index].add( entry ) : entry;
 			++hashEntries;
+			hashHelperMap.put(key, value);
 		}
 	}
 
@@ -476,29 +476,27 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	 * @param hashMask N-1 where N is the number of hash slots (must be power of 2)
 	 * @return the slot index
 	 */
-	public static int hashSlot(io.github.taoguan.luaj.LuaValue key, int hashMask ) {
+	public static int hashSlot( LuaValue key, int hashMask ) {
 		switch ( key.type() ) {
-		case TNUMBER:
-		case TTABLE:
-		case TTHREAD:
-		case TLIGHTUSERDATA:
-		case TUSERDATA:
-			return hashmod( key.hashCode(), hashMask );
-		default:
-			return hashpow2( key.hashCode(), hashMask );
+			case TNUMBER:
+			case TTABLE:
+			case TUSERDATA:
+				return hashmod( key.hashCode(), hashMask );
+			default:
+				return hashpow2( key.hashCode(), hashMask );
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Find the hashtable slot to use
 	 * @param key key to look for
 	 * @return slot to use
 	 */
-	private int hashSlot(io.github.taoguan.luaj.LuaValue key) {
+	private int hashSlot(LuaValue key) {
 		return hashSlot( key, hash.length - 1 );
 	}
 
-	private void hashRemove( io.github.taoguan.luaj.LuaValue key ) {
+	private void hashRemove( LuaValue key ) {
 		if ( hash.length > 0 ) {
 			int index = hashSlot(key);
 			for ( Slot slot = hash[index]; slot != null; slot = slot.rest() ) {
@@ -506,6 +504,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 				if ( ( foundSlot = slot.find( key ) ) != null ) {
 					hash[index] = hash[index].remove( foundSlot );
 					--hashEntries;
+					hashHelperMap.remove(key);
 					return;
 				}
 			}
@@ -579,22 +578,22 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			x >>>= 4;
 		}
 		switch (x) {
-		case 0x0: return 0;
-		case 0x1: lg += 1; break;
-		case 0x2: lg += 2; break;
-		case 0x3: lg += 2; break;
-		case 0x4: lg += 3; break;
-		case 0x5: lg += 3; break;
-		case 0x6: lg += 3; break;
-		case 0x7: lg += 3; break;
-		case 0x8: lg += 4; break;
-		case 0x9: lg += 4; break;
-		case 0xA: lg += 4; break;
-		case 0xB: lg += 4; break;
-		case 0xC: lg += 4; break;
-		case 0xD: lg += 4; break;
-		case 0xE: lg += 4; break;
-		case 0xF: lg += 4; break;
+			case 0x0: return 0;
+			case 0x1: lg += 1; break;
+			case 0x2: lg += 2; break;
+			case 0x3: lg += 2; break;
+			case 0x4: lg += 3; break;
+			case 0x5: lg += 3; break;
+			case 0x6: lg += 3; break;
+			case 0x7: lg += 3; break;
+			case 0x8: lg += 4; break;
+			case 0x9: lg += 4; break;
+			case 0xA: lg += 4; break;
+			case 0xB: lg += 4; break;
+			case 0xC: lg += 4; break;
+			case 0xD: lg += 4; break;
+			case 0xE: lg += 4; break;
+			case 0xF: lg += 4; break;
 		}
 		return lg;
 	}
@@ -625,10 +624,11 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			}
 		}
 
-		final io.github.taoguan.luaj.LuaValue[] oldArray = array;
+		final LuaValue[] oldArray = array;
 		final Slot[] oldHash = hash;
-		final io.github.taoguan.luaj.LuaValue[] newArray;
+		final LuaValue[] newArray;
 		final Slot[] newHash;
+
 
 		// Copy existing array entries and compute number of moving entries.
 		int movingToArray = 0;
@@ -636,7 +636,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			movingToArray--;
 		}
 		if (newArraySize != oldArray.length) {
-			newArray = new io.github.taoguan.luaj.LuaValue[newArraySize];
+			newArray = new LuaValue[newArraySize];
 			if (newArraySize > oldArray.length) {
 				for (int i = log2(oldArray.length + 1), j = log2(newArraySize) + 1; i < j; ++i) {
 					movingToArray += nums[i];
@@ -652,7 +652,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		}
 
 		final int newHashSize = hashEntries - movingToArray
-			+ ((newKey < 0 || newKey > newArraySize) ? 1 : 0); // Make room for the new entry
+				+ ((newKey < 0 || newKey > newArraySize) ? 1 : 0); // Make room for the new entry
 		final int oldCapacity = oldHash.length;
 		final int newCapacity;
 		final int newHashMask;
@@ -660,14 +660,16 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		if (newHashSize > 0) {
 			// round up to next power of 2.
 			newCapacity = ( newHashSize < MIN_HASH_CAPACITY )
-				? MIN_HASH_CAPACITY
-				: 1 << log2(newHashSize);
+					? MIN_HASH_CAPACITY
+					: 1 << log2(newHashSize);
 			newHashMask = newCapacity - 1;
 			newHash = new Slot[ newCapacity ];
+			hashHelperMap = new HashMap<>(newCapacity);
 		} else {
 			newCapacity = 0;
 			newHashMask = 0;
 			newHash = NOBUCKETS;
+			hashHelperMap.clear();
 		}
 
 		// Move hash buckets
@@ -681,15 +683,16 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 				} else {
 					int j = slot.keyindex( newHashMask );
 					newHash[j] = slot.relink( newHash[j] );
+					hashHelperMap.put(slot.first().key(), slot.first().value());
 				}
 			}
 		}
 
 		// Move array values into hash portion
 		for ( int i = newArraySize; i < oldArray.length; ) {
-			io.github.taoguan.luaj.LuaValue v;
+			LuaValue v;
 			if ( ( v = oldArray[ i++ ] ) != null ) {
-				int slot = hashmod( io.github.taoguan.luaj.LuaInteger.hashCode( i ), newHashMask );
+				int slot = hashmod( LuaInteger.hashCode( i ), newHashMask );
 				Slot newEntry;
 				if ( m_metatable != null ) {
 					newEntry = m_metatable.entry( valueOf(i), v );
@@ -699,7 +702,8 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 					newEntry = defaultEntry( valueOf(i), v );
 				}
 				newHash[ slot ] = ( newHash[slot] != null )
-					? newHash[slot].add( newEntry ) : newEntry;
+						? newHash[slot].add( newEntry ) : newEntry;
+				hashHelperMap.put(newEntry.first().key(), newEntry.first().value());
 			}
 		}
 
@@ -708,27 +712,27 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		hashEntries -= movingToArray;
 	}
 
-	public Slot entry(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value ) {
+	public Slot entry( LuaValue key, LuaValue value ) {
 		return defaultEntry( key, value );
 	}
 
-	protected static boolean isLargeKey(io.github.taoguan.luaj.LuaValue key) {
+	protected static boolean isLargeKey(LuaValue key) {
 		switch (key.type()) {
-		case TSTRING:
-			return key.rawlen() > io.github.taoguan.luaj.LuaString.RECENT_STRINGS_MAX_LENGTH;
-		case TNUMBER:
-		case TBOOLEAN:
-			return false;
-		default:
-			return true;
+			case TSTRING:
+				return key.rawlen() > LuaString.RECENT_STRINGS_MAX_LENGTH;
+			case TNUMBER:
+			case TBOOLEAN:
+				return false;
+			default:
+				return true;
 		}
 	}
 
-	protected static Entry defaultEntry(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value) {
+	protected static Entry defaultEntry(LuaValue key, LuaValue value) {
 		if ( key.isinttype() ) {
-			return new IntKeyEntry( key.toint(), value );
+			return new IntKeyEntry( key.checkint(), value );
 		} else if (value.type() == TNUMBER) {
-			return new NumberValueEntry( key, value.todouble() );
+			return new NumberValueEntry( key, value.checkdouble() );
 		} else {
 			return new NormalEntry( key, value );
 		}
@@ -738,21 +742,21 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	//
 	// implemented heap sort from wikipedia
 	//
-	// Only sorts the contiguous array part. 
+	// Only sorts the contiguous array part.
 	//
 	/** Sort the table using a comparator.
-	 * @param comparator {@link io.github.taoguan.luaj.LuaValue} to be called to compare elements.
+	 * @param comparator {@link LuaValue} to be called to compare elements.
 	 */
-	public void sort(io.github.taoguan.luaj.LuaValue comparator) {
-		if (len().tolong() >= (long)Integer.MAX_VALUE) throw new LuaError("array too big: " + len().tolong());
+	public void sort(LuaValue comparator) {
+		if (len().checklong() >= (long)Integer.MAX_VALUE) throw new LuaError("array too big: " + len().checklong());
 		int n = array.length;
 		while ( n > 0 && array[n-1] == null )
 			--n;
-		if ( n > 1 ) 
+		if ( n > 1 )
 			heapSort(n, comparator);
 	}
 
-	private void heapSort(int count, io.github.taoguan.luaj.LuaValue cmpfunc) {
+	private void heapSort(int count, LuaValue cmpfunc) {
 		heapify(count, cmpfunc);
 		for ( int end=count-1; end>0; ) {
 			swap(end, 0);
@@ -760,16 +764,16 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		}
 	}
 
-	private void heapify(int count, io.github.taoguan.luaj.LuaValue cmpfunc) {
+	private void heapify(int count, LuaValue cmpfunc) {
 		for ( int start=count/2-1; start>=0; --start )
 			siftDown(start, count - 1, cmpfunc);
 	}
 
-	private void siftDown(int start, int end, io.github.taoguan.luaj.LuaValue cmpfunc) {
-		for ( int root=start; root*2+1 <= end; ) { 
-			int child = root*2+1; 
+	private void siftDown(int start, int end, LuaValue cmpfunc) {
+		for ( int root=start; root*2+1 <= end; ) {
+			int child = root*2+1;
 			if (child < end && compare(child, child + 1, cmpfunc))
-				++child; 
+				++child;
 			if (compare(root, child, cmpfunc)) {
 				swap(root, child);
 				root = child;
@@ -778,8 +782,8 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		}
 	}
 
-	private boolean compare(int i, int j, io.github.taoguan.luaj.LuaValue cmpfunc) {
-		io.github.taoguan.luaj.LuaValue a, b;
+	private boolean compare(int i, int j, LuaValue cmpfunc) {
+		LuaValue a, b;
 		if (m_metatable == null) {
 			a = array[i];
 			b = array[j];
@@ -790,70 +794,70 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		if ( a == null || b == null )
 			return false;
 		if ( ! cmpfunc.isnil() ) {
-			return cmpfunc.call(a,b).toboolean();
+			return cmpfunc.call(a,b).checkboolean();
 		} else {
 			return a.lt_b(b);
 		}
 	}
-	
+
 	private void swap(int i, int j) {
-		io.github.taoguan.luaj.LuaValue a = array[i];
+		LuaValue a = array[i];
 		array[i] = array[j];
 		array[j] = a;
 	}
-	
-	/** This may be deprecated in a future release.  
+
+	/** This may be deprecated in a future release.
 	 * It is recommended to count via iteration over next() instead
-	 * @return count of keys in the table 
+	 * @return count of keys in the table
 	 * */
 	public int keyCount() {
-		io.github.taoguan.luaj.LuaValue k = io.github.taoguan.luaj.LuaValue.NIL;
+		LuaValue k = LuaValue.NIL;
 		for ( int i=0; true; i++ ) {
-			io.github.taoguan.luaj.Varargs n = next(k);
+			Varargs n = next(k);
 			if ( (k = n.arg1()).isnil() )
 				return i;
 		}
 	}
-	
-	/** This may be deprecated in a future release.  
-	 * It is recommended to use next() instead 
-	 * @return array of keys in the table 
+
+	/** This may be deprecated in a future release.
+	 * It is recommended to use next() instead
+	 * @return array of keys in the table
 	 * */
-	public io.github.taoguan.luaj.LuaValue[] keys() {
+	public LuaValue[] keys() {
 		Vector l = new Vector();
-		io.github.taoguan.luaj.LuaValue k = io.github.taoguan.luaj.LuaValue.NIL;
+		LuaValue k = LuaValue.NIL;
 		while ( true ) {
-			io.github.taoguan.luaj.Varargs n = next(k);
+			Varargs n = next(k);
 			if ( (k = n.arg1()).isnil() )
 				break;
 			l.addElement( k );
 		}
-		io.github.taoguan.luaj.LuaValue[] a = new io.github.taoguan.luaj.LuaValue[l.size()];
+		LuaValue[] a = new LuaValue[l.size()];
 		l.copyInto(a);
 		return a;
 	}
-	
+
 	// equality w/ metatable processing
-	public io.github.taoguan.luaj.LuaValue eq(io.github.taoguan.luaj.LuaValue val ) {  return eq_b(val)? TRUE: FALSE; }
-	public boolean eq_b( io.github.taoguan.luaj.LuaValue val )  {
+	public LuaValue eq( LuaValue val ) {  return eq_b(val)? TRUE: FALSE; }
+	public boolean eq_b( LuaValue val )  {
 		if ( this == val ) return true;
 		if ( m_metatable == null || !val.istable() ) return false;
-		io.github.taoguan.luaj.LuaValue valmt = val.getmetatable();
-		return valmt!=null && io.github.taoguan.luaj.LuaValue.eqmtcall(this, m_metatable.toLuaValue(), val, valmt);
+		LuaValue valmt = val.getmetatable();
+		return valmt!=null && LuaValue.eqmtcall(this, m_metatable.toLuaValue(), val, valmt);
 	}
 
 	/** Unpack all the elements of this table */
-	public io.github.taoguan.luaj.Varargs unpack() {
+	public Varargs unpack() {
 		return unpack(1, this.rawlen());
 	}
 
 	/** Unpack all the elements of this table from element i */
-	public io.github.taoguan.luaj.Varargs unpack(int i) {
+	public Varargs unpack(int i) {
 		return unpack(i, this.rawlen());
 	}
 
 	/** Unpack the elements from i to j inclusive */
-	public io.github.taoguan.luaj.Varargs unpack(int i, int j) {
+	public Varargs unpack(int i, int j) {
 		if (j < i) return NONE;
 		int count = j - i;
 		if (count < 0) throw new LuaError("too many results to unpack: greater " + Integer.MAX_VALUE); // integer overflow
@@ -861,20 +865,20 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		if (count >= max) throw new LuaError("too many results to unpack: " + count + " (max is " + max + ')');
 		int n = j + 1 - i;
 		switch (n) {
-		case 0: return NONE;
-		case 1: return get(i);
-		case 2: return varargsOf(get(i), get(i+1));
-		default:
-			if (n < 0)
-				return NONE;
-			try {
-				io.github.taoguan.luaj.LuaValue[] v = new io.github.taoguan.luaj.LuaValue[n];
-				while (--n >= 0)
-					v[n] = get(i+n);
-				return varargsOf(v);
-			} catch (OutOfMemoryError e) {
-				throw new LuaError("too many results to unpack [out of memory]: " + n);
-			}
+			case 0: return NONE;
+			case 1: return get(i);
+			case 2: return varargsOf(get(i), get(i+1));
+			default:
+				if (n < 0)
+					return NONE;
+				try {
+					LuaValue[] v = new LuaValue[n];
+					while (--n >= 0)
+						v[n] = get(i+n);
+					return varargsOf(v);
+				} catch (OutOfMemoryError e) {
+					throw new LuaError("too many results to unpack [out of memory]: " + n);
+				}
 		}
 	}
 
@@ -890,13 +894,13 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		StrongSlot first();
 
 		/** Compare given key with first()'s key; return first() if equal. */
-		StrongSlot find( io.github.taoguan.luaj.LuaValue key );
+		StrongSlot find( LuaValue key );
 
 		/**
 		 * Compare given key with first()'s key; return true if equal. May
 		 * return true for keys no longer present in the table.
 		 */
-		boolean keyeq( io.github.taoguan.luaj.LuaValue key );
+		boolean keyeq( LuaValue key );
 
 		/** Return rest of elements */
 		Slot rest();
@@ -911,7 +915,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		 * Set the value of this Slot's first Entry, if possible, or return a
 		 * new Slot whose first entry has the given value.
 		 */
-		Slot set( StrongSlot target, io.github.taoguan.luaj.LuaValue value );
+		Slot set( StrongSlot target, LuaValue value );
 
 		/**
 		 * Link the given new entry to this slot.
@@ -937,13 +941,13 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	 */
 	interface StrongSlot extends Slot {
 		/** Return first entry's key */
-		io.github.taoguan.luaj.LuaValue key();
+		LuaValue key();
 
 		/** Return first entry's value */
-		io.github.taoguan.luaj.LuaValue value();
+		LuaValue value();
 
 		/** Return varargsOf(key(), value()) or equivalent */
-		io.github.taoguan.luaj.Varargs toVarargs();
+		Varargs toVarargs();
 	}
 
 	private static class LinkSlot implements StrongSlot {
@@ -955,7 +959,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			this.next = next;
 		}
 
-		public io.github.taoguan.luaj.LuaValue key() {
+		public LuaValue key() {
 			return entry.key();
 		}
 
@@ -963,11 +967,11 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return entry.keyindex( hashMask );
 		}
 
-		public io.github.taoguan.luaj.LuaValue value() {
+		public LuaValue value() {
 			return entry.value();
 		}
 
-		public io.github.taoguan.luaj.Varargs toVarargs() {
+		public Varargs toVarargs() {
 			return entry.toVarargs();
 		}
 
@@ -975,11 +979,11 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return entry;
 		}
 
-		public StrongSlot find(io.github.taoguan.luaj.LuaValue key) {
+		public StrongSlot find(LuaValue key) {
 			return entry.keyeq(key) ? this : null;
 		}
 
-		public boolean keyeq(io.github.taoguan.luaj.LuaValue key) {
+		public boolean keyeq(LuaValue key) {
 			return entry.keyeq(key);
 		}
 
@@ -991,7 +995,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return entry.arraykey( max );
 		}
 
-		public Slot set(StrongSlot target, io.github.taoguan.luaj.LuaValue value) {
+		public Slot set(StrongSlot target, LuaValue value) {
 			if ( target == this ) {
 				entry = entry.set( value );
 				return this;
@@ -1029,32 +1033,32 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		}
 
 		public String toString() {
-			return entry + "; " + next;
+			return "LinkSlot{" + entry + "; " + next + "}";
 		}
 	}
 
 	/**
 	 * Base class for regular entries.
-	 * 
+	 *
 	 * <p>
 	 * If the key may be an integer, the {@link #arraykey(int)} method must be
 	 * overridden to handle that case.
 	 */
-	static abstract class Entry extends io.github.taoguan.luaj.Varargs implements StrongSlot {
-		public abstract io.github.taoguan.luaj.LuaValue key();
-		public abstract io.github.taoguan.luaj.LuaValue value();
-		abstract Entry set(io.github.taoguan.luaj.LuaValue value);
-		public abstract boolean keyeq( io.github.taoguan.luaj.LuaValue key );
-        public abstract int keyindex( int hashMask );
+	static abstract class Entry extends Varargs implements StrongSlot {
+		public abstract LuaValue key();
+		public abstract LuaValue value();
+		abstract Entry set(LuaValue value);
+		public abstract boolean keyeq( LuaValue key );
+		public abstract int keyindex( int hashMask );
 
 		public int arraykey( int max ) {
 			return 0;
 		}
 
-		public io.github.taoguan.luaj.LuaValue arg(int i) {
+		public LuaValue arg(int i) {
 			switch (i) {
-			case 1: return key();
-			case 2: return value();
+				case 1: return key();
+				case 2: return value();
 			}
 			return NIL;
 		}
@@ -1066,18 +1070,18 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		/**
 		 * Subclasses should redefine as "return this;" whenever possible.
 		 */
-		public io.github.taoguan.luaj.Varargs toVarargs() {
+		public Varargs toVarargs() {
 			return varargsOf(key(), value());
 		}
 
-		public io.github.taoguan.luaj.LuaValue arg1() {
+		public LuaValue arg1() {
 			return key();
 		}
 
-		public io.github.taoguan.luaj.Varargs subargs(int start) {
+		public Varargs subargs(int start) {
 			switch (start) {
-			case 1: return this;
-			case 2: return value();
+				case 1: return this;
+				case 2: return value();
 			}
 			return NONE;
 		}
@@ -1090,11 +1094,11 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return null;
 		}
 
-		public StrongSlot find(io.github.taoguan.luaj.LuaValue key) {
+		public StrongSlot find(LuaValue key) {
 			return keyeq(key) ? this : null;
 		}
 
-		public Slot set(StrongSlot target, io.github.taoguan.luaj.LuaValue value) {
+		public Slot set(StrongSlot target, LuaValue value) {
 			return set( value );
 		}
 
@@ -1112,28 +1116,28 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	}
 
 	static class NormalEntry extends Entry {
-		private final io.github.taoguan.luaj.LuaValue key;
-		private io.github.taoguan.luaj.LuaValue value;
+		private final LuaValue key;
+		private LuaValue value;
 
-		NormalEntry(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value ) {
+		NormalEntry( LuaValue key, LuaValue value ) {
 			this.key = key;
 			this.value = value;
 		}
 
-		public io.github.taoguan.luaj.LuaValue key() {
+		public LuaValue key() {
 			return key;
 		}
 
-		public io.github.taoguan.luaj.LuaValue value() {
+		public LuaValue value() {
 			return value;
 		}
 
-		public Entry set(io.github.taoguan.luaj.LuaValue value) {
+		public Entry set(LuaValue value) {
 			this.value = value;
 			return this;
 		}
 
-		public io.github.taoguan.luaj.Varargs toVarargs() {
+		public Varargs toVarargs() {
 			return this;
 		}
 
@@ -1141,21 +1145,29 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return hashSlot( key, hashMask );
 		}
 
-		public boolean keyeq(io.github.taoguan.luaj.LuaValue key) {
+		public boolean keyeq(LuaValue key) {
 			return key.raweq(this.key);
+		}
+
+		@Override
+		public String toString() {
+			return "NormalEntry{" +
+					"key=" + key +
+					", value=" + value +
+					'}';
 		}
 	}
 
 	private static class IntKeyEntry extends Entry {
 		private final int key;
-		private io.github.taoguan.luaj.LuaValue value;
+		private LuaValue value;
 
-		IntKeyEntry(int key, io.github.taoguan.luaj.LuaValue value) {
+		IntKeyEntry(int key, LuaValue value) {
 			this.key = key;
 			this.value = value;
 		}
 
-		public io.github.taoguan.luaj.LuaValue key() {
+		public LuaValue key() {
 			return valueOf( key );
 		}
 
@@ -1163,21 +1175,29 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return ( key >= 1 && key <= max ) ? key : 0;
 		}
 
-		public io.github.taoguan.luaj.LuaValue value() {
+		public LuaValue value() {
 			return value;
 		}
 
-		public Entry set(io.github.taoguan.luaj.LuaValue value) {
+		public Entry set(LuaValue value) {
 			this.value = value;
 			return this;
 		}
 
 		public int keyindex( int mask ) {
-			return hashmod( io.github.taoguan.luaj.LuaInteger.hashCode( key ), mask );
+			return hashmod( LuaInteger.hashCode( key ), mask );
 		}
 
-		public boolean keyeq(io.github.taoguan.luaj.LuaValue key) {
+		public boolean keyeq(LuaValue key) {
 			return key.raweq( this.key );
+		}
+
+		@Override
+		public String toString() {
+			return "IntKeyEntry{" +
+					"key=" + key +
+					", value=" + value +
+					'}';
 		}
 	}
 
@@ -1186,26 +1206,26 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 	 */
 	private static class NumberValueEntry extends Entry {
 		private double value;
-		private final io.github.taoguan.luaj.LuaValue key;
+		private final LuaValue key;
 
-		NumberValueEntry(io.github.taoguan.luaj.LuaValue key, double value) {
+		NumberValueEntry(LuaValue key, double value) {
 			this.key = key;
 			this.value = value;
 		}
 
-		public io.github.taoguan.luaj.LuaValue key() {
+		public LuaValue key() {
 			return key;
 		}
 
-		public io.github.taoguan.luaj.LuaValue value() {
+		public LuaValue value() {
 			return valueOf(value);
 		}
 
-		public Entry set(io.github.taoguan.luaj.LuaValue value) {
+		public Entry set(LuaValue value) {
 			if (value.type() == TNUMBER) {
-				io.github.taoguan.luaj.LuaValue n = value.tonumber();
+				LuaValue n = value.checknumber();
 				if (!n.isnil()) {
-					this.value = n.todouble();
+					this.value = n.checkdouble();
 					return this;
 				}
 			}
@@ -1216,8 +1236,16 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return hashSlot( key, mask );
 		}
 
-		public boolean keyeq(io.github.taoguan.luaj.LuaValue key) {
+		public boolean keyeq(LuaValue key) {
 			return key.raweq(this.key);
+		}
+
+		@Override
+		public String toString() {
+			return "NumberValueEntry{" +
+					"value=" + value +
+					", key=" + key +
+					'}';
 		}
 	}
 
@@ -1230,13 +1258,13 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		private final Object key;
 		private Slot next;
 
-		private DeadSlot(io.github.taoguan.luaj.LuaValue key, Slot next ) {
+		private DeadSlot( LuaValue key, Slot next ) {
 			this.key = isLargeKey(key) ? new WeakReference( key ) : (Object)key;
 			this.next = next;
 		}
 
-		private io.github.taoguan.luaj.LuaValue key() {
-			return (io.github.taoguan.luaj.LuaValue) (key instanceof WeakReference ? ((WeakReference) key).get() : key);
+		private LuaValue key() {
+			return (LuaValue) (key instanceof WeakReference ? ((WeakReference) key).get() : key);
 		}
 
 		public int keyindex(int hashMask) {
@@ -1248,12 +1276,12 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return null;
 		}
 
-		public StrongSlot find(io.github.taoguan.luaj.LuaValue key) {
+		public StrongSlot find(LuaValue key) {
 			return null;
 		}
 
-		public boolean keyeq(io.github.taoguan.luaj.LuaValue key) {
-			io.github.taoguan.luaj.LuaValue k = key();
+		public boolean keyeq(LuaValue key) {
+			LuaValue k = key();
 			return k != null && key.raweq(k);
 		}
 
@@ -1265,7 +1293,7 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 			return -1;
 		}
 
-		public Slot set(StrongSlot target, io.github.taoguan.luaj.LuaValue value) {
+		public Slot set(StrongSlot target, LuaValue value) {
 			Slot next = ( this.next != null ) ? this.next.set( target, value ) : null;
 			if ( key() != null ) {
 				// if key hasn't been garbage collected, it is still potentially a valid argument
@@ -1295,31 +1323,32 @@ public class LuaTable extends io.github.taoguan.luaj.LuaValue implements Metatab
 		}
 
 		public String toString() {
-			StringBuffer buf = new StringBuffer();
-			buf.append("<dead");
-			io.github.taoguan.luaj.LuaValue k = key();
-			if (k != null) {
-				buf.append(": ");
-				buf.append(k.toString());
-			}
-			buf.append('>');
-			if (next != null) {
-				buf.append("; ");
-				buf.append(next.toString());
-			}
-			return buf.toString();
+			return "DeadSlot{" + key + "; " + next + "}";
 		}
 	};
 
-	public io.github.taoguan.luaj.LuaValue toLuaValue() {
+	public LuaValue toLuaValue() {
 		return this;
 	}
 
-	public io.github.taoguan.luaj.LuaValue wrap(io.github.taoguan.luaj.LuaValue value) {
+	public LuaValue wrap(LuaValue value) {
 		return value;
 	}
 
-	public io.github.taoguan.luaj.LuaValue arrayget(io.github.taoguan.luaj.LuaValue[] array, int index) {
+	public LuaValue arrayget(LuaValue[] array, int index) {
 		return array[index];
+	}
+
+	@Override
+	public String toString() {
+		return "LuaTable{" +
+				"array=" + Arrays.toString(array) +
+				", hash=" + Arrays.toString(hash) +
+				'}';
+	}
+
+	@Override
+	public LuaValue tostring() {
+		return LuaString.valueOf(toString());
 	}
 }

@@ -21,7 +21,7 @@ public class GrammarTest {
         int funcResult  = func.invoke(LuaValue.varargsOf(new LuaValue[]{result, LuaValue.valueOf(1),
                 LuaValue.valueOf(2), LuaValue.valueOf(3)})).arg1().checkint();
         System.out.println(String.format("funcResult=%s", funcResult));
-        Prototype p = globals.compilePrototype(new FileInputStream(luaFileName), "grammer-test");
+        Prototype p = globals.compilePrototype(new FileInputStream(luaFileName), "grammar-test");
         Print.print(p);
     }
 

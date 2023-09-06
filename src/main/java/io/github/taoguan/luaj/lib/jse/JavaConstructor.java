@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * LuaValue that represents a particular public Java constructor.
@@ -23,12 +24,16 @@ import java.util.Map;
  */
 public class JavaConstructor extends JavaMember {
 
-	static final Map constructors = Collections.synchronizedMap(new HashMap());
-	
+	static final Map<Constructor, JavaConstructor> constructors = new ConcurrentHashMap();
+
 	static JavaConstructor forConstructor(Constructor c) {
-		JavaConstructor j = (JavaConstructor) constructors.get(c);
-		if ( j == null )
-			constructors.put( c, j = new JavaConstructor(c) );
+		JavaConstructor j = constructors.get(c);
+		if ( j == null ) {
+			JavaConstructor present = constructors.putIfAbsent(c, j = new JavaConstructor(c));
+			if(present != null){
+				j = present;
+			}
+		}
 		return j;
 	}
 	

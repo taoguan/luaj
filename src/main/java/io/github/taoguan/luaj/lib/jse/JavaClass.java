@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * LuaValue that represents a Java class.
@@ -23,18 +24,22 @@ import java.util.Map.Entry;
  */
 public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion {
 
-	static final Map classes = Collections.synchronizedMap(new HashMap());
+	static final Map<Class, JavaClass> classes = new ConcurrentHashMap();
 
-	static final io.github.taoguan.luaj.LuaValue NEW = valueOf("new");
-	
+	static final LuaValue NEW = valueOf("new");
+
 	Map fields;
 	Map methods;
 	Map innerclasses;
-	
+
 	public static JavaClass forClass(Class c) {
-		JavaClass j = (JavaClass) classes.get(c);
-		if ( j == null )
-			classes.put( c, j = new JavaClass(c) );
+		JavaClass j = classes.get(c);
+		if ( j == null ) {
+			JavaClass present = classes.putIfAbsent(c, j = new JavaClass(c));
+			if(present != null){
+				j = present;
+			}
+		}
 		return j;
 	}
 	

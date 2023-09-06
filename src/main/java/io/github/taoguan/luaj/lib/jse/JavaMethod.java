@@ -22,12 +22,16 @@ import java.util.Map;
  */
 public class JavaMethod extends JavaMember {
 
-	static final Map methods = Collections.synchronizedMap(new HashMap());
-	
+	static final Map<Method, JavaMethod> methods = Collections.synchronizedMap(new HashMap());
+
 	static JavaMethod forMethod(Method m) {
-		JavaMethod j = (JavaMethod) methods.get(m);
-		if ( j == null )
-			methods.put( m, j = new JavaMethod(m) );
+		JavaMethod j = methods.get(m);
+		if ( j == null ) {
+			JavaMethod present = methods.put(m, j = new JavaMethod(m));
+			if(present != null){
+				j = present;
+			}
+		}
 		return j;
 	}
 	

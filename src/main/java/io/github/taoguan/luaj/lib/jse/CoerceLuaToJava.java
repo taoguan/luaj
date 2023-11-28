@@ -6,6 +6,7 @@ import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Helper class to coerce values from lua to Java within the luajava library. 
@@ -55,7 +56,7 @@ public class CoerceLuaToJava {
 		return getCoercion(clazz).coerce(value);
 	}
 	
-	static final Map COERCIONS = Collections.synchronizedMap(new HashMap());
+	static final Map COERCIONS = new ConcurrentHashMap();
 	
 	static final class BoolCoercion implements Coercion {
 		public String toString() {

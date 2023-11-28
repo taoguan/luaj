@@ -5,6 +5,7 @@ import io.github.taoguan.luaj.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Helper class to coerce values from Java to lua within the luajava library. 
@@ -109,7 +110,7 @@ public class CoerceJavaToLua {
 	}
 
 
-	static final Map COERCIONS = Collections.synchronizedMap(new HashMap());
+	static final Map COERCIONS = new ConcurrentHashMap();
 	
 	static {
 		Coercion boolCoercion = new BoolCoercion() ;

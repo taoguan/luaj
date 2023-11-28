@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * LuaValue that represents a Java method.
@@ -22,7 +23,7 @@ import java.util.Map;
  */
 public class JavaMethod extends JavaMember {
 
-	static final Map<Method, JavaMethod> methods = Collections.synchronizedMap(new HashMap());
+	static final Map<Method, JavaMethod> methods = new ConcurrentHashMap();
 
 	static JavaMethod forMethod(Method m) {
 		JavaMethod j = methods.get(m);

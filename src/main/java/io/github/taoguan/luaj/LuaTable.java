@@ -438,6 +438,7 @@ public class LuaTable extends LuaValue implements Metatable {
 					StrongSlot foundSlot;
 					if ( ( foundSlot = slot.find( key ) ) != null ) {
 						hash[index] = hash[index].set( foundSlot, value );
+						hashHelperMap.put(key, value);
 						return;
 					}
 				}

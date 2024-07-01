@@ -9,6 +9,10 @@ print(gvar11,gvar21,gvar22,gvar41,gvar42,gvar43)
 print(gvar31,gvar32,gvar33,gvar34,gvar35,gvar36)
 print(gvar51,gvar52,gvar53);
 
+print(gvar53['test2']);
+gvar53['test2']=80
+print(gvar53['test2']);
+
 local var11, var21, var22, var41, var42, var43 = nil, false, true, 'test1', "test2", [[long string\n, hello]]
 local var31, var32, var33, var34, var35, var36 = 10, -12, 123456789457, -0XFE, 123456789456.12, 1.2345678945613E11
 local var51, var52, var53 = {3,'test1', false}, {test1=34, ['test2']=55}, {test1=34, ['test2']=55, 4, 7, 9, [2]=8, [100]=53}

@@ -36,7 +36,7 @@ public class JavaMethod extends JavaMember {
 		return j;
 	}
 	
-	static io.github.taoguan.luaj.LuaFunction forMethods(JavaMethod[] m) {
+	static LuaFunction forMethods(JavaMethod[] m) {
 		return new Overload(m);
 	}
 	
@@ -52,34 +52,34 @@ public class JavaMethod extends JavaMember {
 		}
 	}
 
-	public io.github.taoguan.luaj.LuaValue call() {
+	public LuaValue call() {
 		return error("method cannot be called without instance");
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
-		return invokeMethod(arg.checkuserdata(), io.github.taoguan.luaj.LuaValue.NONE);
+	public LuaValue call(LuaValue arg) {
+		return invokeMethod(arg.checkuserdata(), LuaValue.NONE);
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+	public LuaValue call(LuaValue arg1, LuaValue arg2) {
 		return invokeMethod(arg1.checkuserdata(), arg2);
 	}
 	
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2, io.github.taoguan.luaj.LuaValue arg3) {
-		return invokeMethod(arg1.checkuserdata(), io.github.taoguan.luaj.LuaValue.varargsOf(arg2, arg3));
+	public LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3) {
+		return invokeMethod(arg1.checkuserdata(), LuaValue.varargsOf(arg2, arg3));
 	}
 	
-	public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+	public Varargs invoke(Varargs args) {
 		return invokeMethod(args.checkuserdata(1), args.subargs(2));
 	}
 	
-	io.github.taoguan.luaj.LuaValue invokeMethod(Object instance, io.github.taoguan.luaj.Varargs args) {
+	LuaValue invokeMethod(Object instance, Varargs args) {
 		Object[] a = convertArgs(args);
 		try {
 			return CoerceJavaToLua.coerce( method.invoke(instance, a) );
 		} catch (InvocationTargetException e) {
 			throw new LuaError(e.getTargetException());
 		} catch (Exception e) {
-			return io.github.taoguan.luaj.LuaValue.error("coercion error "+e);
+			return LuaValue.error("coercion error "+e);
 		}
 	}
 	
@@ -89,10 +89,10 @@ public class JavaMethod extends JavaMember {
 	 * On invocation, will pick the best method from the list, and invoke it.
 	 * <p>
 	 * This class is not used directly.  
-	 * It is returned by calls to calls to {@link JavaInstance#get(io.github.taoguan.luaj.LuaValue key)}
+	 * It is returned by calls to calls to {@link JavaInstance#get(LuaValue key)}
 	 * when an overloaded method is named.
 	 */
-	public static class Overload extends io.github.taoguan.luaj.LuaFunction {
+	public static class Overload extends LuaFunction {
 
 		final JavaMethod[] methods;
 		
@@ -100,27 +100,27 @@ public class JavaMethod extends JavaMember {
 			this.methods = methods;
 		}
 
-		public io.github.taoguan.luaj.LuaValue call() {
+		public LuaValue call() {
 			return error("method cannot be called without instance");
 		}
 
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
-			return invokeBestMethod(arg.checkuserdata(), io.github.taoguan.luaj.LuaValue.NONE);
+		public LuaValue call(LuaValue arg) {
+			return invokeBestMethod(arg.checkuserdata(), LuaValue.NONE);
 		}
 
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+		public LuaValue call(LuaValue arg1, LuaValue arg2) {
 			return invokeBestMethod(arg1.checkuserdata(), arg2);
 		}
 		
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2, io.github.taoguan.luaj.LuaValue arg3) {
-			return invokeBestMethod(arg1.checkuserdata(), io.github.taoguan.luaj.LuaValue.varargsOf(arg2, arg3));
+		public LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3) {
+			return invokeBestMethod(arg1.checkuserdata(), LuaValue.varargsOf(arg2, arg3));
 		}
 		
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			return invokeBestMethod(args.checkuserdata(1), args.subargs(2));
 		}
 
-		private io.github.taoguan.luaj.LuaValue invokeBestMethod(Object instance, io.github.taoguan.luaj.Varargs args) {
+		private LuaValue invokeBestMethod(Object instance, Varargs args) {
 			JavaMethod best = null;
 			int score = CoerceLuaToJava.SCORE_UNCOERCIBLE;
 			for ( int i=0; i<methods.length; i++ ) {
@@ -135,7 +135,7 @@ public class JavaMethod extends JavaMember {
 			
 			// any match? 
 			if ( best == null )
-				io.github.taoguan.luaj.LuaValue.error("no coercible public method");
+				LuaValue.error("no coercible public method");
 			
 			// invoke it
 			return best.invokeMethod(instance, args);

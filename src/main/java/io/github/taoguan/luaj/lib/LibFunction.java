@@ -128,7 +128,7 @@ abstract public class LibFunction extends LuaFunction {
 	 * @param names array of String names, one for each function.
 	 * @see #bind(io.github.taoguan.luaj.LuaValue, Class, String[], int)
 	 */
-	protected void bind(io.github.taoguan.luaj.LuaValue env, Class factory, String[] names ) {
+	protected void bind(LuaValue env, Class factory, String[] names ) {
 		bind( env, factory, names, 0 );
 	}
 	
@@ -141,9 +141,9 @@ abstract public class LibFunction extends LuaFunction {
 	 * @param factory the Class to instantiate for each bound function
 	 * @param names array of String names, one for each function.
 	 * @param firstopcode the first opcode to use  
-	 * @see #bind(io.github.taoguan.luaj.LuaValue, Class, String[])
+	 * @see #bind(LuaValue, Class, String[])
 	 */
-	protected void bind(io.github.taoguan.luaj.LuaValue env, Class factory, String[] names, int firstopcode ) {
+	protected void bind(LuaValue env, Class factory, String[] names, int firstopcode ) {
 		try {
 			for ( int i=0, n=names.length; i<n; i++ ) {
 				LibFunction f = (LibFunction) factory.newInstance();
@@ -157,33 +157,33 @@ abstract public class LibFunction extends LuaFunction {
 	}	
 
 	/** Java code generation utility to allocate storage for upvalue, leave it empty */
-	protected static io.github.taoguan.luaj.LuaValue[] newupe() {
-		return new io.github.taoguan.luaj.LuaValue[1];
+	protected static LuaValue[] newupe() {
+		return new LuaValue[1];
 	}
 
 	/** Java code generation utility to allocate storage for upvalue, initialize with nil */
-	protected static io.github.taoguan.luaj.LuaValue[] newupn() {
-		return new io.github.taoguan.luaj.LuaValue[] { NIL };
+	protected static LuaValue[] newupn() {
+		return new LuaValue[] { NIL };
 	}
 	
 	/** Java code generation utility to allocate storage for upvalue, initialize with value */
-	protected static io.github.taoguan.luaj.LuaValue[] newupl(io.github.taoguan.luaj.LuaValue v) {
-		return new io.github.taoguan.luaj.LuaValue[] { v };
+	protected static LuaValue[] newupl(LuaValue v) {
+		return new LuaValue[] { v };
 	}
 
-	public io.github.taoguan.luaj.LuaValue call() {
+	public LuaValue call() {
 		return argerror(1,"value");
 	}
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue a) {
+	public LuaValue call(LuaValue a) {
 		return call();
 	}
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue a, io.github.taoguan.luaj.LuaValue b) {
+	public LuaValue call(LuaValue a, LuaValue b) {
 		return call(a);
 	}
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue a, io.github.taoguan.luaj.LuaValue b, io.github.taoguan.luaj.LuaValue c) {
+	public LuaValue call(LuaValue a, LuaValue b, LuaValue c) {
 		return call(a,b);
 	}
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue a, io.github.taoguan.luaj.LuaValue b, io.github.taoguan.luaj.LuaValue c, io.github.taoguan.luaj.LuaValue d) {
+	public LuaValue call(LuaValue a, LuaValue b, LuaValue c, LuaValue d) {
 		return call(a,b,c);
 	}
 	public Varargs invoke(Varargs args) {

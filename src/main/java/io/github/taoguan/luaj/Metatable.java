@@ -7,17 +7,17 @@ package io.github.taoguan.luaj;
 interface Metatable {
 
 	/** Return this metatable as a LuaValue. */
-	io.github.taoguan.luaj.LuaValue toLuaValue();
+	LuaValue toLuaValue();
 
 	/** Return an instance of Slot appropriate for the given key and value. */
-	io.github.taoguan.luaj.LuaTable.Slot entry(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value );
+	LuaTable.Slot entry(LuaValue key, LuaValue value );
 
 	/** Returns the given value wrapped in a weak reference if appropriate. */
-	io.github.taoguan.luaj.LuaValue wrap(io.github.taoguan.luaj.LuaValue value );
+	LuaValue wrap(LuaValue value );
 
 	/**
 	 * Returns the value at the given index in the array, or null if it is a weak reference that
 	 * has been dropped.
 	 */
-	io.github.taoguan.luaj.LuaValue arrayget(io.github.taoguan.luaj.LuaValue[] array, int index);
+	LuaValue arrayget(LuaValue[] array, int index);
 }

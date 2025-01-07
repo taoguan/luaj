@@ -39,7 +39,7 @@ public class TableLib extends TwoArgFunction {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, typically a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		LuaTable table = new LuaTable();
 		table.set("concat", new concat());
 		table.set("insert", new insert());
@@ -53,30 +53,30 @@ public class TableLib extends TwoArgFunction {
 	}
 
 	static class TableLibFunction extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call() {
+		public LuaValue call() {
 			return argerror(1, "table expected, got no value");
 		}
 	}
 	
 	// "concat" (table [, sep [, i [, j]]]) -> string
 	static class concat extends TableLibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue list) {
+		public LuaValue call(LuaValue list) {
 			return list.checktable().concat(EMPTYSTRING,1,list.length());
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue list, io.github.taoguan.luaj.LuaValue sep) {
+		public LuaValue call(LuaValue list, LuaValue sep) {
 			return list.checktable().concat(sep.checkstring(),1,list.length());
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue list, io.github.taoguan.luaj.LuaValue sep, io.github.taoguan.luaj.LuaValue i) {
+		public LuaValue call(LuaValue list, LuaValue sep, LuaValue i) {
 			return list.checktable().concat(sep.checkstring(),i.checkint(),list.length());
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue list, io.github.taoguan.luaj.LuaValue sep, io.github.taoguan.luaj.LuaValue i, io.github.taoguan.luaj.LuaValue j) {
+		public LuaValue call(LuaValue list, LuaValue sep, LuaValue i, LuaValue j) {
 			return list.checktable().concat(sep.checkstring(),i.checkint(),j.checkint());
 		}
 	}
 
 	// "insert" (table, [pos,] value)
 	static class insert extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			switch (args.narg()) {
 			case 0: case 1: {
 				return argerror(2, "value expected");
@@ -96,8 +96,8 @@ public class TableLib extends TwoArgFunction {
 	
 	// "pack" (...) -> table
 	static class pack extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			io.github.taoguan.luaj.LuaValue t = tableOf(args, 1);
+		public Varargs invoke(Varargs args) {
+			LuaValue t = tableOf(args, 1);
 			t.set("n", args.narg());
 			return t;
 		}
@@ -105,14 +105,14 @@ public class TableLib extends TwoArgFunction {
 
 	// "remove" (table [, pos]) -> removed-ele
 	static class remove extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			return args.arg1().checktable().remove(args.optint(2, 0));
 		}
 	}
 
 	// "sort" (table [, comp])
 	static class sort extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			args.arg1().checktable().sort(
 					args.arg(2).isnil()? NIL: args.arg(2).checkfunction());
 			return NONE;
@@ -122,7 +122,7 @@ public class TableLib extends TwoArgFunction {
 	
 	// "unpack", // (list [,i [,j]]) -> result1, ...
 	static class unpack extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			LuaTable t = args.checktable(1);
 			switch (args.narg()) {
 			case 1: return t.unpack();

@@ -65,17 +65,17 @@ import io.github.taoguan.luaj.compiler.LuaC;
 
 public class Prototype {
 	/* constants used by the function */
-	public io.github.taoguan.luaj.LuaValue[] k;
+	public LuaValue[] k;
 	public int[] code;
 	/* functions defined inside the function */
 	public Prototype[] p;
 	/* map from opcodes to source lines */
 	public int[] lineinfo;
 	/* information about local variables */
-	public io.github.taoguan.luaj.LocVars[] locvars;
+	public LocVars[] locvars;
 	/* upvalue information */
 	public Upvaldesc[] upvalues;
-	public io.github.taoguan.luaj.LuaString source;
+	public LuaString source;
 	public int linedefined;
 	public int lastlinedefined;
 	public int numparams;
@@ -104,7 +104,7 @@ public class Prototype {
 	 * @param pc the program counter
 	 * @return the name, or null if not found
 	 */
-	public io.github.taoguan.luaj.LuaString getlocalname(int number, int pc) {
+	public LuaString getlocalname(int number, int pc) {
 	  int i;
 	  for (i = 0; i<locvars.length && locvars[i].startpc <= pc; i++) {
 	    if (pc < locvars[i].endpc) {  /* is variable active? */

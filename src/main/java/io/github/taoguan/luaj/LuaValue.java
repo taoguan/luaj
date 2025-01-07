@@ -143,13 +143,13 @@ public class LuaValue extends Varargs {
 	};
 	
 	/** LuaValue constant corresponding to lua {@code #NIL} */
-	public static final LuaValue   NIL       = io.github.taoguan.luaj.LuaNil._NIL;
+	public static final LuaValue   NIL       = LuaNil._NIL;
 	
 	/** LuaBoolean constant corresponding to lua {@code true} */
-	public static final io.github.taoguan.luaj.LuaBoolean TRUE      = io.github.taoguan.luaj.LuaBoolean._TRUE;
+	public static final LuaBoolean TRUE      = LuaBoolean._TRUE;
 
 	/** LuaBoolean constant corresponding to lua {@code false} */
-	public static final io.github.taoguan.luaj.LuaBoolean FALSE     = io.github.taoguan.luaj.LuaBoolean._FALSE;
+	public static final LuaBoolean FALSE     = LuaBoolean._FALSE;
 
 	/** LuaValue constant corresponding to a {@link Varargs} list of no values */
 	public static final LuaValue   NONE      = None._NONE;
@@ -167,85 +167,85 @@ public class LuaValue extends Varargs {
 	public static final LuaValue[] NOVALS    = {};
 
 	/** The variable name of the environment. */
-	public static io.github.taoguan.luaj.LuaString ENV               = valueOf("_ENV");
+	public static LuaString ENV               = valueOf("_ENV");
 
 	/** LuaString constant with value "__index" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString INDEX       = valueOf("__index");
+	public static final LuaString INDEX       = valueOf("__index");
 
 	/** LuaString constant with value "__newindex" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString NEWINDEX    = valueOf("__newindex");
+	public static final LuaString NEWINDEX    = valueOf("__newindex");
 
 	/** LuaString constant with value "__call" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString CALL        = valueOf("__call");
+	public static final LuaString CALL        = valueOf("__call");
 
 	/** LuaString constant with value "__mode" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString MODE        = valueOf("__mode");
+	public static final LuaString MODE        = valueOf("__mode");
 
 	/** LuaString constant with value "__metatable" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString METATABLE   = valueOf("__metatable");
+	public static final LuaString METATABLE   = valueOf("__metatable");
 
 	/** LuaString constant with value "__add" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString ADD         = valueOf("__add");
+	public static final LuaString ADD         = valueOf("__add");
 
 	/** LuaString constant with value "__sub" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString SUB         = valueOf("__sub");
+	public static final LuaString SUB         = valueOf("__sub");
 
 	/** LuaString constant with value "__div" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString DIV         = valueOf("__div");
+	public static final LuaString DIV         = valueOf("__div");
 
 	/** LuaString constant with value "__idiv" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString IDIV         = valueOf("__IDIV");
+	public static final LuaString IDIV         = valueOf("__IDIV");
 
 	/** LuaString constant with value "__mul" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString MUL         = valueOf("__mul");
+	public static final LuaString MUL         = valueOf("__mul");
 
 	/** LuaString constant with value "__pow" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString POW         = valueOf("__pow");
+	public static final LuaString POW         = valueOf("__pow");
 
 	/** LuaString constant with value "__mod" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString MOD         = valueOf("__mod");
+	public static final LuaString MOD         = valueOf("__mod");
 
 	/** LuaString constant with value "__unm" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString UNM         = valueOf("__unm");
+	public static final LuaString UNM         = valueOf("__unm");
 
 	/** LuaString constant with value "__len" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString LEN         = valueOf("__len");
+	public static final LuaString LEN         = valueOf("__len");
 
 	/** LuaString constant with value "__eq" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString EQ          = valueOf("__eq");
+	public static final LuaString EQ          = valueOf("__eq");
 
 	/** LuaString constant with value "__lt" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString LT          = valueOf("__lt");
+	public static final LuaString LT          = valueOf("__lt");
 
 	/** LuaString constant with value "__le" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString LE          = valueOf("__le");
+	public static final LuaString LE          = valueOf("__le");
 
 	/** LuaString constant with value "__band" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString BAND          = valueOf("__band");
+	public static final LuaString BAND          = valueOf("__band");
 
 	/** LuaString constant with value "__bor" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString BOR          = valueOf("__bor");
+	public static final LuaString BOR          = valueOf("__bor");
 
 	/** LuaString constant with value "__bxor" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString BXOR          = valueOf("__bxor");
+	public static final LuaString BXOR          = valueOf("__bxor");
 
 	/** LuaString constant with value "__shl" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString SHL          = valueOf("__shl");
+	public static final LuaString SHL          = valueOf("__shl");
 
 	/** LuaString constant with value "__shr" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString SHR          = valueOf("__shr");
+	public static final LuaString SHR          = valueOf("__shr");
 
 	/** LuaString constant with value "__bnot" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString BNOT          = valueOf("__bnot");
+	public static final LuaString BNOT          = valueOf("__bnot");
 
 	/** LuaString constant with value "__tostring" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString TOSTRING    = valueOf("__tostring");
+	public static final LuaString TOSTRING    = valueOf("__tostring");
 
 	/** LuaString constant with value "__concat" for use as metatag */
-	public static final io.github.taoguan.luaj.LuaString CONCAT      = valueOf("__concat");
+	public static final LuaString CONCAT      = valueOf("__concat");
 	
 	/** LuaString constant with value "" */
-	public static final io.github.taoguan.luaj.LuaString EMPTYSTRING = valueOf("");
+	public static final LuaString EMPTYSTRING = valueOf("");
 
 	/** Limit on lua stack size */
 	private static int MAXSTACK = 250;
@@ -318,7 +318,7 @@ public class LuaValue extends Varargs {
 	 * without rounding or truncation
 	 * @return true if this is a {@code number} 
 	 * meaning derives from {@link LuaNumber} 
-	 * or derives from {@link io.github.taoguan.luaj.LuaString} and is convertible to a number,
+	 * or derives from {@link LuaString} and is convertible to a number,
 	 * and can be represented by int, 
 	 * otherwise false
 	 * @see #isinttype()
@@ -346,7 +346,7 @@ public class LuaValue extends Varargs {
 	 * without rounding or truncation
 	 * @return true if this is a {@code number} 
 	 * meaning derives from {@link LuaNumber} 
-	 * or derives from {@link io.github.taoguan.luaj.LuaString} and is convertible to a number,
+	 * or derives from {@link LuaString} and is convertible to a number,
 	 * and can be represented by long, 
 	 * otherwise false
 	 * @see #tonumber()
@@ -371,7 +371,7 @@ public class LuaValue extends Varargs {
 	/** Check if {@code this} is a {@code number}
 	 * @return true if this is a {@code number}, 
 	 * meaning derives from {@link LuaNumber} 
-	 * or derives from {@link io.github.taoguan.luaj.LuaString} and is convertible to a number,
+	 * or derives from {@link LuaString} and is convertible to a number,
 	 * otherwise false
 	 * @see #tonumber()
 	 * @see #checknumber()
@@ -382,11 +382,11 @@ public class LuaValue extends Varargs {
 	
 	/** Check if {@code this} is a {@code string}
 	 * @return true if this is a {@code string}, 
-	 * meaning derives from {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber},
+	 * meaning derives from {@link LuaString} or {@link LuaNumber},
 	 * otherwise false
 	 * @see #tostring()
 	 * @see #checkstring()
-	 * @see #optstring(io.github.taoguan.luaj.LuaString)
+	 * @see #optstring(LuaString)
 	 * @see #TSTRING
 	 */
 	public boolean isstring()            { return false; }
@@ -556,7 +556,7 @@ public class LuaValue extends Varargs {
 	 * @return String value intended to be human readible.
 	 * @see #tostring()
 	 * @see #tojstring()
-	 * @see #optstring(io.github.taoguan.luaj.LuaString)
+	 * @see #optstring(LuaString)
 	 * @see #checkstring()
 	 * @see #toString() 
 	 */
@@ -574,7 +574,7 @@ public class LuaValue extends Varargs {
 	 * the penalty of throwing exceptions, 
 	 * nor the cost of converting the type and creating storage for it.    
 	 * @return {@code this} if it is a {@link LuaNumber}
-	 * or {@link io.github.taoguan.luaj.LuaString} that can be converted to a number,
+	 * or {@link LuaString} that can be converted to a number,
 	 * otherwise {@link #NIL}
 	 * @see #tostring()
 	 * @see #optnumber(LuaNumber)
@@ -592,11 +592,11 @@ public class LuaValue extends Varargs {
 	 * <p>
 	 * This allows values to be tested for their "string-ness" without
 	 * the penalty of throwing exceptions.    
-	 * @return {@code this} if it is a {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber},
+	 * @return {@code this} if it is a {@link LuaString} or {@link LuaNumber},
 	 * otherwise {@link #NIL}  
 	 * @see #tonumber()
 	 * @see #tojstring()
-	 * @see #optstring(io.github.taoguan.luaj.LuaString)
+	 * @see #optstring(LuaString)
 	 * @see #checkstring()
 	 * @see #toString() 
 	 */ 
@@ -604,7 +604,7 @@ public class LuaValue extends Varargs {
 
 	/** Check that optional argument is a boolean and return its boolean value
 	 * @param defval boolean value to return if {@code this} is nil or none
-	 * @return {@code this} cast to boolean if a {@link io.github.taoguan.luaj.LuaBoolean},
+	 * @return {@code this} cast to boolean if a {@link LuaBoolean},
 	 * {@code defval} if nil or none, 
 	 * throws {@link LuaError} otherwise
 	 * @throws LuaError if was not a boolean or nil or none.
@@ -727,22 +727,22 @@ public class LuaValue extends Varargs {
 	public LuaNumber   optnumber(LuaNumber defval)         { argerror("number");    return null;  }
 
 	/** Check that optional argument is a string or number and return as Java String
-	 * @param defval {@link io.github.taoguan.luaj.LuaString} to return if {@code this} is nil or none
+	 * @param defval {@link LuaString} to return if {@code this} is nil or none
 	 * @return {@code this} converted to String if a string or number, 
 	 * {@code defval} if nil or none, 
 	 * throws {@link LuaError} if some other type
 	 * @throws LuaError if was not a string or number or nil or none.
 	 * @see #tojstring()
-	 * @see #optstring(io.github.taoguan.luaj.LuaString)
+	 * @see #optstring(LuaString)
 	 * @see #checkjstring()
 	 * @see #toString() 
 	 * @see #TSTRING
 	 */
 	public String      optjstring(String defval)           { argerror("String");    return null;  }
 
-	/** Check that optional argument is a string or number and return as {@link io.github.taoguan.luaj.LuaString}
-	 * @param defval {@link io.github.taoguan.luaj.LuaString} to return if {@code this} is nil or none
-	 * @return {@code this} converted to {@link io.github.taoguan.luaj.LuaString} if a string or number,
+	/** Check that optional argument is a string or number and return as {@link LuaString}
+	 * @param defval {@link LuaString} to return if {@code this} is nil or none
+	 * @return {@code this} converted to {@link LuaString} if a string or number,
 	 * {@code defval} if nil or none, 
 	 * throws {@link LuaError} if some other type
 	 * @throws LuaError if was not a string or number or nil or none.
@@ -752,7 +752,7 @@ public class LuaValue extends Varargs {
 	 * @see #toString() 
 	 * @see #TSTRING
 	 */
-	public io.github.taoguan.luaj.LuaString optstring(io.github.taoguan.luaj.LuaString defval)         { argerror("string");    return null;  }
+	public LuaString optstring(LuaString defval)         { argerror("string");    return null;  }
 
 	/** Check that optional argument is a table and return as {@link LuaTable}
 	 * @param defval {@link LuaTable} to return if {@code this} is nil or none
@@ -819,10 +819,10 @@ public class LuaValue extends Varargs {
 	public LuaValue    optvalue(LuaValue defval)           { return this; }
 
 	
-	/** Check that the value is a {@link io.github.taoguan.luaj.LuaBoolean},
+	/** Check that the value is a {@link LuaBoolean},
 	 * or throw {@link LuaError} if not
-	 * @return boolean value for {@code this} if it is a {@link io.github.taoguan.luaj.LuaBoolean}
-	 * @throws LuaError if not a {@link io.github.taoguan.luaj.LuaBoolean}
+	 * @return boolean value for {@code this} if it is a {@link LuaBoolean}
+	 * @throws LuaError if not a {@link LuaBoolean}
 	 * @see #optboolean(boolean)
 	 * @see #TBOOLEAN
 	 */
@@ -844,10 +844,10 @@ public class LuaValue extends Varargs {
 	/** Check that the value is numeric and return the value as a double, 
 	 * or throw {@link LuaError} if not numeric
 	 * <p>
-	 * Values that are {@link LuaNumber} and values that are {@link io.github.taoguan.luaj.LuaString}
+	 * Values that are {@link LuaNumber} and values that are {@link LuaString}
 	 * that can be converted to a number will be converted to double. 
 	 * @return value cast to a double if numeric
-	 * @throws LuaError if not a {@link LuaNumber} or is a {@link io.github.taoguan.luaj.LuaString} that can't be converted to number
+	 * @throws LuaError if not a {@link LuaNumber} or is a {@link LuaString} that can't be converted to number
 	 * @see #checkint()
 	 * @see #checkinteger()
 	 * @see #checklong()
@@ -870,19 +870,19 @@ public class LuaValue extends Varargs {
 
 	/** Check that the value is a Globals instance, or throw {@link LuaError} if not 
 	 * <p>
-	 * {@link io.github.taoguan.luaj.Globals} are a special {@link LuaTable} that establish the default global environment.
-	 * @return {@code this} if if an instance fof {@link io.github.taoguan.luaj.Globals}
-	 * @throws LuaError if not a {@link io.github.taoguan.luaj.Globals} instance.
+	 * {@link Globals} are a special {@link LuaTable} that establish the default global environment.
+	 * @return {@code this} if if an instance fof {@link Globals}
+	 * @throws LuaError if not a {@link Globals} instance.
 	 */
-	public io.github.taoguan.luaj.Globals checkglobals() { argerror("globals");  return null; }
+	public Globals checkglobals() { argerror("globals");  return null; }
 
 	/** Check that the value is numeric, and convert and cast value to int, or throw {@link LuaError} if not numeric 
 	 * <p>
 	 * Values that are {@link LuaNumber} will be cast to int and may lose precision.
-	 * Values that are {@link io.github.taoguan.luaj.LuaString} that can be converted to a number will be converted,
+	 * Values that are {@link LuaString} that can be converted to a number will be converted,
 	 * then cast to int, so may also lose precision.
 	 * @return value cast to a int if numeric
-	 * @throws LuaError if not a {@link LuaNumber} or is a {@link io.github.taoguan.luaj.LuaString} that can't be converted to number
+	 * @throws LuaError if not a {@link LuaNumber} or is a {@link LuaString} that can't be converted to number
 	 * @see #checkinteger()
 	 * @see #checklong()
 	 * @see #checkdouble()
@@ -894,10 +894,10 @@ public class LuaValue extends Varargs {
 	/** Check that the value is numeric, and convert and cast value to int, or throw {@link LuaError} if not numeric 
 	 * <p>
 	 * Values that are {@link LuaNumber} will be cast to int and may lose precision.
-	 * Values that are {@link io.github.taoguan.luaj.LuaString} that can be converted to a number will be converted,
+	 * Values that are {@link LuaString} that can be converted to a number will be converted,
 	 * then cast to int, so may also lose precision.
 	 * @return value cast to a int and wrapped in {@link LuaInteger} if numeric
-	 * @throws LuaError if not a {@link LuaNumber} or is a {@link io.github.taoguan.luaj.LuaString} that can't be converted to number
+	 * @throws LuaError if not a {@link LuaNumber} or is a {@link LuaString} that can't be converted to number
 	 * @see #checkint()
 	 * @see #checklong()
 	 * @see #checkdouble()
@@ -909,10 +909,10 @@ public class LuaValue extends Varargs {
 	/** Check that the value is numeric, and convert and cast value to long, or throw {@link LuaError} if not numeric 
 	 * <p>
 	 * Values that are {@link LuaNumber} will be cast to long and may lose precision.
-	 * Values that are {@link io.github.taoguan.luaj.LuaString} that can be converted to a number will be converted,
+	 * Values that are {@link LuaString} that can be converted to a number will be converted,
 	 * then cast to long, so may also lose precision.
 	 * @return value cast to a long if numeric
-	 * @throws LuaError if not a {@link LuaNumber} or is a {@link io.github.taoguan.luaj.LuaString} that can't be converted to number
+	 * @throws LuaError if not a {@link LuaNumber} or is a {@link LuaString} that can't be converted to number
 	 * @see #checkint()
 	 * @see #checkinteger()
 	 * @see #checkdouble()
@@ -923,9 +923,9 @@ public class LuaValue extends Varargs {
 	
 	/** Check that the value is numeric, and return as a LuaNumber if so, or throw {@link LuaError} 
 	 * <p>
-	 * Values that are {@link io.github.taoguan.luaj.LuaString} that can be converted to a number will be converted and returned.
+	 * Values that are {@link LuaString} that can be converted to a number will be converted and returned.
 	 * @return value as a {@link LuaNumber} if numeric
-	 * @throws LuaError if not a {@link LuaNumber} or is a {@link io.github.taoguan.luaj.LuaString} that can't be converted to number
+	 * @throws LuaError if not a {@link LuaNumber} or is a {@link LuaString} that can't be converted to number
 	 * @see #checkint()
 	 * @see #checkinteger()
 	 * @see #checkdouble()
@@ -937,10 +937,10 @@ public class LuaValue extends Varargs {
 	
 	/** Check that the value is numeric, and return as a LuaNumber if so, or throw {@link LuaError} 
 	 * <p>
-	 * Values that are {@link io.github.taoguan.luaj.LuaString} that can be converted to a number will be converted and returned.
+	 * Values that are {@link LuaString} that can be converted to a number will be converted and returned.
 	 * @param msg String message to supply if conversion fails
 	 * @return value as a {@link LuaNumber} if numeric
-	 * @throws LuaError if not a {@link LuaNumber} or is a {@link io.github.taoguan.luaj.LuaString} that can't be converted to number
+	 * @throws LuaError if not a {@link LuaNumber} or is a {@link LuaString} that can't be converted to number
 	 * @see #checkint()
 	 * @see #checkinteger()
 	 * @see #checkdouble()
@@ -967,18 +967,18 @@ public class LuaValue extends Varargs {
 	/** Check that this is a lua string, or throw {@link LuaError} if it is not.
 	 * <p>
 	 * In lua all numbers are strings, so this will succeed for 
-	 * anything that derives from {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber}.
-	 * Numbers will be converted to {@link io.github.taoguan.luaj.LuaString}.
+	 * anything that derives from {@link LuaString} or {@link LuaNumber}.
+	 * Numbers will be converted to {@link LuaString}.
 	 * 
-	 * @return {@link io.github.taoguan.luaj.LuaString} representation of the value if it is a {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber}
+	 * @return {@link LuaString} representation of the value if it is a {@link LuaString} or {@link LuaNumber}
 	 * @throws LuaError if {@code this} is not a {@link LuaTable}
 	 * @see #checkjstring()
-	 * @see #optstring(io.github.taoguan.luaj.LuaString)
+	 * @see #optstring(LuaString)
 	 * @see #tostring()
 	 * @see #isstring()
 	 * @see #TSTRING
 	 */
-	public io.github.taoguan.luaj.LuaString checkstring()           { argerror("string");    return null; }
+	public LuaString checkstring()           { argerror("string");    return null; }
 	
 	/** Check that this is a {@link LuaTable}, or throw {@link LuaError} if it is not
 	 * @return {@code this} if it is a {@link LuaTable}
@@ -1374,9 +1374,9 @@ public class LuaValue extends Varargs {
 	 * the metatable returned is this instance metatable. 
 	 * For all other types, the class metatable value will be returned.   
 	 * @return metatable, or null if it there is none
-	 * @see io.github.taoguan.luaj.LuaBoolean#s_metatable
+	 * @see LuaBoolean#s_metatable
 	 * @see LuaNumber#s_metatable
-	 * @see io.github.taoguan.luaj.LuaNil#s_metatable
+	 * @see LuaNil#s_metatable
 	 * @see LuaFunction#s_metatable
 	 * @see LuaThread#s_metatable
 	 */
@@ -1389,9 +1389,9 @@ public class LuaValue extends Varargs {
 	 * For all other types, there is one metatable per type that can be set directly from java 
 	 * @param metatable {@link LuaValue} instance to serve as the metatable, or null to reset it.
 	 * @return {@code this} to allow chaining of Java function calls
-	 * @see io.github.taoguan.luaj.LuaBoolean#s_metatable
+	 * @see LuaBoolean#s_metatable
 	 * @see LuaNumber#s_metatable
-	 * @see io.github.taoguan.luaj.LuaNil#s_metatable
+	 * @see LuaNil#s_metatable
 	 * @see LuaFunction#s_metatable
 	 * @see LuaThread#s_metatable
 	 */
@@ -2002,7 +2002,7 @@ public class LuaValue extends Varargs {
 	public LuaValue not()  { return FALSE;  }
 	
 	/** Unary minus: return negative value {@code (-this)} as defined by lua unary minus operator  
-	 * @return boolean inverse as {@link io.github.taoguan.luaj.LuaBoolean} if boolean or nil,
+	 * @return boolean inverse as {@link LuaBoolean} if boolean or nil,
 	 * numeric inverse as {@link LuaNumber} if numeric,  
 	 * or metatag processing result if {@link #UNM} metatag is defined
 	 * @throws LuaError if  {@code this} is not a table or string, and has no {@link #UNM} metatag
@@ -2066,7 +2066,7 @@ public class LuaValue extends Varargs {
 	 * @param val The value to compare with.
 	 * @return  {@link #TRUE} if values are comparable and {@code (this != rhs)}, 
 	 * {@link #FALSE} if comparable but equal, 
-	 * inverse of {@link LuaValue} converted to {@link io.github.taoguan.luaj.LuaBoolean} if metatag processing occurs.
+	 * inverse of {@link LuaValue} converted to {@link LuaBoolean} if metatag processing occurs.
 	 * @see #eq(LuaValue)
 	 * @see #raweq(LuaValue)
 	 * @see #eqmtcall(LuaValue, LuaValue, LuaValue, LuaValue)
@@ -2093,7 +2093,7 @@ public class LuaValue extends Varargs {
 	 * @return  true if {@code (this == rhs)}, false otherwise  
 	 * @see #eq(LuaValue)
 	 * @see #raweq(LuaUserdata)
-	 * @see #raweq(io.github.taoguan.luaj.LuaString)
+	 * @see #raweq(LuaString)
 	 * @see #raweq(double)
 	 * @see #raweq(int)
 	 * @see #EQ
@@ -2112,14 +2112,14 @@ public class LuaValue extends Varargs {
 	 */
 	public boolean raweq( LuaUserdata val )   { return false; }
 
-	/** Equals: Perform direct equality comparison with a {@link io.github.taoguan.luaj.LuaString} value
+	/** Equals: Perform direct equality comparison with a {@link LuaString} value
 	 * without metatag processing.
-	 * @param val The {@link io.github.taoguan.luaj.LuaString} to compare with.
-	 * @return  true if {@code this} is a {@link io.github.taoguan.luaj.LuaString}
+	 * @param val The {@link LuaString} to compare with.
+	 * @return  true if {@code this} is a {@link LuaString}
 	 * and their byte sequences match,
 	 * otherwise false  
 	 */
-	public boolean raweq( io.github.taoguan.luaj.LuaString val )     { return false; }
+	public boolean raweq( LuaString val )     { return false; }
 
 	/** Equals: Perform direct equality comparison with a double value 
 	 * without metatag processing.
@@ -2160,7 +2160,7 @@ public class LuaValue extends Varargs {
 	 * including metatag processing.
 	 * <p>
 	 * Each operand must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the add with
 	 * @return  value of {@code (this + rhs)} if both are numeric,  
@@ -2175,7 +2175,7 @@ public class LuaValue extends Varargs {
 	 * of double type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the add with
 	 * @return  value of {@code (this + rhs)} if this is numeric  
@@ -2188,7 +2188,7 @@ public class LuaValue extends Varargs {
 	 * of int type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the add with
 	 * @return  value of {@code (this + rhs)} if this is numeric  
@@ -2202,7 +2202,7 @@ public class LuaValue extends Varargs {
 	 * including metatag processing.
 	 * <p>
 	 * Each operand must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the subtract with
 	 * @return  value of {@code (this - rhs)} if both are numeric,  
@@ -2217,7 +2217,7 @@ public class LuaValue extends Varargs {
 	 * of double type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the subtract with
 	 * @return  value of {@code (this - rhs)} if this is numeric  
@@ -2230,7 +2230,7 @@ public class LuaValue extends Varargs {
 	 * of int type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the subtract with
 	 * @return  value of {@code (this - rhs)} if this is numeric  
@@ -2243,7 +2243,7 @@ public class LuaValue extends Varargs {
 	 * with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param lhs The left-hand-side value from which to perform the subtraction
 	 * @return  value of {@code (lhs - this)} if this is numeric 
@@ -2258,7 +2258,7 @@ public class LuaValue extends Varargs {
 	 * without metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * <p>
 	 * For metatag processing {@link #sub(LuaValue)} must be used
 	 * 
@@ -2276,7 +2276,7 @@ public class LuaValue extends Varargs {
 	 * including metatag processing.
 	 * <p>
 	 * Each operand must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the multiply with
 	 * @return  value of {@code (this * rhs)} if both are numeric,  
@@ -2291,7 +2291,7 @@ public class LuaValue extends Varargs {
 	 * of double type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the multiply with
 	 * @return  value of {@code (this * rhs)} if this is numeric  
@@ -2304,7 +2304,7 @@ public class LuaValue extends Varargs {
 	 * of int type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the multiply with
 	 * @return  value of {@code (this * rhs)} if this is numeric  
@@ -2317,7 +2317,7 @@ public class LuaValue extends Varargs {
 	 * including metatag processing.
 	 * <p>
 	 * Each operand must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The power to raise this value to
 	 * @return  value of {@code (this ^ rhs)} if both are numeric,  
@@ -2332,7 +2332,7 @@ public class LuaValue extends Varargs {
 	 * of double type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The power to raise this value to
 	 * @return  value of {@code (this ^ rhs)} if this is numeric  
@@ -2345,7 +2345,7 @@ public class LuaValue extends Varargs {
 	 * of int type with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The power to raise this value to
 	 * @return  value of {@code (this ^ rhs)} if this is numeric  
@@ -2358,7 +2358,7 @@ public class LuaValue extends Varargs {
 	 * with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param lhs The left-hand-side value which will be raised to this power
 	 * @return  value of {@code (lhs ^ this)} if this is numeric 
@@ -2373,7 +2373,7 @@ public class LuaValue extends Varargs {
 	 * with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param lhs The left-hand-side value which will be raised to this power
 	 * @return  value of {@code (lhs ^ this)} if this is numeric 
@@ -2389,7 +2389,7 @@ public class LuaValue extends Varargs {
 	 * including metatag processing.
 	 * <p>
 	 * Each operand must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the divulo with
 	 * @return  value of {@code (this / rhs)} if both are numeric,  
@@ -2404,7 +2404,7 @@ public class LuaValue extends Varargs {
 	 * of double type without metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * <p>
 	 * For metatag processing {@link #div(LuaValue)} must be used
 	 * 
@@ -2419,7 +2419,7 @@ public class LuaValue extends Varargs {
 	 * of int type without metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * <p>
 	 * For metatag processing {@link #div(LuaValue)} must be used
 	 * 
@@ -2434,7 +2434,7 @@ public class LuaValue extends Varargs {
 	 * with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param lhs The left-hand-side value which will be divided by this
 	 * @return  value of {@code (lhs / this)} if this is numeric 
@@ -2450,7 +2450,7 @@ public class LuaValue extends Varargs {
 	 * including metatag processing.
 	 * <p>
 	 * Each operand must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 *
 	 * @param rhs The right-hand-side value to perform the divulo with
 	 * @return  value of {@code (this / rhs)} if both are numeric,
@@ -2465,7 +2465,7 @@ public class LuaValue extends Varargs {
 	 * of double type without metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * <p>
 	 * For metatag processing {@link #div(LuaValue)} must be used
 	 *
@@ -2480,7 +2480,7 @@ public class LuaValue extends Varargs {
 	 * of int type without metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * <p>
 	 * For metatag processing {@link #div(LuaValue)} must be used
 	 *
@@ -2495,7 +2495,7 @@ public class LuaValue extends Varargs {
 	 * with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 *
 	 * @param lhs The left-hand-side value which will be divided by this
 	 * @return  value of {@code (lhs / this)} if this is numeric
@@ -2511,7 +2511,7 @@ public class LuaValue extends Varargs {
 	 * including metatag processing.
 	 * <p>
 	 * Each operand must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param rhs The right-hand-side value to perform the modulo with
 	 * @return  value of {@code (this % rhs)} if both are numeric,  
@@ -2526,7 +2526,7 @@ public class LuaValue extends Varargs {
 	 * of double type without metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * <p>
 	 * For metatag processing {@link #mod(LuaValue)} must be used
 	 * 
@@ -2541,7 +2541,7 @@ public class LuaValue extends Varargs {
 	 * of int type without metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * <p>
 	 * For metatag processing {@link #mod(LuaValue)} must be used
 	 * 
@@ -2556,7 +2556,7 @@ public class LuaValue extends Varargs {
 	 * with metatag processing
 	 * <p>
 	 * {@code this} must derive from {@link LuaNumber}
-	 * or derive from {@link io.github.taoguan.luaj.LuaString} and be convertible to a number
+	 * or derive from {@link LuaString} and be convertible to a number
 	 * 
 	 * @param lhs The left-hand-side value which will be modulo'ed by this
 	 * @return  value of {@code (lhs % this)} if this is numeric 
@@ -2630,7 +2630,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, 
 	 * including metatag processing, and returning {@link LuaValue}.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2679,7 +2679,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, including metatag processing, 
 	 * and returning java boolean.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2713,7 +2713,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, including metatag processing, 
 	 * and returning java boolean.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2730,7 +2730,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, 
 	 * including metatag processing, and returning {@link LuaValue}.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2779,7 +2779,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, including metatag processing, 
 	 * and returning java boolean.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2830,7 +2830,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, 
 	 * including metatag processing, and returning {@link LuaValue}.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2879,7 +2879,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, including metatag processing, 
 	 * and returning java boolean.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2913,7 +2913,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, including metatag processing, 
 	 * and returning java boolean.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2930,7 +2930,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, 
 	 * including metatag processing, and returning {@link LuaValue}.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -2979,7 +2979,7 @@ public class LuaValue extends Varargs {
 	 * of unknown type, including metatag processing, 
 	 * and returning java boolean.
 	 * <p>
-	 * To be comparable, both operands must derive from {@link io.github.taoguan.luaj.LuaString}
+	 * To be comparable, both operands must derive from {@link LuaString}
 	 * or both must derive from {@link LuaNumber}. 
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
@@ -3055,7 +3055,7 @@ public class LuaValue extends Varargs {
 	 * using string comparison based on byte values.
 	 * <p>
 	 * Only strings can be compared, meaning 
-	 * each operand must derive from {@link io.github.taoguan.luaj.LuaString}.
+	 * each operand must derive from {@link LuaString}.
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
 	 * @return  int < 0 for {@code (this < rhs)}, int > 0 for {@code (this > rhs)}, or 0 when same string.  
@@ -3064,23 +3064,23 @@ public class LuaValue extends Varargs {
 	public int strcmp( LuaValue rhs )         { error("attempt to compare "+typename()); return 0; }
 
 	/** Perform string comparison with another value 
-	 * known to be a {@link io.github.taoguan.luaj.LuaString}
+	 * known to be a {@link LuaString}
 	 * using string comparison based on byte values.
 	 * <p>
 	 * Only strings can be compared, meaning 
-	 * each operand must derive from {@link io.github.taoguan.luaj.LuaString}.
+	 * each operand must derive from {@link LuaString}.
 	 * 
 	 * @param rhs The right-hand-side value to perform the comparison with
 	 * @return  int < 0 for {@code (this < rhs)}, int > 0 for {@code (this > rhs)}, or 0 when same string.  
 	 * @throws LuaError if this is not a string
 	 */
-	public int strcmp( io.github.taoguan.luaj.LuaString rhs )      { error("attempt to compare "+typename()); return 0; }
+	public int strcmp( LuaString rhs )      { error("attempt to compare "+typename()); return 0; }
 
 	/** Concatenate another value onto this value and return the result 
 	 * using rules of lua string concatenation including metatag processing.
 	 * <p>
 	 * Only strings and numbers as represented can be concatenated, meaning 
-	 * each operand must derive from {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber}.
+	 * each operand must derive from {@link LuaString} or {@link LuaNumber}.
 	 * 
 	 * @param rhs The right-hand-side value to perform the operation with
 	 * @return  {@link LuaValue} resulting from concatenation of {@code (this .. rhs)}
@@ -3095,7 +3095,7 @@ public class LuaValue extends Varargs {
 	 * metatag processing.  
 	 * <p>
 	 * Only strings and numbers as represented can be concatenated, meaning 
-	 * each operand must derive from {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber}.
+	 * each operand must derive from {@link LuaString} or {@link LuaNumber}.
 	 * 
 	 * @param lhs The left-hand-side value onto which this will be concatenated
 	 * @return  {@link LuaValue} resulting from concatenation of {@code (lhs .. this)}
@@ -3111,7 +3111,7 @@ public class LuaValue extends Varargs {
 	 * metatag processing.  
 	 * <p>
 	 * Only strings and numbers as represented can be concatenated, meaning 
-	 * each operand must derive from {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber}.
+	 * each operand must derive from {@link LuaString} or {@link LuaNumber}.
 	 * 
 	 * @param lhs The left-hand-side value onto which this will be concatenated
 	 * @return  {@link LuaValue} resulting from concatenation of {@code (lhs .. this)}
@@ -3122,12 +3122,12 @@ public class LuaValue extends Varargs {
 	public LuaValue concatTo(LuaNumber lhs)   { return lhs.concatmt(this); }
 	
 	/** Reverse-concatenation: concatenate this value onto another value 
-	 * known to be a {@link  io.github.taoguan.luaj.LuaString}
+	 * known to be a {@link  LuaString}
 	 * and return the result using rules of lua string concatenation including 
 	 * metatag processing.  
 	 * <p>
 	 * Only strings and numbers as represented can be concatenated, meaning 
-	 * each operand must derive from {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber}.
+	 * each operand must derive from {@link LuaString} or {@link LuaNumber}.
 	 * 
 	 * @param lhs The left-hand-side value onto which this will be concatenated
 	 * @return  {@link LuaValue} resulting from concatenation of {@code (lhs .. this)}
@@ -3135,7 +3135,7 @@ public class LuaValue extends Varargs {
 	 * such as nil or a table
 	 * @see #concat(LuaValue)
 	 */
-	public LuaValue concatTo(io.github.taoguan.luaj.LuaString lhs)   { return lhs.concatmt(this); }
+	public LuaValue concatTo(LuaString lhs)   { return lhs.concatmt(this); }
 
 	public LuaValue band(LuaValue rhs){
 		int value = checkint();
@@ -3182,7 +3182,7 @@ public class LuaValue extends Varargs {
 	 * using rules of lua string concatenation including metatag processing.
 	 * <p>
 	 * Only strings and numbers as represented can be concatenated, meaning 
-	 * each operand must derive from {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber}.
+	 * each operand must derive from {@link LuaString} or {@link LuaNumber}.
 	 * 
 	 * @param rhs The right-hand-side {@link Buffer} to perform the operation with
 	 * @return LuaString resulting from concatenation of {@code (this .. rhs)}
@@ -3233,12 +3233,12 @@ public class LuaValue extends Varargs {
 	public boolean testfor_b(LuaValue limit, LuaValue step) { return step.gt_b(0)? lteq_b(limit): gteq_b(limit); }
 	
 	/**
-	 * Convert this value to a string if it is a {@link io.github.taoguan.luaj.LuaString} or {@link LuaNumber},
+	 * Convert this value to a string if it is a {@link LuaString} or {@link LuaNumber},
 	 * or throw a {@link LuaError} if it is not
-	 * @return {@link io.github.taoguan.luaj.LuaString} corresponding to the value if a string or number
+	 * @return {@link LuaString} corresponding to the value if a string or number
 	 * @throws LuaError if not a string or number
 	 */
-	public io.github.taoguan.luaj.LuaString strvalue()     { typerror("string or number"); return null; }
+	public LuaString strvalue()     { typerror("string or number"); return null; }
 
 	/** Return this value as a strong reference, or null if it was weak and is no longer referenced.
 	 * @return {@link LuaValue} referred to, or null if it was weak and is no longer referenced.
@@ -3250,7 +3250,7 @@ public class LuaValue extends Varargs {
 	 * @param b boolean value to convert
 	 * @return {@link #TRUE} if not  or {@link #FALSE} if false
 	 */
-	public static io.github.taoguan.luaj.LuaBoolean valueOf(boolean b)    { return b? LuaValue.TRUE: FALSE; };
+	public static LuaBoolean valueOf(boolean b)    { return b? LuaValue.TRUE: FALSE; };
 
 	/** Convert java int to a {@link LuaValue}.
 	 * 
@@ -3271,26 +3271,26 @@ public class LuaValue extends Varargs {
 	/** Convert java string to a {@link LuaValue}.
 	 * 
 	 * @param s String value to convert
-	 * @return {@link io.github.taoguan.luaj.LuaString} instance, possibly pooled, whose value is s
+	 * @return {@link LuaString} instance, possibly pooled, whose value is s
 	 */
-	public static io.github.taoguan.luaj.LuaString valueOf(String s)     { return io.github.taoguan.luaj.LuaString.valueOf(s); }
+	public static LuaString valueOf(String s)     { return LuaString.valueOf(s); }
 
 	/** Convert bytes in an array to a {@link LuaValue}.
 	 * 
 	 * @param bytes byte array to convert
-	 * @return {@link io.github.taoguan.luaj.LuaString} instance, possibly pooled, whose bytes are those in the supplied array
+	 * @return {@link LuaString} instance, possibly pooled, whose bytes are those in the supplied array
 	 */
-	public static io.github.taoguan.luaj.LuaString valueOf(byte[] bytes) { return io.github.taoguan.luaj.LuaString.valueOf(bytes); }
+	public static LuaString valueOf(byte[] bytes) { return LuaString.valueOf(bytes); }
 	
 	/** Convert bytes in an array to a {@link LuaValue}.
 	 * 
 	 * @param bytes byte array to convert
 	 * @param off offset into the byte array, starting at 0
-	 * @param len number of bytes to include in the {@link io.github.taoguan.luaj.LuaString}
-	 * @return {@link io.github.taoguan.luaj.LuaString} instance, possibly pooled, whose bytes are those in the supplied array
+	 * @param len number of bytes to include in the {@link LuaString}
+	 * @return {@link LuaString} instance, possibly pooled, whose bytes are those in the supplied array
 	 */
-	public static io.github.taoguan.luaj.LuaString valueOf(byte[] bytes, int off, int len) {
-		return io.github.taoguan.luaj.LuaString.valueOf(bytes,off,len);
+	public static LuaString valueOf(byte[] bytes, int off, int len) {
+		return LuaString.valueOf(bytes,off,len);
 	}
 	
 	/** Construct an empty {@link LuaTable}. 
@@ -3465,7 +3465,7 @@ public class LuaValue extends Varargs {
 		if ( mt != null && mt.istable() ) {
 			return (LuaTable)mt;
 		} else if ( mt != null ) {
-			return new io.github.taoguan.luaj.NonTableMetatable( mt );
+			return new NonTableMetatable( mt );
 		} else {
 			return null;
 		}
@@ -3646,7 +3646,7 @@ public class LuaValue extends Varargs {
 	 *  
 	 * @see LuaValue#NONE
 	 */
-	private static final class None extends io.github.taoguan.luaj.LuaNil {
+	private static final class None extends LuaNil {
 		static None _NONE = new None();
 		public LuaValue arg(int i) { return NIL; }
 		public int narg() { return 0; }

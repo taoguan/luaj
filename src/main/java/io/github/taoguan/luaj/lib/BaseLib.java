@@ -51,7 +51,7 @@ import java.io.InputStream;
  */
 public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
-	io.github.taoguan.luaj.Globals globals;
+	Globals globals;
 	
 
 	/** Perform one-time initialization on the library by adding base functions
@@ -59,7 +59,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, which must be a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		globals = env.checkglobals();
 		globals.finder = this;
 		globals.baselib = this;
@@ -104,7 +104,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
 	// "assert", // ( v [,message] ) -> v, message | ERR
 	static final class _assert extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			if ( !args.arg1().toboolean() ) 
 				error( args.narg()>1? args.optjstring(2,"assertion failed!"): "assertion failed!" );
 			return args;
@@ -113,7 +113,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
 	// "collectgarbage", // ( opt [,arg] ) -> value
 	static final class collectgarbage extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			String s = args.optjstring(1, "collect");
 			if ( "collect".equals(s) ) {
 				System.gc();
@@ -124,7 +124,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 				return varargsOf(valueOf(used/1024.), valueOf(used%1024));
 			} else if ( "step".equals(s) ) {
 				System.gc();
-				return io.github.taoguan.luaj.LuaValue.TRUE;
+				return LuaValue.TRUE;
 			} else {
 				this.argerror("gc op");
 			}
@@ -134,10 +134,10 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
 	// "dofile", // ( filename ) -> result1, ...
 	final class dofile extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			args.argcheck(args.isstring(1) || args.isnil(1), 1, "filename must be string or nil");
 			String filename = args.isstring(1)? args.tojstring(1): null;
-			io.github.taoguan.luaj.Varargs v = filename == null?
+			Varargs v = filename == null?
 					loadStream( globals.STDIN, "=stdin", "bt", globals ):
 					loadFile( args.checkjstring(1), "bt", globals );
 			return v.isnil(1)? error(v.tojstring(2)): v.arg1().invoke();			
@@ -146,31 +146,31 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
 	// "error", // ( message [,level] ) -> ERR
 	static final class error extends TwoArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
-			throw arg1.isnil()? new io.github.taoguan.luaj.LuaError(null, arg2.optint(1)):
-				arg1.isstring()? new io.github.taoguan.luaj.LuaError(arg1.tojstring(), arg2.optint(1)):
-					new io.github.taoguan.luaj.LuaError(arg1);
+		public LuaValue call(LuaValue arg1, LuaValue arg2) {
+			throw arg1.isnil()? new LuaError(null, arg2.optint(1)):
+				arg1.isstring()? new LuaError(arg1.tojstring(), arg2.optint(1)):
+					new LuaError(arg1);
 		}
 	}
 
 	// "getmetatable", // ( object ) -> table 
 	static final class getmetatable extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call() {
+		public LuaValue call() {
 			return argerror(1, "value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
-			io.github.taoguan.luaj.LuaValue mt = arg.getmetatable();
+		public LuaValue call(LuaValue arg) {
+			LuaValue mt = arg.getmetatable();
 			return mt!=null? mt.rawget(METATABLE).optvalue(mt): NIL;
 		}
 	}
 	// "load", // ( ld [, source [, mode [, env]]] ) -> chunk | nil, msg
 	final class load extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			io.github.taoguan.luaj.LuaValue ld = args.arg1();
+		public Varargs invoke(Varargs args) {
+			LuaValue ld = args.arg1();
 			args.argcheck(ld.isstring() || ld.isfunction(), 1, "ld must be string or function");
 			String source = args.optjstring(2, ld.isstring()? ld.tojstring(): "=(load)");
 			String mode = args.optjstring(3, "bt");
-			io.github.taoguan.luaj.LuaValue env = args.optvalue(4, globals);
+			LuaValue env = args.optvalue(4, globals);
 			return loadStream(ld.isstring()? ld.strvalue().toInputStream(): 
 				new StringInputStream(ld.checkfunction()), source, mode, env);
 		}
@@ -178,11 +178,11 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
 	// "loadfile", // ( [filename [, mode [, env]]] ) -> chunk | nil, msg
 	final class loadfile extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			args.argcheck(args.isstring(1) || args.isnil(1), 1, "filename must be string or nil");
 			String filename = args.isstring(1)? args.tojstring(1): null;
 			String mode = args.optjstring(2, "bt");
-			io.github.taoguan.luaj.LuaValue env = args.optvalue(3, globals);
+			LuaValue env = args.optvalue(3, globals);
 			return filename == null? 
 				loadStream( globals.STDIN, "=stdin", mode, env ):
 				loadFile( filename, mode, env );
@@ -191,14 +191,14 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 		
 	// "pcall", // (f, arg1, ...) -> status, result1, ...
 	final class pcall extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			io.github.taoguan.luaj.LuaValue func = args.checkvalue(1);
+		public Varargs invoke(Varargs args) {
+			LuaValue func = args.checkvalue(1);
 			if (globals != null && globals.debuglib != null)
 				globals.debuglib.onCall(this);
 			try {
 				return varargsOf(TRUE, func.invoke(args.subargs(2)));
-			} catch ( io.github.taoguan.luaj.LuaError le ) {
-				final io.github.taoguan.luaj.LuaValue m = le.getMessageObject();
+			} catch ( LuaError le ) {
+				final LuaValue m = le.getMessageObject();
 				return varargsOf(FALSE, m!=null? m: NIL);
 			} catch ( Exception e ) {
 				final String m = e.getMessage();
@@ -216,11 +216,11 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 		print(BaseLib baselib) {
 			this.baselib = baselib;
 		}
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			io.github.taoguan.luaj.LuaValue tostring = globals.get("tostring");
+		public Varargs invoke(Varargs args) {
+			LuaValue tostring = globals.get("tostring");
 			for ( int i=1, n=args.narg(); i<=n; i++ ) {
 				if ( i>1 ) globals.STDOUT.print( " \t" );
-				io.github.taoguan.luaj.LuaString s = tostring.call( args.arg(i) ).strvalue();
+				LuaString s = tostring.call( args.arg(i) ).strvalue();
 				globals.STDOUT.print(s.tojstring());
 			}
 			globals.STDOUT.println();
@@ -231,26 +231,26 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
 	// "rawequal", // (v1, v2) -> boolean
 	static final class rawequal extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call() {
+		public LuaValue call() {
 			return argerror(1, "value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+		public LuaValue call(LuaValue arg) {
 			return argerror(2, "value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+		public LuaValue call(LuaValue arg1, LuaValue arg2) {
 			return valueOf(arg1.raweq(arg2));
 		}
 	}
 
 	// "rawget", // (table, index) -> value
 	static final class rawget extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call() {
+		public LuaValue call() {
 			return argerror(1, "value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+		public LuaValue call(LuaValue arg) {
 			return argerror(2, "value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+		public LuaValue call(LuaValue arg1, LuaValue arg2) {
 			return arg1.checktable().rawget(arg2);
 		}
 	}
@@ -258,21 +258,21 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
 	// "rawlen", // (v) -> value
 	static final class rawlen extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+		public LuaValue call(LuaValue arg) {
 			return valueOf(arg.rawlen());
 		}
 	}
 
 	// "rawset", // (table, index, value) -> table
 	static final class rawset extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue table) {
+		public LuaValue call(LuaValue table) {
 			return argerror(2,"value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue table, io.github.taoguan.luaj.LuaValue index) {
+		public LuaValue call(LuaValue table, LuaValue index) {
 			return argerror(3,"value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue table, io.github.taoguan.luaj.LuaValue index, io.github.taoguan.luaj.LuaValue value) {
-			io.github.taoguan.luaj.LuaTable t = table.checktable();
+		public LuaValue call(LuaValue table, LuaValue index, LuaValue value) {
+			LuaTable t = table.checktable();
 			if (!index.isvalidkey()) argerror(2, "value");
 			t.rawset(index, value);
 			return t;
@@ -281,7 +281,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
 	// "select", // (f, ...) -> value1, ...
 	static final class select extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			int n = args.narg()-1; 				
 			if ( args.arg1().equals(valueOf("#")) )
 				return valueOf(n);
@@ -294,11 +294,11 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
 	// "setmetatable", // (table, metatable) -> table
 	static final class setmetatable extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue table) {
+		public LuaValue call(LuaValue table) {
 			return argerror(2,"value");
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue table, io.github.taoguan.luaj.LuaValue metatable) {
-			final io.github.taoguan.luaj.LuaValue mt0 = table.checktable().getmetatable();
+		public LuaValue call(LuaValue table, LuaValue metatable) {
+			final LuaValue mt0 = table.checktable().getmetatable();
 			if ( mt0!=null && !mt0.rawget(METATABLE).isnil() )
 				error("cannot change a protected metatable");
 			return table.setmetatable(metatable.isnil()? null: metatable.checktable());
@@ -307,10 +307,10 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
 	// "tonumber", // (e [,base]) -> value
 	static final class tonumber extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue e) {
+		public LuaValue call(LuaValue e) {
 			return e.tonumber();
 		}
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue e, io.github.taoguan.luaj.LuaValue base) {
+		public LuaValue call(LuaValue e, LuaValue base) {
 			if (base.isnil())
 				return e.tonumber();
 			final int b = base.checkint();
@@ -322,11 +322,11 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
 	// "tostring", // (e) -> value
 	static final class tostring extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
-			io.github.taoguan.luaj.LuaValue h = arg.metatag(TOSTRING);
+		public LuaValue call(LuaValue arg) {
+			LuaValue h = arg.metatag(TOSTRING);
 			if ( ! h.isnil() ) 
 				return h.call(arg);
-			io.github.taoguan.luaj.LuaValue v = arg.tostring();
+			LuaValue v = arg.tostring();
 			if ( ! v.isnil() ) 
 				return v;
 			return valueOf(arg.tojstring());
@@ -335,24 +335,24 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 
 	// "type",  // (v) -> value
 	static final class type extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+		public LuaValue call(LuaValue arg) {
 			return valueOf(arg.typename());
 		}
 	}
 
 	// "xpcall", // (f, err) -> result1, ...				
 	final class xpcall extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			final io.github.taoguan.luaj.LuaThread t = globals.running;
-			final io.github.taoguan.luaj.LuaValue preverror = t.errorfunc;
+		public Varargs invoke(Varargs args) {
+			final LuaThread t = globals.running;
+			final LuaValue preverror = t.errorfunc;
 			t.errorfunc = args.checkvalue(2);
 			try {
 				if (globals != null && globals.debuglib != null)
 					globals.debuglib.onCall(this);
 				try {
 					return varargsOf(TRUE, args.arg1().invoke(args.subargs(3)));
-				} catch ( io.github.taoguan.luaj.LuaError le ) {
-					final io.github.taoguan.luaj.LuaValue m = le.getMessageObject();
+				} catch ( LuaError le ) {
+					final LuaValue m = le.getMessageObject();
 					return varargsOf(FALSE, m!=null? m: NIL);
 				} catch ( Exception e ) {
 					final String m = e.getMessage();
@@ -373,7 +373,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 		pairs(next next) {
 			this.next = next;
 		}
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 				return varargsOf( next, args.checktable(1), NIL );
 		}
 	}
@@ -381,21 +381,21 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	// // "ipairs", // (t) -> iter-func, t, 0
 	static final class ipairs extends VarArgFunction {
 		inext inext = new inext();
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			return varargsOf( inext, args.checktable(1), ZERO );
 		}
 	}
 	
 	// "next"  ( table, [index] ) -> next-index, next-value
 	static final class next extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			return args.checktable(1).next(args.arg(2));
 		}
 	}
 	
 	// "inext" ( table, [int-index] ) -> next-index, next-value
 	static final class inext extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			return args.checktable(1).inext(args.arg(2));
 		}
 	}
@@ -406,7 +406,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	 * @param mode 
 	 * @return Varargs containing chunk, or NIL,error-text on error
 	 */
-	public io.github.taoguan.luaj.Varargs loadFile(String filename, String mode, io.github.taoguan.luaj.LuaValue env) {
+	public Varargs loadFile(String filename, String mode, LuaValue env) {
 		InputStream is = globals.finder.findResource(filename);
 		if ( is == null )
 			return varargsOf(NIL, valueOf("cannot open "+filename+": No such file or directory"));
@@ -421,7 +421,7 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 		}
 	}
 
-	public io.github.taoguan.luaj.Varargs loadStream(InputStream is, String chunkname, String mode, io.github.taoguan.luaj.LuaValue env) {
+	public Varargs loadStream(InputStream is, String chunkname, String mode, LuaValue env) {
 		try {
 			if ( is == null )
 				return varargsOf(NIL, valueOf("not found: "+chunkname));
@@ -433,18 +433,18 @@ public class BaseLib extends TwoArgFunction implements ResourceFinder {
 	
 	
 	private static class StringInputStream extends InputStream {
-		final io.github.taoguan.luaj.LuaValue func;
+		final LuaValue func;
 		byte[] bytes; 
 		int offset, remaining = 0;
-		StringInputStream(io.github.taoguan.luaj.LuaValue func) {
+		StringInputStream(LuaValue func) {
 			this.func = func;
 		}
 		public int read() throws IOException {
 			if ( remaining <= 0 ) {
-				io.github.taoguan.luaj.LuaValue s = func.call();
+				LuaValue s = func.call();
 				if ( s.isnil() )
 					return -1;
-				io.github.taoguan.luaj.LuaString ls = s.strvalue();
+				LuaString ls = s.strvalue();
 				bytes = ls.m_bytes;
 				offset = ls.m_offset;
 				remaining = ls.m_length;

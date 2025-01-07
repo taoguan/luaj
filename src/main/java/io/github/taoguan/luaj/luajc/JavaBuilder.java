@@ -14,14 +14,14 @@ import java.util.Map;
 
 public class JavaBuilder {
 	
-	private static final String STR_VARARGS = io.github.taoguan.luaj.Varargs.class.getName();
-	private static final String STR_LUAVALUE = io.github.taoguan.luaj.LuaValue.class.getName();
-	private static final String STR_LUASTRING = io.github.taoguan.luaj.LuaString.class.getName();
-	private static final String STR_LUAINTEGER = io.github.taoguan.luaj.LuaInteger.class.getName();
-	private static final String STR_LUANUMBER = io.github.taoguan.luaj.LuaNumber.class.getName();
-	private static final String STR_LUABOOLEAN = io.github.taoguan.luaj.LuaBoolean.class.getName();
-	private static final String STR_LUATABLE = io.github.taoguan.luaj.LuaTable.class.getName();
-	private static final String STR_BUFFER = io.github.taoguan.luaj.Buffer.class.getName();
+	private static final String STR_VARARGS = Varargs.class.getName();
+	private static final String STR_LUAVALUE = LuaValue.class.getName();
+	private static final String STR_LUASTRING = LuaString.class.getName();
+	private static final String STR_LUAINTEGER = LuaInteger.class.getName();
+	private static final String STR_LUANUMBER = LuaNumber.class.getName();
+	private static final String STR_LUABOOLEAN = LuaBoolean.class.getName();
+	private static final String STR_LUATABLE = LuaTable.class.getName();
+	private static final String STR_BUFFER = Buffer.class.getName();
 	private static final String STR_STRING = String.class.getName();
 	private static final String STR_JSEPLATFORM = "io.github.taoguan.luaj.lib.jse.JsePlatform";
 
@@ -86,7 +86,7 @@ public class JavaBuilder {
 	
 	// basic info
 	private final ProtoInfo pi;
-	private final io.github.taoguan.luaj.Prototype p;
+	private final Prototype p;
 	private final String classname;
 	
 	// bcel variables
@@ -606,21 +606,21 @@ public class JavaBuilder {
 		append(factory.createFieldAccess(protoname, destname, uptype, Const.PUTFIELD));
 	}
 	
-	private Map<io.github.taoguan.luaj.LuaValue,String> constants = new HashMap<io.github.taoguan.luaj.LuaValue,String>();
+	private Map<LuaValue,String> constants = new HashMap<LuaValue,String>();
 	
-	public void loadConstant(io.github.taoguan.luaj.LuaValue value) {
+	public void loadConstant(LuaValue value) {
 		switch ( value.type() ) {
-		case io.github.taoguan.luaj.LuaValue.TNIL:
+		case LuaValue.TNIL:
 			loadNil();
 			break;
-		case io.github.taoguan.luaj.LuaValue.TBOOLEAN:
+		case LuaValue.TBOOLEAN:
 			loadBoolean( value.toboolean() );
 			break;
-		case io.github.taoguan.luaj.LuaValue.TNUMBER:
-		case io.github.taoguan.luaj.LuaValue.TSTRING:
+		case LuaValue.TNUMBER:
+		case LuaValue.TSTRING:
 			String name = (String) constants.get(value);
 			if ( name == null ) {
-				name = value.type() == io.github.taoguan.luaj.LuaValue.TNUMBER?
+				name = value.type() == LuaValue.TNUMBER?
 						value.isinttype()? 
 							createLuaIntegerField(value.checkint()):
 							createLuaDoubleField(value.checkdouble()):
@@ -658,12 +658,12 @@ public class JavaBuilder {
 		return name;
 	}
 
-	private String createLuaStringField(io.github.taoguan.luaj.LuaString value) {
+	private String createLuaStringField(LuaString value) {
 		String name = PREFIX_CONSTANT+constants.size();
 		FieldGen fg = new FieldGen(Const.ACC_STATIC | Const.ACC_FINAL,
 				TYPE_LUAVALUE, name, cp);
 		cg.addField(fg.getField());
-		io.github.taoguan.luaj.LuaString ls = value.checkstring();
+		LuaString ls = value.checkstring();
 		if ( ls.isValidUtf8() ) {
 			init.append(new PUSH(cp, value.tojstring()));
 			init.append(factory.createInvoke(STR_LUASTRING, "valueOf",

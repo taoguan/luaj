@@ -12,20 +12,20 @@ public class JavaLoader extends ClassLoader {
 	public JavaLoader() {
 	}
 
-	public io.github.taoguan.luaj.LuaFunction load(io.github.taoguan.luaj.Prototype p, String classname, String filename, io.github.taoguan.luaj.LuaValue env ) {
+	public LuaFunction load(Prototype p, String classname, String filename, LuaValue env ) {
 		JavaGen jg = new JavaGen( p, classname, filename, false );
 		return load( jg, env );
 	}
 	
-	public io.github.taoguan.luaj.LuaFunction load(JavaGen jg, io.github.taoguan.luaj.LuaValue env ) {
+	public LuaFunction load(JavaGen jg, LuaValue env ) {
 		include( jg );
 		return load( jg.classname, env );
 	}
 	
-	public io.github.taoguan.luaj.LuaFunction load(String classname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaFunction load(String classname, LuaValue env) {
 		try {
 			Class c = loadClass( classname );
-			io.github.taoguan.luaj.LuaFunction v = (io.github.taoguan.luaj.LuaFunction) c.newInstance();
+			LuaFunction v = (LuaFunction) c.newInstance();
 			v.initupvalue1(env);
 			return v;
 		} catch ( Exception e ) {

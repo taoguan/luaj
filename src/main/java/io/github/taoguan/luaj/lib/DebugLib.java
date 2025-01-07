@@ -48,29 +48,29 @@ public class DebugLib extends TwoArgFunction {
 		try { TRACE = (null != System.getProperty("TRACE")); } catch (Exception e) {}
 	}
 	
-	static final io.github.taoguan.luaj.LuaString LUA             = valueOf("Lua");
-	private static final io.github.taoguan.luaj.LuaString QMARK           = valueOf("?");
-	private static final io.github.taoguan.luaj.LuaString CALL            = valueOf("call");
-	private static final io.github.taoguan.luaj.LuaString LINE            = valueOf("line");
-	private static final io.github.taoguan.luaj.LuaString COUNT           = valueOf("count");
-	private static final io.github.taoguan.luaj.LuaString RETURN          = valueOf("return");
+	static final LuaString LUA             = valueOf("Lua");
+	private static final LuaString QMARK           = valueOf("?");
+	private static final LuaString CALL            = valueOf("call");
+	private static final LuaString LINE            = valueOf("line");
+	private static final LuaString COUNT           = valueOf("count");
+	private static final LuaString RETURN          = valueOf("return");
 	
-	static final io.github.taoguan.luaj.LuaString FUNC            = valueOf("func");
-	static final io.github.taoguan.luaj.LuaString ISTAILCALL      = valueOf("istailcall");
-	static final io.github.taoguan.luaj.LuaString ISVARARG        = valueOf("isvararg");
-	static final io.github.taoguan.luaj.LuaString NUPS            = valueOf("nups");
-	static final io.github.taoguan.luaj.LuaString NPARAMS         = valueOf("nparams");
-	static final io.github.taoguan.luaj.LuaString NAME            = valueOf("name");
-	static final io.github.taoguan.luaj.LuaString NAMEWHAT        = valueOf("namewhat");
-	static final io.github.taoguan.luaj.LuaString WHAT            = valueOf("what");
-	static final io.github.taoguan.luaj.LuaString SOURCE          = valueOf("source");
-	static final io.github.taoguan.luaj.LuaString SHORT_SRC       = valueOf("short_src");
-	static final io.github.taoguan.luaj.LuaString LINEDEFINED     = valueOf("linedefined");
-	static final io.github.taoguan.luaj.LuaString LASTLINEDEFINED = valueOf("lastlinedefined");
-	static final io.github.taoguan.luaj.LuaString CURRENTLINE     = valueOf("currentline");
-	static final io.github.taoguan.luaj.LuaString ACTIVELINES     = valueOf("activelines");
+	static final LuaString FUNC            = valueOf("func");
+	static final LuaString ISTAILCALL      = valueOf("istailcall");
+	static final LuaString ISVARARG        = valueOf("isvararg");
+	static final LuaString NUPS            = valueOf("nups");
+	static final LuaString NPARAMS         = valueOf("nparams");
+	static final LuaString NAME            = valueOf("name");
+	static final LuaString NAMEWHAT        = valueOf("namewhat");
+	static final LuaString WHAT            = valueOf("what");
+	static final LuaString SOURCE          = valueOf("source");
+	static final LuaString SHORT_SRC       = valueOf("short_src");
+	static final LuaString LINEDEFINED     = valueOf("linedefined");
+	static final LuaString LASTLINEDEFINED = valueOf("lastlinedefined");
+	static final LuaString CURRENTLINE     = valueOf("currentline");
+	static final LuaString ACTIVELINES     = valueOf("activelines");
 
-	io.github.taoguan.luaj.Globals globals;
+	Globals globals;
 	
 	/** Perform one-time initialization on the library by creating a table
 	 * containing the library functions, adding that table to the supplied environment,
@@ -78,10 +78,10 @@ public class DebugLib extends TwoArgFunction {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, which must be a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		globals = env.checkglobals();
 		globals.debuglib = this;
-		io.github.taoguan.luaj.LuaTable debug = new io.github.taoguan.luaj.LuaTable();
+		LuaTable debug = new LuaTable();
 		debug.set("debug", new debug());
 		debug.set("gethook", new gethook());
 		debug.set("getinfo", new getinfo());
@@ -105,14 +105,14 @@ public class DebugLib extends TwoArgFunction {
 
 	// debug.debug()
 	static final class debug extends ZeroArgFunction {
-		public io.github.taoguan.luaj.LuaValue call() {
+		public LuaValue call() {
 			return NONE;
 		}
 	}
 
 	// debug.gethook ([thread])
 	final class gethook extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			LuaThread t = args.narg() > 0 ? args.checkthread(1): globals.running;
 			LuaThread.State s = t.state;
 			return varargsOf(
@@ -124,10 +124,10 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.getinfo ([thread,] f [, what])
 	final class getinfo extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			int a=1;
 			LuaThread thread = args.isthread(a)? args.checkthread(a++): globals.running;
-			io.github.taoguan.luaj.LuaValue func = args.arg(a++);
+			LuaValue func = args.arg(a++);
 			String what = args.optjstring(a++, "flnStu");
 			CallStack callstack = callstack(thread);
 
@@ -145,8 +145,8 @@ public class DebugLib extends TwoArgFunction {
 			}
 
 			// start a table
-			DebugInfo ar = callstack.auxgetinfo(what, (io.github.taoguan.luaj.LuaFunction) func, frame);
-			io.github.taoguan.luaj.LuaTable info = new io.github.taoguan.luaj.LuaTable();
+			DebugInfo ar = callstack.auxgetinfo(what, (LuaFunction) func, frame);
+			LuaTable info = new LuaTable();
 			if (what.indexOf('S') >= 0) {
 				info.set(WHAT, LUA);
 				info.set(SOURCE, valueOf(ar.source));
@@ -163,14 +163,14 @@ public class DebugLib extends TwoArgFunction {
 				info.set(ISVARARG, ar.isvararg? ONE: ZERO);
 			}
 			if (what.indexOf('n') >= 0) {
-				info.set(NAME, io.github.taoguan.luaj.LuaValue.valueOf(ar.name!=null? ar.name: "?"));
-				info.set(NAMEWHAT, io.github.taoguan.luaj.LuaValue.valueOf(ar.namewhat));
+				info.set(NAME, LuaValue.valueOf(ar.name!=null? ar.name: "?"));
+				info.set(NAMEWHAT, LuaValue.valueOf(ar.namewhat));
 			}
 			if (what.indexOf('t') >= 0) {
 				info.set(ISTAILCALL, ZERO);
 			}
 			if (what.indexOf('L') >= 0) {
-				io.github.taoguan.luaj.LuaTable lines = new io.github.taoguan.luaj.LuaTable();
+				LuaTable lines = new LuaTable();
 				info.set(ACTIVELINES, lines);
 				CallFrame cf;
 				for (int l = 1; (cf=callstack.getCallFrame(l)) != null; ++l)
@@ -187,7 +187,7 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.getlocal ([thread,] f, local)
 	final class getlocal extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			int a=1;
 			LuaThread thread = args.isthread(a)? args.checkthread(a++): globals.running;
 			int level = args.checkint(a++);
@@ -199,27 +199,27 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.getmetatable (value)
 	static final class getmetatable extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue v) {
-			io.github.taoguan.luaj.LuaValue mt = v.getmetatable();
+		public LuaValue call(LuaValue v) {
+			LuaValue mt = v.getmetatable();
 			return mt != null? mt: NIL;
 		}
 	}
 
 	//	debug.getregistry ()
 	final class getregistry extends ZeroArgFunction {
-		public io.github.taoguan.luaj.LuaValue call() {
+		public LuaValue call() {
 			return globals;
 		}
 	}
 
 	//	debug.getupvalue (f, up)
 	static final class getupvalue extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			io.github.taoguan.luaj.LuaValue func = args.checkfunction(1);
+		public Varargs invoke(Varargs args) {
+			LuaValue func = args.checkfunction(1);
 			int up = args.checkint(2);
 			if ( func instanceof LuaClosure ) {
 				LuaClosure c = (LuaClosure) func;
-				io.github.taoguan.luaj.LuaString name = findupvalue(c, up);
+				LuaString name = findupvalue(c, up);
 				if ( name != null ) {
 					return varargsOf(name, c.upValues[up-1].getValue() );
 				}
@@ -230,7 +230,7 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.getuservalue (u)
 	static final class getuservalue extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue u) {
+		public LuaValue call(LuaValue u) {
 			return u.isuserdata()? u: NIL;
 		}
 	}
@@ -238,10 +238,10 @@ public class DebugLib extends TwoArgFunction {
 	
 	// debug.sethook ([thread,] hook, mask [, count])
 	final class sethook extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			int a=1;
 			LuaThread t = args.isthread(a)? args.checkthread(a++): globals.running;
-			io.github.taoguan.luaj.LuaValue func    = args.optfunction(a++, null);
+			LuaValue func    = args.optfunction(a++, null);
 			String str       = args.optjstring(a++,"");
 			int count        = args.optint(a++,0);
 			boolean call=false,line=false,rtrn=false;
@@ -263,12 +263,12 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.setlocal ([thread,] level, local, value)
 	final class setlocal extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			int a=1;
 			LuaThread thread = args.isthread(a)? args.checkthread(a++): globals.running;
 			int level = args.checkint(a++);
 			int local = args.checkint(a++);
-			io.github.taoguan.luaj.LuaValue value = args.arg(a++);
+			LuaValue value = args.arg(a++);
 			CallFrame f = callstack(thread).getCallFrame(level);
 			return f != null? f.setLocal(local, value): NONE;
 		}
@@ -276,14 +276,14 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.setmetatable (value, table)
 	static final class setmetatable extends TwoArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue value, io.github.taoguan.luaj.LuaValue table) {
-			io.github.taoguan.luaj.LuaValue mt = table.opttable(null);
+		public LuaValue call(LuaValue value, LuaValue table) {
+			LuaValue mt = table.opttable(null);
 			switch ( value.type() ) {
-				case TNIL:      io.github.taoguan.luaj.LuaNil.s_metatable      = mt; break;
-				case TNUMBER:   io.github.taoguan.luaj.LuaNumber.s_metatable   = mt; break;
-				case TBOOLEAN:  io.github.taoguan.luaj.LuaBoolean.s_metatable  = mt; break;
-				case TSTRING:   io.github.taoguan.luaj.LuaString.s_metatable   = mt; break;
-				case TFUNCTION: io.github.taoguan.luaj.LuaFunction.s_metatable = mt; break;
+				case TNIL:      LuaNil.s_metatable      = mt; break;
+				case TNUMBER:   LuaNumber.s_metatable   = mt; break;
+				case TBOOLEAN:  LuaBoolean.s_metatable  = mt; break;
+				case TSTRING:   LuaString.s_metatable   = mt; break;
+				case TFUNCTION: LuaFunction.s_metatable = mt; break;
 				case TTHREAD:   LuaThread.s_metatable   = mt; break;
 				default: value.setmetatable( mt );
 			}
@@ -293,13 +293,13 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.setupvalue (f, up, value)
 	static final class setupvalue extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			io.github.taoguan.luaj.LuaValue func = args.checkfunction(1);
+		public Varargs invoke(Varargs args) {
+			LuaValue func = args.checkfunction(1);
 			int up = args.checkint(2);
-			io.github.taoguan.luaj.LuaValue value = args.arg(3);
+			LuaValue value = args.arg(3);
 			if ( func instanceof LuaClosure ) {
 				LuaClosure c = (LuaClosure) func;
-				io.github.taoguan.luaj.LuaString name = findupvalue(c, up);
+				LuaString name = findupvalue(c, up);
 				if ( name != null ) {
 					c.upValues[up-1].setValue(value);
 					return name;
@@ -311,9 +311,9 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.setuservalue (udata, value)
 	static final class setuservalue extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			Object o = args.checkuserdata(1);
-			io.github.taoguan.luaj.LuaValue v = args.checkvalue(2);
+			LuaValue v = args.checkvalue(2);
 			LuaUserdata u = (LuaUserdata) args.arg1();
 			u.m_instance = v.checkuserdata();
 			u.m_metatable = v.getmetatable();
@@ -323,7 +323,7 @@ public class DebugLib extends TwoArgFunction {
 	
 	//	debug.traceback ([thread,] [message [, level]])
 	final class traceback extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			int a=1;
 			LuaThread thread = args.isthread(a)? args.checkthread(a++): globals.running;
 			String message = args.optjstring(a++, null);
@@ -335,8 +335,8 @@ public class DebugLib extends TwoArgFunction {
 	
 	//	debug.upvalueid (f, n)
 	static final class upvalueid extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
-			io.github.taoguan.luaj.LuaValue func = args.checkfunction(1);
+		public Varargs invoke(Varargs args) {
+			LuaValue func = args.checkfunction(1);
 			int up = args.checkint(2);
 			if ( func instanceof LuaClosure ) {
 				LuaClosure c = (LuaClosure) func;
@@ -350,7 +350,7 @@ public class DebugLib extends TwoArgFunction {
 
 	//	debug.upvaluejoin (f1, n1, f2, n2)
 	static final class upvaluejoin extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			LuaClosure f1 = args.checkclosure(1);
 			int n1 = args.checkint(2);
 			LuaClosure f2 = args.checkclosure(3);
@@ -364,21 +364,21 @@ public class DebugLib extends TwoArgFunction {
 		}
 	}
 
-	public void onCall(io.github.taoguan.luaj.LuaFunction f) {
+	public void onCall(LuaFunction f) {
 		LuaThread.State s = globals.running.state;
 		if (s.inhook) return;
 		callstack().onCall(f);
 		if (s.hookcall) callHook(s, CALL, NIL);
 	}
 
-	public void onCall(LuaClosure c, io.github.taoguan.luaj.Varargs varargs, io.github.taoguan.luaj.LuaValue[] stack) {
+	public void onCall(LuaClosure c, Varargs varargs, LuaValue[] stack) {
 		LuaThread.State s = globals.running.state;
 		if (s.inhook) return;
 		callstack().onCall(c, varargs, stack);
 		if (s.hookcall) callHook(s, CALL, NIL);
 	}
 
-	public void onInstruction(int pc, io.github.taoguan.luaj.Varargs v, int top) {
+	public void onInstruction(int pc, Varargs v, int top) {
 		LuaThread.State s = globals.running.state;
 		if (s.inhook) return;
 		callstack().onInstruction(pc, v, top);
@@ -390,7 +390,7 @@ public class DebugLib extends TwoArgFunction {
 			int newline = callstack().currentline();
 			if ( newline != s.lastline ) {
 				s.lastline = newline;
-				callHook(s, LINE, io.github.taoguan.luaj.LuaValue.valueOf(newline));
+				callHook(s, LINE, LuaValue.valueOf(newline));
 			}
 		}
 	}
@@ -406,7 +406,7 @@ public class DebugLib extends TwoArgFunction {
 		return callstack().traceback(level);
 	}
 	
-	void callHook(LuaThread.State s, io.github.taoguan.luaj.LuaValue type, io.github.taoguan.luaj.LuaValue arg) {
+	void callHook(LuaThread.State s, LuaValue type, LuaValue arg) {
 		if (s.inhook || s.hookfunc == null) return;
 		s.inhook = true;
 		try {
@@ -445,9 +445,9 @@ public class DebugLib extends TwoArgFunction {
 		  String short_src; /* (S) */
 		  CallFrame cf;  /* active function */
 
-		public void funcinfo(io.github.taoguan.luaj.LuaFunction f) {
+		public void funcinfo(LuaFunction f) {
 			if (f.isclosure()) {
-				io.github.taoguan.luaj.Prototype p = f.checkclosure().p;
+				Prototype p = f.checkclosure().p;
 				this.source = p.source != null ? p.source.tojstring() : "=?";
 				this.linedefined = p.linedefined;
 				this.lastlinedefined = p.lastlinedefined;
@@ -488,11 +488,11 @@ public class DebugLib extends TwoArgFunction {
 			return frame[calls++];
 		}
 		
-		final synchronized void onCall(io.github.taoguan.luaj.LuaFunction function) {
+		final synchronized void onCall(LuaFunction function) {
 			pushcall().set(function);
 		}
 
-		final synchronized void onCall(LuaClosure function, io.github.taoguan.luaj.Varargs varargs, io.github.taoguan.luaj.LuaValue[] stack) {
+		final synchronized void onCall(LuaClosure function, Varargs varargs, LuaValue[] stack) {
 			pushcall().set(function, varargs, stack);
 		}
 		
@@ -501,7 +501,7 @@ public class DebugLib extends TwoArgFunction {
 				frame[--calls].reset();
 		}
 		
-		final synchronized void onInstruction(int pc, io.github.taoguan.luaj.Varargs v, int top) {
+		final synchronized void onInstruction(int pc, Varargs v, int top) {
 			if (calls > 0)
 				frame[calls-1].instr(pc, v, top);
 		}
@@ -546,7 +546,7 @@ public class DebugLib extends TwoArgFunction {
 			return frame[calls-level];
 		}
 
-		synchronized CallFrame findCallFrame(io.github.taoguan.luaj.LuaValue func) {
+		synchronized CallFrame findCallFrame(LuaValue func) {
 			for (int i = 1; i <= calls; ++i)
 				if (frame[calls-i].f == func)
 					return frame[i];
@@ -554,7 +554,7 @@ public class DebugLib extends TwoArgFunction {
 		}
 
 
-		synchronized DebugInfo auxgetinfo(String what, io.github.taoguan.luaj.LuaFunction f, CallFrame ci) {
+		synchronized DebugInfo auxgetinfo(String what, LuaFunction f, CallFrame ci) {
 			DebugInfo ar = new DebugInfo();
 			for (int i = 0, n = what.length(); i < n; ++i) {
 				switch (what.charAt(i)) {
@@ -566,7 +566,7 @@ public class DebugLib extends TwoArgFunction {
 			    	  break;
 			      case 'u':
 			    	  if (f != null && f.isclosure()) {
-			    		  io.github.taoguan.luaj.Prototype p = f.checkclosure().p;
+			    		  Prototype p = f.checkclosure().p;
 			    		  ar.nups = (short) p.upvalues.length;
 			    		  ar.nparams = (short) p.numparams;
 			    		  ar.isvararg = p.is_vararg != 0;
@@ -610,13 +610,13 @@ public class DebugLib extends TwoArgFunction {
 	}
 
 	static class CallFrame {
-		io.github.taoguan.luaj.LuaFunction f;
+		LuaFunction f;
 		int pc;
 		int top;
-		io.github.taoguan.luaj.Varargs v;
-		io.github.taoguan.luaj.LuaValue[] stack;
+		Varargs v;
+		LuaValue[] stack;
 		CallFrame previous;
-		void set(LuaClosure function, io.github.taoguan.luaj.Varargs varargs, io.github.taoguan.luaj.LuaValue[] stack) {
+		void set(LuaClosure function, Varargs varargs, LuaValue[] stack) {
 			this.f = function;
 			this.v = varargs;
 			this.stack = stack;
@@ -624,7 +624,7 @@ public class DebugLib extends TwoArgFunction {
 		public String shortsource() {
 			return f.isclosure()? f.checkclosure().p.shortsource(): "[Java]";
 		}
-		void set(io.github.taoguan.luaj.LuaFunction function) {
+		void set(LuaFunction function) {
 			this.f = function;
 		}
 		void reset() {
@@ -632,22 +632,22 @@ public class DebugLib extends TwoArgFunction {
 			this.v = null;
 			this.stack = null;
 		}
-		void instr(int pc, io.github.taoguan.luaj.Varargs v, int top) {
+		void instr(int pc, Varargs v, int top) {
 			this.pc = pc;
 			this.v = v;
 			this.top = top;
 			if (TRACE)
-				io.github.taoguan.luaj.Print.printState(f.checkclosure(), pc, stack, top, v);
+				Print.printState(f.checkclosure(), pc, stack, top, v);
 		}
-		io.github.taoguan.luaj.Varargs getLocal(int i) {
-			io.github.taoguan.luaj.LuaString name = getlocalname(i);
+		Varargs getLocal(int i) {
+			LuaString name = getlocalname(i);
 			if ( i >= 1 && i <= stack.length && stack[i-1] != null )
 				return varargsOf( name == null ? NIL : name, stack[i-1] );
 			else
 				return NIL;
 		}
-		io.github.taoguan.luaj.Varargs setLocal(int i, io.github.taoguan.luaj.LuaValue value) {
-			io.github.taoguan.luaj.LuaString name = getlocalname(i);
+		Varargs setLocal(int i, LuaValue value) {
+			LuaString name = getlocalname(i);
 			if ( i >= 1 && i <= stack.length && stack[i-1] != null ) {
 				stack[i-1] = value;
 				return name == null ? NIL : name;
@@ -667,18 +667,18 @@ public class DebugLib extends TwoArgFunction {
 		int linedefined() {
 			return f.isclosure()? f.checkclosure().p.linedefined: -1;
 		}
-		io.github.taoguan.luaj.LuaString getlocalname(int index) {
+		LuaString getlocalname(int index) {
 			if ( !f.isclosure() ) return null;
 			return f.checkclosure().p.getlocalname(index, pc);
 		}
 	}
 
-	static io.github.taoguan.luaj.LuaString findupvalue(LuaClosure c, int up) {
+	static LuaString findupvalue(LuaClosure c, int up) {
 		if ( c.upValues != null && up > 0 && up <= c.upValues.length ) {
 			if ( c.p.upvalues != null && up <= c.p.upvalues.length )
 				return c.p.upvalues[up-1].name;
 			else
-				return io.github.taoguan.luaj.LuaString.valueOf( "."+up );
+				return LuaString.valueOf( "."+up );
 		}
 		return null;
 	}
@@ -700,10 +700,10 @@ public class DebugLib extends TwoArgFunction {
 	static NameWhat getfuncname(CallFrame frame) {
 		if (!frame.f.isclosure())
 			return new NameWhat(frame.f.classnamestub(), "Java");
-		io.github.taoguan.luaj.Prototype p = frame.f.checkclosure().p;
+		Prototype p = frame.f.checkclosure().p;
 		int pc = frame.pc;
 		int i = p.code[pc]; /* calling instruction */
-		io.github.taoguan.luaj.LuaString tm;
+		LuaString tm;
 		switch (LuaInstruction.getOpCode(i)) {
 			case CALL:
 			case TAILCALL: /* get function name */
@@ -713,28 +713,28 @@ public class DebugLib extends TwoArgFunction {
 		    /* all other instructions can call only through metamethods */
 		    case SELF:
 		    case GETTABUP:
-		    case GETTABLE: tm = io.github.taoguan.luaj.LuaValue.INDEX; break;
+		    case GETTABLE: tm = LuaValue.INDEX; break;
 		    case SETTABUP:
-		    case SETTABLE: tm = io.github.taoguan.luaj.LuaValue.NEWINDEX; break;
-		    case EQ: tm = io.github.taoguan.luaj.LuaValue.EQ; break;
-		    case ADD: tm = io.github.taoguan.luaj.LuaValue.ADD; break;
-		    case SUB: tm = io.github.taoguan.luaj.LuaValue.SUB; break;
-		    case MUL: tm = io.github.taoguan.luaj.LuaValue.MUL; break;
-		    case DIV: tm = io.github.taoguan.luaj.LuaValue.DIV; break;
-			case IDIV: tm = io.github.taoguan.luaj.LuaValue.IDIV; break;
-		    case MOD: tm = io.github.taoguan.luaj.LuaValue.MOD; break;
-		    case POW: tm = io.github.taoguan.luaj.LuaValue.POW; break;
-			case BAND: tm = io.github.taoguan.luaj.LuaValue.BAND; break;
-			case BOR: tm = io.github.taoguan.luaj.LuaValue.BOR; break;
-			case BXOR: tm = io.github.taoguan.luaj.LuaValue.BXOR; break;
-			case SHL: tm = io.github.taoguan.luaj.LuaValue.SHL; break;
-			case SHR: tm = io.github.taoguan.luaj.LuaValue.SHR; break;
-		    case UNM: tm = io.github.taoguan.luaj.LuaValue.UNM; break;
-		    case LEN: tm = io.github.taoguan.luaj.LuaValue.LEN; break;
-			case BNOT: tm = io.github.taoguan.luaj.LuaValue.BNOT; break;
-		    case LT: tm = io.github.taoguan.luaj.LuaValue.LT; break;
-		    case LE: tm = io.github.taoguan.luaj.LuaValue.LE; break;
-		    case CONCAT: tm = io.github.taoguan.luaj.LuaValue.CONCAT; break;
+		    case SETTABLE: tm = LuaValue.NEWINDEX; break;
+		    case EQ: tm = LuaValue.EQ; break;
+		    case ADD: tm = LuaValue.ADD; break;
+		    case SUB: tm = LuaValue.SUB; break;
+		    case MUL: tm = LuaValue.MUL; break;
+		    case DIV: tm = LuaValue.DIV; break;
+			case IDIV: tm = LuaValue.IDIV; break;
+		    case MOD: tm = LuaValue.MOD; break;
+		    case POW: tm = LuaValue.POW; break;
+			case BAND: tm = LuaValue.BAND; break;
+			case BOR: tm = LuaValue.BOR; break;
+			case BXOR: tm = LuaValue.BXOR; break;
+			case SHL: tm = LuaValue.SHL; break;
+			case SHR: tm = LuaValue.SHR; break;
+		    case UNM: tm = LuaValue.UNM; break;
+		    case LEN: tm = LuaValue.LEN; break;
+			case BNOT: tm = LuaValue.BNOT; break;
+		    case LT: tm = LuaValue.LT; break;
+		    case LE: tm = LuaValue.LE; break;
+		    case CONCAT: tm = LuaValue.CONCAT; break;
 		    default:
 		      return null;  /* else no useful name can be found */
 		}
@@ -742,9 +742,9 @@ public class DebugLib extends TwoArgFunction {
 	}
 	
 	// return NameWhat if found, null if not
-	public static NameWhat getobjname(io.github.taoguan.luaj.Prototype p, int lastpc, int reg) {
+	public static NameWhat getobjname(Prototype p, int lastpc, int reg) {
 		int pc = lastpc; // currentpc(L, ci);
-		io.github.taoguan.luaj.LuaString name = p.getlocalname(reg + 1, pc);
+		LuaString name = p.getlocalname(reg + 1, pc);
 		if (name != null) /* is a local? */
 			return new NameWhat( name.tojstring(), "local" );
 
@@ -764,7 +764,7 @@ public class DebugLib extends TwoArgFunction {
 			case GETTABLE: {
 				int k = LuaInstruction.getC(i); /* key index */
 				int t = LuaInstruction.getB(i); /* table index */
-		        io.github.taoguan.luaj.LuaString vn = (LuaInstruction.getOpCode(i) == OpCode.GETTABLE)  /* name of indexed variable */
+		        LuaString vn = (LuaInstruction.getOpCode(i) == OpCode.GETTABLE)  /* name of indexed variable */
 	                    ? p.getlocalname(t + 1, pc)
 	                    : (t < p.upvalues.length ? p.upvalues[t].name : QMARK);
 				name = kname(p, k);
@@ -797,7 +797,7 @@ public class DebugLib extends TwoArgFunction {
 		return null; /* no useful name found */
 	}
 
-	static io.github.taoguan.luaj.LuaString kname(io.github.taoguan.luaj.Prototype p, int c) {
+	static LuaString kname(Prototype p, int c) {
 		if (LuaInstruction.ISK(c) && p.k[LuaInstruction.INDEXK(c)].isstring())
 			return p.k[LuaInstruction.INDEXK(c)].strvalue();
 		else
@@ -807,7 +807,7 @@ public class DebugLib extends TwoArgFunction {
 	/*
 	** try to find last instruction before 'lastpc' that modified register 'reg'
 	*/
-	static int findsetreg (io.github.taoguan.luaj.Prototype p, int lastpc, int reg) {
+	static int findsetreg (Prototype p, int lastpc, int reg) {
 	  int pc;
 	  int setreg = -1;  /* keep last instruction that changed 'reg' */
 	  for (pc = 0; pc < lastpc; pc++) {

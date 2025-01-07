@@ -46,12 +46,12 @@ public class JseMathLib extends MathLib {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, which must be a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		super.call(modname, env);
-		io.github.taoguan.luaj.LuaValue math = env.get("math");
+		LuaValue math = env.get("math");
 		math.set("acos", new acos());
 		math.set("asin", new asin());
-		io.github.taoguan.luaj.LuaValue atan =  new atan2();
+		LuaValue atan =  new atan2();
 		math.set("atan", atan);
 		math.set("atan2", atan);
 		math.set("cosh", new cosh());
@@ -66,14 +66,14 @@ public class JseMathLib extends MathLib {
 	static final class acos extends UnaryOp { protected double call(double d) { return Math.acos(d); } }
 	static final class asin extends UnaryOp { protected double call(double d) { return Math.asin(d); } }
 	static final class atan2 extends TwoArgFunction { 
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue x, io.github.taoguan.luaj.LuaValue y) {
+		public LuaValue call(LuaValue x, LuaValue y) {
 			return valueOf(Math.atan2(x.checkdouble(), y.optdouble(1)));
 		} 
 	}
 	static final class cosh extends UnaryOp { protected double call(double d) { return Math.cosh(d); } }
 	static final class exp extends UnaryOp { protected double call(double d) { return Math.exp(d); } }
 	static final class log extends TwoArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue x, io.github.taoguan.luaj.LuaValue base) {
+		public LuaValue call(LuaValue x, LuaValue base) {
 			double nat = Math.log(x.checkdouble());
 			double b = base.optdouble(Math.E);
 			if (b != Math.E) nat /= Math.log(b);

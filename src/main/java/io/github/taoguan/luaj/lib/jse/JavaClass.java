@@ -48,18 +48,18 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 		this.jclass = this;
 	}
 
-	public io.github.taoguan.luaj.LuaValue coerce(Object javaValue) {
+	public LuaValue coerce(Object javaValue) {
 		return this;
 	}
 		
-	Field getField(io.github.taoguan.luaj.LuaValue key) {
+	Field getField(LuaValue key) {
 		if ( fields == null ) {
 			Map m = new HashMap();
 			Field[] f = ((Class)m_instance).getFields();
 			for ( int i=0; i<f.length; i++ ) {
 				Field fi = f[i];
 				if ( Modifier.isPublic(fi.getModifiers()) ) {
-					m.put(io.github.taoguan.luaj.LuaValue.valueOf(fi.getName()), fi);
+					m.put(LuaValue.valueOf(fi.getName()), fi);
 					try {
 						if (!fi.isAccessible())
 							fi.setAccessible(true);
@@ -72,7 +72,7 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 		return (Field) fields.get(key);
 	}
 	
-	io.github.taoguan.luaj.LuaValue getMethod(io.github.taoguan.luaj.LuaValue key) {
+	LuaValue getMethod(LuaValue key) {
 		if ( methods == null ) {
 			Map namedlists = new HashMap();
 			Method[] m = ((Class)m_instance).getMethods();
@@ -102,17 +102,17 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 				Entry e = (Entry) it.next();
 				String name = (String) e.getKey();
 				List methods = (List) e.getValue();
-				map.put( io.github.taoguan.luaj.LuaValue.valueOf(name),
+				map.put( LuaValue.valueOf(name),
 					methods.size()==1? 
 						methods.get(0): 
 						JavaMethod.forMethods( (JavaMethod[])methods.toArray(new JavaMethod[methods.size()])) );
 			}
 			methods = map;
 		}
-		return (io.github.taoguan.luaj.LuaValue) methods.get(key);
+		return (LuaValue) methods.get(key);
 	}
 	
-	Class getInnerClass(io.github.taoguan.luaj.LuaValue key) {
+	Class getInnerClass(LuaValue key) {
 		if ( innerclasses == null ) {
 			Map m = new HashMap();
 			Class[] c = ((Class)m_instance).getClasses();
@@ -120,14 +120,14 @@ public class JavaClass extends JavaInstance implements CoerceJavaToLua.Coercion 
 				Class ci = c[i];
 				String name = ci.getName();
 				String stub = name.substring(Math.max(name.lastIndexOf('$'), name.lastIndexOf('.'))+1);
-				m.put(io.github.taoguan.luaj.LuaValue.valueOf(stub), ci);
+				m.put(LuaValue.valueOf(stub), ci);
 			}
 			innerclasses = m;
 		}
 		return (Class) innerclasses.get(key);
 	}
 
-	public io.github.taoguan.luaj.LuaValue getConstructor() {
+	public LuaValue getConstructor() {
 		return getMethod(NEW);
 	}
 }

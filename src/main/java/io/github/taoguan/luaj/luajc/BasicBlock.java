@@ -15,7 +15,7 @@ public class BasicBlock {
 	BasicBlock[] next;  // next basic blocks (0, 1, or 2 of these)
 	boolean islive;     // true if this block is used
 	
-	public BasicBlock(io.github.taoguan.luaj.Prototype p, int pc0) {
+	public BasicBlock(Prototype p, int pc0) {
 		this.pc0 = this.pc1 = pc0;
 	}
 	
@@ -42,7 +42,7 @@ public class BasicBlock {
 		return sb.toString();
 	}
 
-	public static BasicBlock[] findBasicBlocks(io.github.taoguan.luaj.Prototype p) {
+	public static BasicBlock[] findBasicBlocks(Prototype p) {
 		
 		// mark beginnings, endings
 		final int n = p.code.length;
@@ -137,7 +137,7 @@ public class BasicBlock {
 		public void visitReturn( int atpc ) {}
 	}
 	
-	public static void visitBranches(io.github.taoguan.luaj.Prototype p, BranchVisitor visitor ) {
+	public static void visitBranches(Prototype p, BranchVisitor visitor ) {
 		int sbx,j,c;
 		int[] code = p.code;
 		int n = code.length;

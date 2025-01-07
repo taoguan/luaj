@@ -14,10 +14,10 @@ package io.github.taoguan.luaj;
  * @see io.github.taoguan.luaj.lib.LibFunction
  */
 abstract
-public class LuaFunction extends io.github.taoguan.luaj.LuaValue {
+public class LuaFunction extends LuaValue {
 	
 	/** Shared static metatable for all functions and closures. */
-	public static io.github.taoguan.luaj.LuaValue s_metatable;
+	public static LuaValue s_metatable;
 
 	public int type() {
 		return TFUNCTION;
@@ -39,7 +39,7 @@ public class LuaFunction extends io.github.taoguan.luaj.LuaValue {
 		return this; 
 	}
 
-	public io.github.taoguan.luaj.LuaValue getmetatable() {
+	public LuaValue getmetatable() {
 		return s_metatable; 
 	}
 
@@ -47,7 +47,7 @@ public class LuaFunction extends io.github.taoguan.luaj.LuaValue {
 		return "function: " + classnamestub();
 	}
 
-	public io.github.taoguan.luaj.LuaString strvalue() {
+	public LuaString strvalue() {
 		return valueOf(tojstring());
 	}
 

@@ -24,21 +24,21 @@ import io.github.taoguan.luaj.*;
  */
 abstract public class ZeroArgFunction extends LibFunction {
 
-	abstract public io.github.taoguan.luaj.LuaValue call();
+	abstract public LuaValue call();
 
 	/** Default constructor */
 	public ZeroArgFunction() {
 	}
 	
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+	public LuaValue call(LuaValue arg) {
 		return call();
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+	public LuaValue call(LuaValue arg1, LuaValue arg2) {
 		return call();
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2, io.github.taoguan.luaj.LuaValue arg3) {
+	public LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3) {
 		return call();
 	}
 

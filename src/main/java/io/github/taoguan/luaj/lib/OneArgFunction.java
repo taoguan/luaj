@@ -26,25 +26,25 @@ import io.github.taoguan.luaj.*;
  */
 abstract public class OneArgFunction extends LibFunction {
 
-	abstract public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg);
+	abstract public LuaValue call(LuaValue arg);
 	
 	/** Default constructor */
 	public OneArgFunction() {
 	}
 		
-	public final io.github.taoguan.luaj.LuaValue call() {
+	public final LuaValue call() {
 		return call(NIL);
 	}
 
-	public final io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+	public final LuaValue call(LuaValue arg1, LuaValue arg2) {
 		return call(arg1);
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2, io.github.taoguan.luaj.LuaValue arg3) {
+	public LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3) {
 		return call(arg1);
 	}
 
-	public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs varargs) {
+	public Varargs invoke(Varargs varargs) {
 		return call(varargs.arg1());
 	}
 } 

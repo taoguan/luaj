@@ -115,7 +115,7 @@ public class JseIoLib extends IoLib {
 			if ( os != null )
 				os.flush();
 		}
-		public void write(io.github.taoguan.luaj.LuaString s) throws IOException {
+		public void write(LuaString s) throws IOException {
 			if ( os != null )
 				os.write( s.m_bytes, s.m_offset, s.m_length );
 			else if ( file != null )
@@ -209,7 +209,7 @@ public class JseIoLib extends IoLib {
 					globals.STDOUT;
 		}
 
-		public void write(io.github.taoguan.luaj.LuaString string) throws IOException {
+		public void write(LuaString string) throws IOException {
 			getPrintStream().write(string.m_bytes, string.m_offset, string.m_length);
 		}
 
@@ -262,7 +262,7 @@ public class JseIoLib extends IoLib {
 			return "file ("+this.hashCode()+")";
 		}
 
-		public void write(io.github.taoguan.luaj.LuaString string) throws IOException {
+		public void write(LuaString string) throws IOException {
 		}
 
 		public void flush() throws IOException {

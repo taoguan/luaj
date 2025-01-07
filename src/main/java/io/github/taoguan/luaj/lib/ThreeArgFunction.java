@@ -26,21 +26,21 @@ import io.github.taoguan.luaj.*;
  */
 abstract public class ThreeArgFunction extends LibFunction {
 
-	abstract public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2, io.github.taoguan.luaj.LuaValue arg3);
+	abstract public LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3);
 	
 	/** Default constructor */
 	public ThreeArgFunction() {
 	}
 	
-	public final io.github.taoguan.luaj.LuaValue call() {
+	public final LuaValue call() {
 		return call(NIL, NIL, NIL);
 	}
 
-	public final io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+	public final LuaValue call(LuaValue arg) {
 		return call(arg, NIL, NIL);
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+	public LuaValue call(LuaValue arg1, LuaValue arg2) {
 		return call(arg1, arg2, NIL);
 	}
 	

@@ -16,20 +16,20 @@ import java.lang.reflect.Array;
  * @see CoerceJavaToLua
  * @see CoerceLuaToJava
  */
-public class JavaArray extends io.github.taoguan.luaj.LuaUserdata {
+public class JavaArray extends LuaUserdata {
 
 	private static final class LenFunction extends OneArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue u) {
-			return io.github.taoguan.luaj.LuaValue.valueOf(Array.getLength(((io.github.taoguan.luaj.LuaUserdata)u).m_instance));
+		public LuaValue call(LuaValue u) {
+			return LuaValue.valueOf(Array.getLength(((LuaUserdata)u).m_instance));
 		}
 	}
 
-	static final io.github.taoguan.luaj.LuaValue LENGTH = valueOf("length");
+	static final LuaValue LENGTH = valueOf("length");
 	
-	static final io.github.taoguan.luaj.LuaTable array_metatable;
+	static final LuaTable array_metatable;
 	static {
-		array_metatable = new io.github.taoguan.luaj.LuaTable();
-		array_metatable.rawset(io.github.taoguan.luaj.LuaValue.LEN, new LenFunction());
+		array_metatable = new LuaTable();
+		array_metatable.rawset(LuaValue.LEN, new LenFunction());
 	}
 	
 	JavaArray(Object instance) {
@@ -37,7 +37,7 @@ public class JavaArray extends io.github.taoguan.luaj.LuaUserdata {
 		setmetatable(array_metatable);
 	}
 	
-	public io.github.taoguan.luaj.LuaValue get(io.github.taoguan.luaj.LuaValue key) {
+	public LuaValue get(LuaValue key) {
 		if ( key.equals(LENGTH) )
 			return valueOf(Array.getLength(m_instance));
 		if ( key.islong() ) {
@@ -49,7 +49,7 @@ public class JavaArray extends io.github.taoguan.luaj.LuaUserdata {
 		return super.get(key);
 	}
 
-	public void set(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value) {
+	public void set(LuaValue key, LuaValue value) {
 		if ( key.islong() ) {
 			int i = (int)(key.tolong() - 1);
 			if ( i>=0 && i<Array.getLength(m_instance) )

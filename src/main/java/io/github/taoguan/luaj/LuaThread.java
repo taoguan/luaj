@@ -45,7 +45,7 @@ import java.lang.ref.WeakReference;
 public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 
 	/** Shared metatable for lua threads. */
-	public static io.github.taoguan.luaj.LuaValue s_metatable;
+	public static LuaValue s_metatable;
 
 	/** The current number of coroutines.  Should not be set. */
 	public static int coroutine_count = 0;
@@ -79,13 +79,13 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 	 * This is an opaque value that should not be modified by applications. */
 	public Object callstack;
 
-	public final io.github.taoguan.luaj.Globals globals;
+	public final Globals globals;
 
 	/** Error message handler for this thread, if any.  */
-	public io.github.taoguan.luaj.LuaValue errorfunc;
+	public LuaValue errorfunc;
 	
 	/** Private constructor for main thread only */
-	public LuaThread(io.github.taoguan.luaj.Globals globals) {
+	public LuaThread(Globals globals) {
 		state = new State(globals, this, null);
 		state.status = STATUS_RUNNING;
 		this.globals = globals;
@@ -95,14 +95,14 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 	 * Create a LuaThread around a function and environment
 	 * @param func The function to execute
 	 */
-	public LuaThread(io.github.taoguan.luaj.Globals globals, io.github.taoguan.luaj.LuaValue func) {
-		io.github.taoguan.luaj.LuaValue.assert_(func != null, "function cannot be null");
+	public LuaThread(Globals globals, LuaValue func) {
+		LuaValue.assert_(func != null, "function cannot be null");
 		state = new State(globals, this, func);
 		this.globals = globals;
 	}
 	
 	public int type() {
-		return io.github.taoguan.luaj.LuaValue.TTHREAD;
+		return LuaValue.TTHREAD;
 	}
 	
 	public String typename() {
@@ -121,7 +121,7 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 		return this;
 	}
 	
-	public io.github.taoguan.luaj.LuaValue getmetatable() {
+	public LuaValue getmetatable() {
 		return s_metatable; 
 	}
 	
@@ -133,24 +133,24 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 		return this.state.function == null;
 	}
 
-	public io.github.taoguan.luaj.Varargs resume(io.github.taoguan.luaj.Varargs args) {
+	public Varargs resume(Varargs args) {
 		final State s = this.state;
 		if (s.status > LuaThread.STATUS_SUSPENDED)
-			return io.github.taoguan.luaj.LuaValue.varargsOf(io.github.taoguan.luaj.LuaValue.FALSE,
-					io.github.taoguan.luaj.LuaValue.valueOf("cannot resume "+(s.status==LuaThread.STATUS_DEAD? "dead": "non-suspended")+" coroutine"));
+			return LuaValue.varargsOf(LuaValue.FALSE,
+					LuaValue.valueOf("cannot resume "+(s.status==LuaThread.STATUS_DEAD? "dead": "non-suspended")+" coroutine"));
 		return s.lua_resume(this, args);
 	}
 
 	public static class State implements Runnable {
-		private final io.github.taoguan.luaj.Globals globals;
+		private final Globals globals;
 		final WeakReference lua_thread;
-		public final io.github.taoguan.luaj.LuaValue function;
-		io.github.taoguan.luaj.Varargs args = io.github.taoguan.luaj.LuaValue.NONE;
-		io.github.taoguan.luaj.Varargs result = io.github.taoguan.luaj.LuaValue.NONE;
+		public final LuaValue function;
+		Varargs args = LuaValue.NONE;
+		Varargs result = LuaValue.NONE;
 		String error = null;
 
 		/** Hook function control state used by debug lib. */
-		public io.github.taoguan.luaj.LuaValue hookfunc;
+		public LuaValue hookfunc;
 
 		public boolean hookline;
 		public boolean hookcall;
@@ -162,7 +162,7 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 		
 		public int status = LuaThread.STATUS_INITIAL;
 
-		State(io.github.taoguan.luaj.Globals globals, LuaThread lua_thread, io.github.taoguan.luaj.LuaValue function) {
+		State(Globals globals, LuaThread lua_thread, LuaValue function) {
 			this.globals = globals;
 			this.lua_thread = new WeakReference(lua_thread);
 			this.function = function;
@@ -170,8 +170,8 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 		
 		public synchronized void run() {
 			try {
-				io.github.taoguan.luaj.Varargs a = this.args;
-				this.args = io.github.taoguan.luaj.LuaValue.NONE;
+				Varargs a = this.args;
+				this.args = LuaValue.NONE;
 				this.result = function.invoke(a);
 			} catch (Throwable t) {
 				this.error = t.getMessage();
@@ -181,7 +181,7 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 			}
 		}
 
-		public synchronized io.github.taoguan.luaj.Varargs lua_resume(LuaThread new_thread, io.github.taoguan.luaj.Varargs args) {
+		public synchronized Varargs lua_resume(LuaThread new_thread, Varargs args) {
 			LuaThread previous_thread = globals.running;
 			try {
 				globals.running = new_thread;
@@ -197,13 +197,13 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 				this.status = STATUS_RUNNING;
 				this.wait();
 				return (this.error != null? 
-					io.github.taoguan.luaj.LuaValue.varargsOf(io.github.taoguan.luaj.LuaValue.FALSE, io.github.taoguan.luaj.LuaValue.valueOf(this.error)):
-					io.github.taoguan.luaj.LuaValue.varargsOf(io.github.taoguan.luaj.LuaValue.TRUE, this.result));
+					LuaValue.varargsOf(LuaValue.FALSE, LuaValue.valueOf(this.error)):
+					LuaValue.varargsOf(LuaValue.TRUE, this.result));
 			} catch (InterruptedException ie) {
 				throw new OrphanedThread();
 			} finally {
-				this.args = io.github.taoguan.luaj.LuaValue.NONE;
-				this.result = io.github.taoguan.luaj.LuaValue.NONE;
+				this.args = LuaValue.NONE;
+				this.result = LuaValue.NONE;
 				this.error = null;
 				globals.running = previous_thread;
 				if (previous_thread != null)
@@ -211,7 +211,7 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 			}
 		}
 
-		public synchronized io.github.taoguan.luaj.Varargs lua_yield(io.github.taoguan.luaj.Varargs args) {
+		public synchronized Varargs lua_yield(Varargs args) {
 			try {
 				this.result = args;
 				this.status = STATUS_SUSPENDED;
@@ -228,8 +228,8 @@ public class LuaThread extends io.github.taoguan.luaj.LuaValue {
 				this.status = STATUS_DEAD;
 				throw new OrphanedThread();
 			} finally {
-				this.args = io.github.taoguan.luaj.LuaValue.NONE;
-				this.result = io.github.taoguan.luaj.LuaValue.NONE;
+				this.args = LuaValue.NONE;
+				this.result = LuaValue.NONE;
 			}
 		}
 	}

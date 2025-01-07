@@ -42,8 +42,8 @@ public class CoerceLuaToJava {
 	public static int SCORE_UNCOERCIBLE    = 0x10000;
 	
 	public static interface Coercion {
-		public int score( io.github.taoguan.luaj.LuaValue value );
-		public Object coerce( io.github.taoguan.luaj.LuaValue value );
+		public int score(LuaValue value );
+		public Object coerce(LuaValue value );
 	};
 
 	/** 
@@ -52,7 +52,7 @@ public class CoerceLuaToJava {
 	 * @param clazz Class to coerce into
 	 * @return Object of type clazz (or a subclass) with the corresponding value.
 	 */
-	public static Object coerce(io.github.taoguan.luaj.LuaValue value, Class clazz) {
+	public static Object coerce(LuaValue value, Class clazz) {
 		return getCoercion(clazz).coerce(value);
 	}
 	
@@ -62,15 +62,15 @@ public class CoerceLuaToJava {
 		public String toString() {
 			return "BoolCoercion()";
 		}
-		public int score( io.github.taoguan.luaj.LuaValue value ) {
+		public int score(LuaValue value ) {
 			switch ( value.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TBOOLEAN:
+			case LuaValue.TBOOLEAN:
 				return 0;
 			}
 			return 1;
 		}
 
-		public Object coerce(io.github.taoguan.luaj.LuaValue value) {
+		public Object coerce(LuaValue value) {
 			return value.toboolean()? Boolean.TRUE: Boolean.FALSE;
 		}
 	}
@@ -91,9 +91,9 @@ public class CoerceLuaToJava {
 		NumericCoercion(int targetType) {
 			this.targetType = targetType;
 		}
-		public int score( io.github.taoguan.luaj.LuaValue value ) {
+		public int score(LuaValue value ) {
 			int fromStringPenalty = 0;
-			if ( value.type() == io.github.taoguan.luaj.LuaValue.TSTRING ) {
+			if ( value.type() ==LuaValue.TSTRING ) {
 				value = value.tonumber();
 				if ( value.isnil() ) {
 					return SCORE_UNCOERCIBLE;
@@ -150,7 +150,7 @@ public class CoerceLuaToJava {
 			}
 		}
 
-		public Object coerce(io.github.taoguan.luaj.LuaValue value) {
+		public Object coerce(LuaValue value) {
 			switch ( targetType ) {
 			case TARGET_TYPE_BYTE: return new Byte( (byte) value.toint() );
 			case TARGET_TYPE_CHAR: return new Character( (char) value.toint() );
@@ -174,24 +174,24 @@ public class CoerceLuaToJava {
 		public String toString() {
 			return "StringCoercion("+(targetType==TARGET_TYPE_STRING? "String": "byte[]")+")";
 		}
-		public int score(io.github.taoguan.luaj.LuaValue value) {
+		public int score(LuaValue value) {
 			switch ( value.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TSTRING:
+			case LuaValue.TSTRING:
 				return value.checkstring().isValidUtf8()?
 						(targetType==TARGET_TYPE_STRING? 0: 1):
 						(targetType==TARGET_TYPE_BYTES? 0: SCORE_WRONG_TYPE);
-			case io.github.taoguan.luaj.LuaValue.TNIL:
+			case LuaValue.TNIL:
 				return SCORE_NULL_VALUE;
 			default:
 				return targetType == TARGET_TYPE_STRING? SCORE_WRONG_TYPE: SCORE_UNCOERCIBLE;
 			}
 		}
-		public Object coerce(io.github.taoguan.luaj.LuaValue value) {
+		public Object coerce(LuaValue value) {
 			if ( value.isnil() )
 				return null;
 			if ( targetType == TARGET_TYPE_STRING )
 				return value.tojstring();
-			io.github.taoguan.luaj.LuaString s = value.checkstring();
+			LuaString s = value.checkstring();
 			byte[] b = new byte[s.m_length];
 			s.copyInto(0, b, 0, b.length);
 			return b;
@@ -208,30 +208,30 @@ public class CoerceLuaToJava {
 		public String toString() {
 			return "ArrayCoercion("+componentType.getName()+")";
 		}
-		public int score(io.github.taoguan.luaj.LuaValue value) {
+		public int score(LuaValue value) {
 			switch ( value.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TTABLE:
+			case LuaValue.TTABLE:
 				return value.length()==0? 0: componentCoercion.score( value.get(1) );
-			case io.github.taoguan.luaj.LuaValue.TUSERDATA:
+			case LuaValue.TUSERDATA:
 				return inheritanceLevels( componentType, value.touserdata().getClass().getComponentType() );
-			case io.github.taoguan.luaj.LuaValue.TNIL:
+			case LuaValue.TNIL:
 				return SCORE_NULL_VALUE;
 			default: 
 				return SCORE_UNCOERCIBLE;
 			}
 		}
-		public Object coerce(io.github.taoguan.luaj.LuaValue value) {
+		public Object coerce(LuaValue value) {
 			switch ( value.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TTABLE: {
+			case LuaValue.TTABLE: {
 				int n = value.length();
 				Object a = Array.newInstance(componentType, n);
 				for ( int i=0; i<n; i++ )
 					Array.set(a, i, componentCoercion.coerce(value.get(i+1)));
 				return a;
 			}
-			case io.github.taoguan.luaj.LuaValue.TUSERDATA:
+			case LuaValue.TUSERDATA:
 				return value.touserdata();
-			case io.github.taoguan.luaj.LuaValue.TNIL:
+			case LuaValue.TNIL:
 				return null;
 			default: 
 				return null;
@@ -267,33 +267,33 @@ public class CoerceLuaToJava {
 		public String toString() {
 			return "ObjectCoercion("+targetType.getName()+")";
 		}
-		public int score(io.github.taoguan.luaj.LuaValue value) {
+		public int score(LuaValue value) {
 			switch ( value.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TNUMBER:
+			case LuaValue.TNUMBER:
 				return inheritanceLevels( targetType, value.isint()? Integer.class: Double.class );
-			case io.github.taoguan.luaj.LuaValue.TBOOLEAN:
+			case LuaValue.TBOOLEAN:
 				return inheritanceLevels( targetType, Boolean.class );
-			case io.github.taoguan.luaj.LuaValue.TSTRING:
+			case LuaValue.TSTRING:
 				return inheritanceLevels( targetType, String.class );
-			case io.github.taoguan.luaj.LuaValue.TUSERDATA:
+			case LuaValue.TUSERDATA:
 				return inheritanceLevels( targetType, value.touserdata().getClass() );
-			case io.github.taoguan.luaj.LuaValue.TNIL:
+			case LuaValue.TNIL:
 				return SCORE_NULL_VALUE;
 			default:
 				return inheritanceLevels( targetType, value.getClass() );
 			}
 		}
-		public Object coerce(io.github.taoguan.luaj.LuaValue value) {
+		public Object coerce(LuaValue value) {
 			switch ( value.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TNUMBER:
+			case LuaValue.TNUMBER:
 				return value.isint()? (Object)new Integer(value.toint()): (Object)new Double(value.todouble());
-			case io.github.taoguan.luaj.LuaValue.TBOOLEAN:
+			case LuaValue.TBOOLEAN:
 				return value.toboolean()? Boolean.TRUE: Boolean.FALSE;
-			case io.github.taoguan.luaj.LuaValue.TSTRING:
+			case LuaValue.TSTRING:
 				return value.tojstring();
-			case io.github.taoguan.luaj.LuaValue.TUSERDATA:
+			case LuaValue.TUSERDATA:
 				return value.optuserdata(targetType, null);
-			case io.github.taoguan.luaj.LuaValue.TNIL:
+			case LuaValue.TNIL:
 				return null;
 			default:
 				return value;

@@ -75,7 +75,7 @@ public class LuajavaLib extends VarArgFunction {
 			switch ( opcode ) {
 			case INIT: {
 				// LuaValue modname = args.arg1();
-				io.github.taoguan.luaj.LuaValue env = args.arg(2);
+				LuaValue env = args.arg(2);
 				LuaTable t = new LuaTable();
 				bind( t, this.getClass(), NAMES, BINDCLASS );
 				env.set("luajava", t);
@@ -89,7 +89,7 @@ public class LuajavaLib extends VarArgFunction {
 			case NEWINSTANCE:
 			case NEW: {
 				// get constructor
-				final io.github.taoguan.luaj.LuaValue c = args.checkvalue(1);
+				final LuaValue c = args.checkvalue(1);
 				final Class clazz = (opcode==NEWINSTANCE? classForName(c.tojstring()): (Class) c.checkuserdata(Class.class));
 				final Varargs consargs = args.subargs(2);
 				return JavaClass.forClass(clazz).getConstructor().invoke(consargs);
@@ -99,7 +99,7 @@ public class LuajavaLib extends VarArgFunction {
 				final int niface = args.narg()-1;
 				if ( niface <= 0 )
 					throw new LuaError("no interfaces");
-				final io.github.taoguan.luaj.LuaValue lobj = args.checktable(niface+1);
+				final LuaValue lobj = args.checktable(niface+1);
 				
 				// get the interfaces
 				final Class[] ifaces = new Class[niface];
@@ -113,7 +113,7 @@ public class LuajavaLib extends VarArgFunction {
 				Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(), ifaces, handler);
 				
 				// return the proxy
-				return io.github.taoguan.luaj.LuaValue.userdataOf( proxy );
+				return LuaValue.userdataOf( proxy );
 			}
 			case LOADLIB: {
 				// get constructor
@@ -122,8 +122,8 @@ public class LuajavaLib extends VarArgFunction {
 				Class clazz = classForName(classname);
 				Method method = clazz.getMethod(methodname, new Class[] {});
 				Object result = method.invoke(clazz, new Object[] {});
-				if ( result instanceof io.github.taoguan.luaj.LuaValue) {
-					return (io.github.taoguan.luaj.LuaValue) result;
+				if ( result instanceof LuaValue) {
+					return (LuaValue) result;
 				} else {
 					return NIL;
 				}
@@ -146,34 +146,34 @@ public class LuajavaLib extends VarArgFunction {
 	}
 	
 	private static final class ProxyInvocationHandler implements InvocationHandler {
-		private final io.github.taoguan.luaj.LuaValue lobj;
+		private final LuaValue lobj;
 
-		private ProxyInvocationHandler(io.github.taoguan.luaj.LuaValue lobj) {
+		private ProxyInvocationHandler(LuaValue lobj) {
 			this.lobj = lobj;
 		}
 
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			String name = method.getName();
-			io.github.taoguan.luaj.LuaValue func = lobj.get(name);
+			LuaValue func = lobj.get(name);
 			if ( func.isnil() )
 				return null;
 			boolean isvarargs = ((method.getModifiers() & METHOD_MODIFIERS_VARARGS) != 0);
 			int n = args!=null? args.length: 0;
-			io.github.taoguan.luaj.LuaValue[] v;
+			LuaValue[] v;
 			if ( isvarargs ) {
 				Object o = args[--n];
 				int m = Array.getLength( o );
-				v = new io.github.taoguan.luaj.LuaValue[n+m];
+				v = new LuaValue[n+m];
 				for ( int i=0; i<n; i++ )
 					v[i] = CoerceJavaToLua.coerce(args[i]);
 				for ( int i=0; i<m; i++ )
 					v[i+n] = CoerceJavaToLua.coerce(Array.get(o,i));
 			} else {
-				v = new io.github.taoguan.luaj.LuaValue[n];
+				v = new LuaValue[n];
 				for ( int i=0; i<n; i++ )
 					v[i] = CoerceJavaToLua.coerce(args[i]);
 			}
-			io.github.taoguan.luaj.LuaValue result = func.invoke(v).arg1();
+			LuaValue result = func.invoke(v).arg1();
 			return CoerceLuaToJava.coerce(result, method.getReturnType());
 		}
 	}

@@ -22,7 +22,7 @@ public class Print {
 	private static final String STRING_FOR_NULL = "null";
 	public static PrintStream ps = System.out;
 
-	static void printString(PrintStream ps, final io.github.taoguan.luaj.LuaString s) {
+	static void printString(PrintStream ps, final LuaString s) {
 		
 		ps.print('"');
 		for (int i = 0, n = s.m_length; i < n; i++) {
@@ -68,20 +68,20 @@ public class Print {
 		ps.print('"');
 	}
 
-	static void printValue( PrintStream ps, io.github.taoguan.luaj.LuaValue v ) {
+	static void printValue( PrintStream ps, LuaValue v ) {
 		if (v == null) {
 			ps.print("null");
 			return;
 		}
 		switch ( v.type() ) {
-		case io.github.taoguan.luaj.LuaValue.TSTRING: printString( ps, (io.github.taoguan.luaj.LuaString) v ); break;
+		case LuaValue.TSTRING: printString( ps, (LuaString) v ); break;
 		default: ps.print( v.tojstring() );
 		
 		}
 	}
 	
-	static void printConstant(PrintStream ps, io.github.taoguan.luaj.Prototype f, int i) {
-		printValue( ps, i < f.k.length ? f.k[i] : io.github.taoguan.luaj.LuaValue.valueOf("UNKNOWN_CONST_" + i) );
+	static void printConstant(PrintStream ps, Prototype f, int i) {
+		printValue( ps, i < f.k.length ? f.k[i] : LuaValue.valueOf("UNKNOWN_CONST_" + i) );
 	}
 
 	static void printUpvalue(PrintStream ps, Upvaldesc u) {
@@ -91,9 +91,9 @@ public class Print {
 
 	/** 
 	 * Print the code in a prototype
-	 * @param f the {@link io.github.taoguan.luaj.Prototype}
+	 * @param f the {@link Prototype}
 	 */
-	public static void printCode(io.github.taoguan.luaj.Prototype f) {
+	public static void printCode(Prototype f) {
 		int[] code = f.code;
 		int pc, n = code.length;
 		for (pc = 0; pc < n; pc++) {
@@ -104,22 +104,22 @@ public class Print {
 
 	/** 
 	 * Print an opcode in a prototype
-	 * @param f the {@link io.github.taoguan.luaj.Prototype}
+	 * @param f the {@link Prototype}
 	 * @param pc the program counter to look up and print
 	 * @return pc same as above or changed
 	 */
-	public static int printOpCode(io.github.taoguan.luaj.Prototype f, int pc) {
+	public static int printOpCode(Prototype f, int pc) {
 		return printOpCode(ps,f,pc);
 	}
 	
 	/** 
 	 * Print an opcode in a prototype
 	 * @param ps the {@link PrintStream} to print to
-	 * @param f the {@link io.github.taoguan.luaj.Prototype}
+	 * @param f the {@link Prototype}
 	 * @param pc the program counter to look up and print
 	 * @return pc same as above or changed
 	 */
-	public static int printOpCode(PrintStream ps, io.github.taoguan.luaj.Prototype f, int pc) {
+	public static int printOpCode(PrintStream ps, Prototype f, int pc) {
 		int[] code = f.code;
 		int i = code[pc];
 		OpCode o = LuaInstruction.getOpCode(i);
@@ -270,11 +270,11 @@ public class Print {
 		return pc;
 	}
 
-	private static int getline(io.github.taoguan.luaj.Prototype f, int pc) {
+	private static int getline(Prototype f, int pc) {
 		return pc>0 && f.lineinfo!=null && pc<f.lineinfo.length? f.lineinfo[pc]: -1;
 	}
 
-	static void printHeader(io.github.taoguan.luaj.Prototype f) {
+	static void printHeader(Prototype f) {
 		String s = String.valueOf(f.source);
 		if (s.startsWith("@") || s.startsWith("="))
 			s = s.substring(1);
@@ -292,7 +292,7 @@ public class Print {
 				+ " constant, " + f.p.length + " function\n");
 	}
 
-	static void printConstants(io.github.taoguan.luaj.Prototype f) {
+	static void printConstants(Prototype f) {
 		int i, n = f.k.length;
 		ps.print("constants (" + n + ") for " + id(f) + ":\n");
 		for (i = 0; i < n; i++) {
@@ -302,7 +302,7 @@ public class Print {
 		}
 	}
 
-	static void printLocals(io.github.taoguan.luaj.Prototype f) {
+	static void printLocals(Prototype f) {
 		int i, n = f.locvars.length;
 		ps.print("locals (" + n + ") for " + id(f) + ":\n");
 		for (i = 0; i < n; i++) {
@@ -310,7 +310,7 @@ public class Print {
 		}
 	}
 
-	static void printUpValues(io.github.taoguan.luaj.Prototype f) {
+	static void printUpValues(Prototype f) {
 		int i, n = f.upvalues.length;
 		ps.print("upvalues (" + n + ") for " + id(f) + ":\n");
 		for (i = 0; i < n; i++) {
@@ -322,7 +322,7 @@ public class Print {
 	 * 
 	 * @param prototype Prototype to print.
 	 */
-	public static void print(io.github.taoguan.luaj.Prototype prototype) {
+	public static void print(Prototype prototype) {
 		printFunction(prototype, true);
 	}
 	
@@ -331,7 +331,7 @@ public class Print {
 	 * @param prototype Prototype to print.
 	 * @param full true to print all fields, false to print short form.
 	 */
-	public static void printFunction(io.github.taoguan.luaj.Prototype prototype, boolean full) {
+	public static void printFunction(Prototype prototype, boolean full) {
 		int i, n = prototype.p.length;
 		printHeader(prototype);
 		printCode(prototype);
@@ -355,7 +355,7 @@ public class Print {
 		}
 	}
 
-	private static String id(io.github.taoguan.luaj.Prototype f) {
+	private static String id(Prototype f) {
 		return "Proto";
 	}
 	private void _assert(boolean b) {
@@ -367,11 +367,11 @@ public class Print {
 	 * Print the state of a {@link LuaClosure} that is being executed
 	 * @param cl the {@link LuaClosure} 
 	 * @param pc the program counter
-	 * @param stack the stack of {@link io.github.taoguan.luaj.LuaValue}
+	 * @param stack the stack of {@link LuaValue}
 	 * @param top the top of the stack
-	 * @param varargs any {@link io.github.taoguan.luaj.Varargs} value that may apply
+	 * @param varargs any {@link Varargs} value that may apply
 	 */
-	public static void printState(LuaClosure cl, int pc, io.github.taoguan.luaj.LuaValue[] stack, int top, io.github.taoguan.luaj.Varargs varargs) {
+	public static void printState(LuaClosure cl, int pc, LuaValue[] stack, int top, Varargs varargs) {
 		// print opcode into buffer
 		PrintStream previous = ps;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -385,24 +385,24 @@ public class Print {
 		ps.println();
 	}
 
-	public static void printStack(io.github.taoguan.luaj.LuaValue[] stack, int top, io.github.taoguan.luaj.Varargs varargs) {
+	public static void printStack(LuaValue[] stack, int top, Varargs varargs) {
 		// print stack
 		ps.print('[');
 		for ( int i=0; i<stack.length; i++ ) {
-			io.github.taoguan.luaj.LuaValue v = stack[i];
+			LuaValue v = stack[i];
 			if ( v == null ) 
 				ps.print(STRING_FOR_NULL);
 			else switch ( v.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TSTRING:
-				io.github.taoguan.luaj.LuaString s = v.checkstring();
+			case LuaValue.TSTRING:
+				LuaString s = v.checkstring();
 				ps.print( s.length() < 48?
 						s.tojstring():
 						s.substring(0, 32).tojstring()+"...+"+(s.length()-32)+"b");					
 				break;
-			case io.github.taoguan.luaj.LuaValue.TFUNCTION:
+			case LuaValue.TFUNCTION:
 				ps.print( v.tojstring() );
 				break;
-			case io.github.taoguan.luaj.LuaValue.TUSERDATA:
+			case LuaValue.TUSERDATA:
 				Object o = v.touserdata();
 				if ( o != null ) {
 					String n = o.getClass().getName();

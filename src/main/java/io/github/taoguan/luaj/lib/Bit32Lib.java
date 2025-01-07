@@ -24,7 +24,7 @@ import io.github.taoguan.luaj.*;
  * <p>
  * This has been implemented to match as closely as possible the behavior in the corresponding library in C.
  * @see LibFunction
- * @see io.github.taoguan.luaj.lib.jse.JsePlatform
+ * @see lib.jse.JsePlatform
  * @see <a href="http://www.lua.org/manual/5.3/manual.html#6.7">Lua 5.3 Bitwise Operation Lib Reference</a>
  */
 public class Bit32Lib extends TwoArgFunction {
@@ -38,8 +38,8 @@ public class Bit32Lib extends TwoArgFunction {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, which must be a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
-		io.github.taoguan.luaj.LuaTable t = new io.github.taoguan.luaj.LuaTable();
+	public LuaValue call(LuaValue modname, LuaValue env) {
+		LuaTable t = new LuaTable();
 		bind(t, Bit32LibV.class, new String[] {
 			"band", "bnot", "bor", "btest", "bxor", "extract", "replace"
 		});
@@ -52,7 +52,7 @@ public class Bit32Lib extends TwoArgFunction {
 	}
 
 	static final class Bit32LibV extends VarArgFunction {
-		public io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs args) {
+		public Varargs invoke(Varargs args) {
 			switch ( opcode ) {
 			case 0: return Bit32Lib.band( args );
 			case 1: return Bit32Lib.bnot( args );
@@ -71,7 +71,7 @@ public class Bit32Lib extends TwoArgFunction {
 
 	static final class Bit32Lib2 extends TwoArgFunction {
 
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+		public LuaValue call(LuaValue arg1, LuaValue arg2) {
 			switch ( opcode ) {
 			case 0: return Bit32Lib.arshift(arg1.checkint(), arg2.checkint());
 			case 1: return Bit32Lib.lrotate(arg1.checkint(), arg2.checkint());
@@ -84,7 +84,7 @@ public class Bit32Lib extends TwoArgFunction {
 		
 	}
 
-	static io.github.taoguan.luaj.LuaValue arshift(int x, int disp) {
+	static LuaValue arshift(int x, int disp) {
 		if (disp >= 0) {
 			return bitsToValue(x >> disp);
 		} else {
@@ -92,7 +92,7 @@ public class Bit32Lib extends TwoArgFunction {
 		}
 	}
 
-	static io.github.taoguan.luaj.LuaValue rshift(int x, int disp) {
+	static LuaValue rshift(int x, int disp) {
 		if (disp >= 32 || disp <= -32) {
 			return ZERO;
 		} else if (disp >= 0) {
@@ -102,7 +102,7 @@ public class Bit32Lib extends TwoArgFunction {
 		}
 	}
 
-	static io.github.taoguan.luaj.LuaValue lshift(int x, int disp) {
+	static LuaValue lshift(int x, int disp) {
 		if (disp >= 32 || disp <= -32) {
 			return ZERO;
 		} else if (disp >= 0) {
@@ -112,7 +112,7 @@ public class Bit32Lib extends TwoArgFunction {
 		}
 	}
 
-	static io.github.taoguan.luaj.Varargs band(io.github.taoguan.luaj.Varargs args ) {
+	static Varargs band(Varargs args ) {
 		int result = -1;
 		for ( int i = 1; i <= args.narg(); i++ ) {
 			result &= args.checkint(i);
@@ -120,11 +120,11 @@ public class Bit32Lib extends TwoArgFunction {
 		return bitsToValue( result );
 	}
 
-	static io.github.taoguan.luaj.Varargs bnot(io.github.taoguan.luaj.Varargs args ) {
+	static Varargs bnot(Varargs args ) {
 		return bitsToValue( ~args.checkint(1) );
 	}
 
-	static io.github.taoguan.luaj.Varargs bor(io.github.taoguan.luaj.Varargs args ) {
+	static Varargs bor(Varargs args ) {
 		int result = 0;
 		for ( int i = 1; i <= args.narg(); i++ ) {
 			result |= args.checkint(i);
@@ -132,7 +132,7 @@ public class Bit32Lib extends TwoArgFunction {
 		return bitsToValue( result );
 	}
 
-	static io.github.taoguan.luaj.Varargs btest(io.github.taoguan.luaj.Varargs args ) {
+	static Varargs btest(Varargs args ) {
 		int bits = -1;
 		for ( int i = 1; i <= args.narg(); i++ ) {
 			bits &= args.checkint(i);
@@ -140,7 +140,7 @@ public class Bit32Lib extends TwoArgFunction {
 		return valueOf( bits != 0 );
 	}
 
-	static io.github.taoguan.luaj.Varargs bxor(io.github.taoguan.luaj.Varargs args ) {
+	static Varargs bxor(Varargs args ) {
 		int result = 0;
 		for ( int i = 1; i <= args.narg(); i++ ) {
 			result ^= args.checkint(i);
@@ -148,7 +148,7 @@ public class Bit32Lib extends TwoArgFunction {
 		return bitsToValue( result );
 	}
 
-	static io.github.taoguan.luaj.LuaValue lrotate(int x, int disp) {
+	static LuaValue lrotate(int x, int disp) {
 		if (disp < 0) {
 			return rrotate(x, -disp);
 		} else {
@@ -157,7 +157,7 @@ public class Bit32Lib extends TwoArgFunction {
 		}
 	}
 
-	static io.github.taoguan.luaj.LuaValue rrotate(int x, int disp) {
+	static LuaValue rrotate(int x, int disp) {
 		if (disp < 0) {
 			return lrotate(x, -disp);
 		} else {
@@ -166,7 +166,7 @@ public class Bit32Lib extends TwoArgFunction {
 		}
 	}
 
-	static io.github.taoguan.luaj.LuaValue extract(int n, int field, int width) {
+	static LuaValue extract(int n, int field, int width) {
 		if (field < 0) {
 			argerror(2, "field cannot be negative");
 		}
@@ -179,7 +179,7 @@ public class Bit32Lib extends TwoArgFunction {
 		return bitsToValue((n >>> field) & (-1 >>> (32 - width)));
 	}
 
-	static io.github.taoguan.luaj.LuaValue replace(int n, int v, int field, int width) {
+	static LuaValue replace(int n, int v, int field, int width) {
 		if (field < 0) {
 			argerror(3, "field cannot be negative");
 		}
@@ -194,7 +194,7 @@ public class Bit32Lib extends TwoArgFunction {
 		return bitsToValue(n);
 	}
 
-	private static io.github.taoguan.luaj.LuaValue bitsToValue(int x ) {
+	private static LuaValue bitsToValue(int x ) {
 		return ( x < 0 ) ? valueOf((double) ((long) x & 0xFFFFFFFFL)) : valueOf(x);
 	}
 }

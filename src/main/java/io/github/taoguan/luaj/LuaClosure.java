@@ -64,32 +64,32 @@ import static io.github.taoguan.luaj.vm.LuaInstruction.*;
  * @see io.github.taoguan.luaj.LoadState
  * @see io.github.taoguan.luaj.Globals#compiler
  */
-public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
-	private static final io.github.taoguan.luaj.UpValue[] NOUPVALUES = new io.github.taoguan.luaj.UpValue[0];
+public class LuaClosure extends LuaFunction {
+	private static final UpValue[] NOUPVALUES = new UpValue[0];
 	
-	public final io.github.taoguan.luaj.Prototype p;
+	public final Prototype p;
 
-	public io.github.taoguan.luaj.UpValue[] upValues;
+	public UpValue[] upValues;
 	
-	final io.github.taoguan.luaj.Globals globals;
+	final Globals globals;
 	
 	/** Create a closure around a Prototype with a specific environment.
 	 * If the prototype has upvalues, the environment will be written into the first upvalue.
 	 * @param p the Prototype to construct this Closure for. 
 	 * @param env the environment to associate with the closure.
 	 */
-	public LuaClosure(io.github.taoguan.luaj.Prototype p, io.github.taoguan.luaj.LuaValue env) {
+	public LuaClosure(Prototype p, LuaValue env) {
 		this.p = p;
 		this.initupvalue1(env);
-		globals = env instanceof io.github.taoguan.luaj.Globals ? (io.github.taoguan.luaj.Globals) env: null;
+		globals = env instanceof Globals ? (Globals) env: null;
 	}
 	
-	public void initupvalue1(io.github.taoguan.luaj.LuaValue env) {
+	public void initupvalue1(LuaValue env) {
 		if (p.upvalues == null || p.upvalues.length == 0)
 			this.upValues = NOUPVALUES;
 		else {
-			this.upValues = new io.github.taoguan.luaj.UpValue[p.upvalues.length];
-			this.upValues[0] = new io.github.taoguan.luaj.UpValue(new io.github.taoguan.luaj.LuaValue[] {env}, 0);
+			this.upValues = new UpValue[p.upvalues.length];
+			this.upValues[0] = new UpValue(new LuaValue[] {env}, 0);
 		}
 	}
 
@@ -110,28 +110,28 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 		return "function: " + p.toString();
 	}
 	
-	private io.github.taoguan.luaj.LuaValue[] getNewStack() {
+	private LuaValue[] getNewStack() {
 		int max = p.maxstacksize;
-		io.github.taoguan.luaj.LuaValue[] stack = new io.github.taoguan.luaj.LuaValue[max];
+		LuaValue[] stack = new LuaValue[max];
 		System.arraycopy(NILS, 0, stack, 0, max);
 		return stack;
 	}
 	
-	public final io.github.taoguan.luaj.LuaValue call() {
-		io.github.taoguan.luaj.LuaValue[] stack = getNewStack();
+	public final LuaValue call() {
+		LuaValue[] stack = getNewStack();
 		return execute(stack,NONE).arg1();
 	}
 
-	public final io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
-		io.github.taoguan.luaj.LuaValue[] stack = getNewStack();
+	public final LuaValue call(LuaValue arg) {
+		LuaValue[] stack = getNewStack();
 		switch ( p.numparams ) {
 		default: stack[0]=arg; return execute(stack,NONE).arg1();
 		case 0: return execute(stack,arg).arg1();
 		}
 	}
 	
-	public final io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
-		io.github.taoguan.luaj.LuaValue[] stack = getNewStack();
+	public final LuaValue call(LuaValue arg1, LuaValue arg2) {
+		LuaValue[] stack = getNewStack();
 		switch ( p.numparams ) {
 		default: stack[0]=arg1; stack[1]=arg2; return execute(stack,NONE).arg1();
 		case 1: stack[0]=arg1; return execute(stack,arg2).arg1();
@@ -139,8 +139,8 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 		}
 	}
 
-	public final io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2, io.github.taoguan.luaj.LuaValue arg3) {
-		io.github.taoguan.luaj.LuaValue[] stack = getNewStack();
+	public final LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3) {
+		LuaValue[] stack = getNewStack();
 		switch ( p.numparams ) {
 		default: stack[0]=arg1; stack[1]=arg2; stack[2]=arg3; return execute(stack,NONE).arg1();
 		case 2: stack[0]=arg1; stack[1]=arg2; return execute(stack,arg3).arg1();
@@ -149,28 +149,28 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 		}
 	}
 
-	public final io.github.taoguan.luaj.Varargs invoke(io.github.taoguan.luaj.Varargs varargs) {
+	public final Varargs invoke(Varargs varargs) {
 		return onInvoke(varargs).eval();
 	}
 	
-	public final io.github.taoguan.luaj.Varargs onInvoke(io.github.taoguan.luaj.Varargs varargs) {
-		io.github.taoguan.luaj.LuaValue[] stack = getNewStack();
+	public final Varargs onInvoke(Varargs varargs) {
+		LuaValue[] stack = getNewStack();
 		for ( int i=0; i<p.numparams; i++ )
 			stack[i] = varargs.arg(i+1);
 		return execute(stack,p.is_vararg!=0? varargs.subargs(p.numparams+1): NONE);
 	}
 	
-	protected io.github.taoguan.luaj.Varargs execute(io.github.taoguan.luaj.LuaValue[] stack, io.github.taoguan.luaj.Varargs varargs ) {
+	protected Varargs execute(LuaValue[] stack, Varargs varargs ) {
 		// loop through instructions
 		int i,a,b,c,pc=0,top=0;
-		io.github.taoguan.luaj.LuaValue o;
-		io.github.taoguan.luaj.Varargs v = NONE;
+		LuaValue o;
+		Varargs v = NONE;
 		int[] code = p.code;
-		io.github.taoguan.luaj.LuaValue[] k = p.k;
+		LuaValue[] k = p.k;
 		
 		// upvalues are only possible when closures create closures
 		// TODO: use linked list.
-		io.github.taoguan.luaj.UpValue[] openups = p.p.length>0? new io.github.taoguan.luaj.UpValue[stack.length]: null;
+		UpValue[] openups = p.p.length>0? new UpValue[stack.length]: null;
 		
 		// allow for debug hooks
 		if (globals != null && globals.debuglib != null)
@@ -203,14 +203,14 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					continue;
 					
 				case LOADBOOL:/*	A B C	R(A):= (Bool)B: if (C) pc++			*/
-	                stack[a] = (getB(i)!=0)? io.github.taoguan.luaj.LuaValue.TRUE: io.github.taoguan.luaj.LuaValue.FALSE;
+	                stack[a] = (getB(i)!=0)? LuaValue.TRUE: LuaValue.FALSE;
 	                if (getC(i) != 0)
 	                    ++pc; /* skip next instruction (if C) */
 	                continue;
 	
 				case LOADNIL: /*	A B	R(A):= ...:= R(A+B):= nil			*/
 					for ( b=getB(i); b-->=0; )
-						stack[a++] = io.github.taoguan.luaj.LuaValue.NIL;
+						stack[a++] = LuaValue.NIL;
 					continue;
 					
 				case GETUPVAL: /*	A B	R(A):= UpValue[B]				*/
@@ -238,7 +238,7 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					continue;
 					
 				case NEWTABLE: /*	A B C	R(A):= {} (size = B,C)				*/
-					stack[a] = new io.github.taoguan.luaj.LuaTable(getB(i),getC(i));
+					stack[a] = new LuaTable(getB(i),getC(i));
 					continue;
 					
 				case SELF: /*	A B C	R(A+1):= R(B): R(A):= R(B)[RK(C)]		*/
@@ -315,7 +315,7 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					c = getC(i);
 					{
 						if ( c > b+1 ) {
-							io.github.taoguan.luaj.Buffer sb = stack[c].buffer();
+							Buffer sb = stack[c].buffer();
 							while ( --c>=b ) 
 								sb.concatTo(stack[c]);
 							stack[a] = sb.value();
@@ -394,16 +394,16 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					
 				case TAILCALL: /*	A B C	return R(A)(R(A+1), ... ,R(A+B-1))		*/
 					switch ( i & LuaInstruction.MASK_B ) {
-					case (1<< LuaInstruction.POS_B): return new io.github.taoguan.luaj.TailcallVarargs(stack[a], NONE);
-					case (2<< LuaInstruction.POS_B): return new io.github.taoguan.luaj.TailcallVarargs(stack[a], stack[a+1]);
-					case (3<< LuaInstruction.POS_B): return new io.github.taoguan.luaj.TailcallVarargs(stack[a], varargsOf(stack[a+1],stack[a+2]));
-					case (4<< LuaInstruction.POS_B): return new io.github.taoguan.luaj.TailcallVarargs(stack[a], varargsOf(stack[a+1],stack[a+2],stack[a+3]));
+					case (1<< LuaInstruction.POS_B): return new TailcallVarargs(stack[a], NONE);
+					case (2<< LuaInstruction.POS_B): return new TailcallVarargs(stack[a], stack[a+1]);
+					case (3<< LuaInstruction.POS_B): return new TailcallVarargs(stack[a], varargsOf(stack[a+1],stack[a+2]));
+					case (4<< LuaInstruction.POS_B): return new TailcallVarargs(stack[a], varargsOf(stack[a+1],stack[a+2],stack[a+3]));
 					default:
 						b = getB(i);
 						v = b>0? 
 							varargsOf(stack,a+1,b-1): // exact arg count
 							varargsOf(stack, a+1, top-v.narg()-(a+1), v); // from prev top 
-						return new io.github.taoguan.luaj.TailcallVarargs( stack[a], v );
+						return new TailcallVarargs( stack[a], v );
 					}
 					
 				case RETURN: /*	A B	return R(A), ... ,R(A+B-2)	(see note)	*/
@@ -418,9 +418,9 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					
 				case FORLOOP: /*	A sBx	R(A)+=R(A+2): if R(A) <?= R(A+1) then { pc+=sBx: R(A+3)=R(A) }*/
 					{
-			            io.github.taoguan.luaj.LuaValue limit = stack[a + 1];
-						io.github.taoguan.luaj.LuaValue step  = stack[a + 2];
-						io.github.taoguan.luaj.LuaValue idx   = step.add(stack[a]);
+			            LuaValue limit = stack[a + 1];
+						LuaValue step  = stack[a + 2];
+						LuaValue idx   = step.add(stack[a]);
 			            if (step.gt_b(0)? idx.lteq_b(limit): idx.gteq_b(limit)) {
 		                    stack[a] = idx;
 		                    stack[a + 3] = idx;
@@ -431,9 +431,9 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					
 				case FORPREP: /*	A sBx	R(A)-=R(A+2): pc+=sBx				*/
 					{
-						io.github.taoguan.luaj.LuaValue init  = stack[a].checknumber("'for' initial value must be a number");
-						io.github.taoguan.luaj.LuaValue limit = stack[a + 1].checknumber("'for' limit must be a number");
-						io.github.taoguan.luaj.LuaValue step  = stack[a + 2].checknumber("'for' step must be a number");
+						LuaValue init  = stack[a].checknumber("'for' initial value must be a number");
+						LuaValue limit = stack[a + 1].checknumber("'for' limit must be a number");
+						LuaValue step  = stack[a + 2].checknumber("'for' step must be a number");
 						stack[a] = init.sub(step);
 						stack[a + 1] = limit;
 						stack[a + 2] = step;
@@ -480,9 +480,9 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					
 				case CLOSURE: /*	A Bx	R(A):= closure(KPROTO[Bx])	*/
 					{
-						io.github.taoguan.luaj.Prototype newp = p.p[getBx(i)];
+						Prototype newp = p.p[getBx(i)];
 						LuaClosure ncl = new LuaClosure(newp, globals);
-						io.github.taoguan.luaj.Upvaldesc[] uv = newp.upvalues;
+						Upvaldesc[] uv = newp.upvalues;
 						for ( int j=0, nup=uv.length; j<nup; ++j ) {
 							if (uv[j].instack)  /* upvalue refes to local variable? */
 								ncl.upValues[j] = findupval(stack, uv[j].idx, openups);
@@ -511,12 +511,12 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 					throw new IllegalArgumentException("Illegal opcode: " + (i & 0x3f));
 				}
 			}
-		} catch ( io.github.taoguan.luaj.LuaError le ) {
+		} catch ( LuaError le ) {
 			if (le.traceback == null)
 				processErrorHooks(le, p, pc);
 			throw le;
 		} catch ( Exception e ) {
-			io.github.taoguan.luaj.LuaError le = new io.github.taoguan.luaj.LuaError(e);
+			LuaError le = new LuaError(e);
 			processErrorHooks(le, p, pc);
 			throw le;
 		} finally {
@@ -535,15 +535,15 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 	 * */
 	String errorHook(String msg, int level) {
 		if (globals == null ) return msg;
-		final io.github.taoguan.luaj.LuaThread r = globals.running;
+		final LuaThread r = globals.running;
 		if (r.errorfunc == null)
 			return globals.debuglib != null?
 					msg + "\n" + globals.debuglib.traceback(level):
 					msg;
-		final io.github.taoguan.luaj.LuaValue e = r.errorfunc;
+		final LuaValue e = r.errorfunc;
 		r.errorfunc = null;
 		try {
-			return e.call( io.github.taoguan.luaj.LuaValue.valueOf(msg) ).tojstring();
+			return e.call( LuaValue.valueOf(msg) ).tojstring();
 		} catch ( Throwable t ) {
 			return "error in error handling";
 		} finally {
@@ -551,29 +551,29 @@ public class LuaClosure extends io.github.taoguan.luaj.LuaFunction {
 		}
 	}
 
-	private void processErrorHooks(io.github.taoguan.luaj.LuaError le, io.github.taoguan.luaj.Prototype p, int pc) {
+	private void processErrorHooks(LuaError le, Prototype p, int pc) {
 		le.fileline = (p.source != null? p.source.tojstring(): "?") + ":" 
 			+ (p.lineinfo != null && pc >= 0 && pc < p.lineinfo.length? String.valueOf(p.lineinfo[pc]): "?");
 		le.traceback = errorHook(le.getMessage(), le.level);
 	}
 	
-	private io.github.taoguan.luaj.UpValue findupval(io.github.taoguan.luaj.LuaValue[] stack, short idx, io.github.taoguan.luaj.UpValue[] openups) {
+	private UpValue findupval(LuaValue[] stack, short idx, UpValue[] openups) {
 		final int n = openups.length;
 		for (int i = 0; i < n; ++i)
 			if (openups[i] != null && openups[i].index == idx)
 				return openups[i];
 		for (int i = 0; i < n; ++i)
 			if (openups[i] == null)
-				return openups[i] = new io.github.taoguan.luaj.UpValue(stack, idx);
+				return openups[i] = new UpValue(stack, idx);
 		error("No space for upvalue");
 		return null;
 	}
 
-	protected io.github.taoguan.luaj.LuaValue getUpvalue(int i) {
+	protected LuaValue getUpvalue(int i) {
 		return upValues[i].getValue();
 	}
 	
-	protected void setUpvalue(int i, io.github.taoguan.luaj.LuaValue v) {
+	protected void setUpvalue(int i, LuaValue v) {
 		upValues[i].setValue(v);
 	}
 

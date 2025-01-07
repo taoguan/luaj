@@ -37,7 +37,7 @@ public class CoroutineLib extends TwoArgFunction {
 
 	static int coroutine_count = 0;
 
-	io.github.taoguan.luaj.Globals globals;
+	Globals globals;
 	
 	/** Perform one-time initialization on the library by creating a table
 	 * containing the library functions, adding that table to the supplied environment,
@@ -45,7 +45,7 @@ public class CoroutineLib extends TwoArgFunction {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, which must be a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		globals = env.checkglobals();
 		LuaTable coroutine = new LuaTable();
 		coroutine.set("create", new create());
@@ -60,7 +60,7 @@ public class CoroutineLib extends TwoArgFunction {
 	}
 
 	final class create extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue f) {
+		public LuaValue call(LuaValue f) {
 			return new LuaThread(globals, f.checkfunction());
 		}
 	}
@@ -80,7 +80,7 @@ public class CoroutineLib extends TwoArgFunction {
 	}
 
 	static final class status extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue t) {
+		public LuaValue call(LuaValue t) {
 			LuaThread lt = t.checkthread();
 			return valueOf( lt.getStatus() );
 		}
@@ -93,8 +93,8 @@ public class CoroutineLib extends TwoArgFunction {
 	}
 
 	final class wrap extends LibFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue f) {
-			final io.github.taoguan.luaj.LuaValue func = f.checkfunction();
+		public LuaValue call(LuaValue f) {
+			final LuaValue func = f.checkfunction();
 			final LuaThread thread = new LuaThread(globals, func);
 			return new wrapper(thread);
 		}

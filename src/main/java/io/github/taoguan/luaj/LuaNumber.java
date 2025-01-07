@@ -11,10 +11,10 @@ package io.github.taoguan.luaj;
  * 
  */
 abstract
-public class LuaNumber extends io.github.taoguan.luaj.LuaValue {
+public class LuaNumber extends LuaValue {
 
 	/** Shared static metatable for all number values represented in lua. */
-	public static io.github.taoguan.luaj.LuaValue s_metatable;
+	public static LuaValue s_metatable;
 	
 	public int type() {
 		return TNUMBER;
@@ -36,7 +36,7 @@ public class LuaNumber extends io.github.taoguan.luaj.LuaValue {
 		return this; 
 	}
 	
-	public io.github.taoguan.luaj.LuaValue tonumber() {
+	public LuaValue tonumber() {
 		return this;
 	}
 	
@@ -48,13 +48,13 @@ public class LuaNumber extends io.github.taoguan.luaj.LuaValue {
 		return true;
 	}
 	
-	public io.github.taoguan.luaj.LuaValue getmetatable() {
+	public LuaValue getmetatable() {
 		return s_metatable; 
 	}
 
-	public io.github.taoguan.luaj.LuaValue concat(io.github.taoguan.luaj.LuaValue rhs)      { return rhs.concatTo(this); }
-	public io.github.taoguan.luaj.Buffer concat(io.github.taoguan.luaj.Buffer rhs)        { return rhs.concatTo(this); }
-	public io.github.taoguan.luaj.LuaValue concatTo(LuaNumber lhs)   { return strvalue().concatTo(lhs.strvalue()); }
-	public io.github.taoguan.luaj.LuaValue concatTo(io.github.taoguan.luaj.LuaString lhs)   { return strvalue().concatTo(lhs); }
+	public LuaValue concat(LuaValue rhs)      { return rhs.concatTo(this); }
+	public Buffer concat(Buffer rhs)        { return rhs.concatTo(this); }
+	public LuaValue concatTo(LuaNumber lhs)   { return strvalue().concatTo(lhs.strvalue()); }
+	public LuaValue concatTo(LuaString lhs)   { return strvalue().concatTo(lhs); }
 
 }

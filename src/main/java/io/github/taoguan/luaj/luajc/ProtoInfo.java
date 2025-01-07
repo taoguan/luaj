@@ -501,14 +501,14 @@ public class ProtoInfo {
 					}
 					case SETUPVAL: {
 						final int b = LuaInstruction.getB(i);
-						final io.github.taoguan.luaj.LuaString s = prototype.upvalues[b].name;
+						final LuaString s = prototype.upvalues[b].name;
 						if (s != null)
 							name = s.tojstring();
 						break;
 					}
 					default: // Local variable
 						final int a = LuaInstruction.getA(code[pc]);
-						final io.github.taoguan.luaj.LuaString s = prototype.getlocalname(a+1, pc+1);
+						final LuaString s = prototype.getlocalname(a+1, pc+1);
 						if (s != null)
 							name = s.tojstring();
 						break;

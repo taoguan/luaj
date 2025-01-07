@@ -59,8 +59,8 @@ public class JsePlatform {
 	 * @see #debugGlobals()
 	 * @see JsePlatform
 	 */
-	public static io.github.taoguan.luaj.Globals standardGlobals() {
-		io.github.taoguan.luaj.Globals globals = new io.github.taoguan.luaj.Globals();
+	public static Globals standardGlobals() {
+		Globals globals = new Globals();
 		globals.load(new JseBaseLib());
 		globals.load(new PackageLib());
 		globals.load(new Bit32Lib());
@@ -71,7 +71,7 @@ public class JsePlatform {
 		globals.load(new JseIoLib());
 		globals.load(new JseOsLib());
 		globals.load(new LuajavaLib());
-		io.github.taoguan.luaj.LoadState.install(globals);
+		LoadState.install(globals);
 		LuaC.install(globals);
 		return globals;
 	}
@@ -82,8 +82,8 @@ public class JsePlatform {
 	 * @see #standardGlobals()
 	 * @see DebugLib
 	 */
-	public static io.github.taoguan.luaj.Globals debugGlobals() {
-		io.github.taoguan.luaj.Globals globals = standardGlobals();
+	public static Globals debugGlobals() {
+		Globals globals = standardGlobals();
 		globals.load(new DebugLib());
 		return globals;
 	}
@@ -92,18 +92,18 @@ public class JsePlatform {
 	/** Simple wrapper for invoking a lua function with command line arguments.
 	 * The supplied function is first given a new Globals object as its environment
 	 * then the program is run with arguments.
-	 * @return {@link io.github.taoguan.luaj.Varargs} containing any values returned by mainChunk.
+	 * @return {@link Varargs} containing any values returned by mainChunk.
 	 */
-	public static io.github.taoguan.luaj.Varargs luaMain(io.github.taoguan.luaj.LuaValue mainChunk, String[] args) {
-		io.github.taoguan.luaj.Globals g = standardGlobals();
+	public static Varargs luaMain(LuaValue mainChunk, String[] args) {
+		Globals g = standardGlobals();
 		int n = args.length;
-		io.github.taoguan.luaj.LuaValue[] vargs = new io.github.taoguan.luaj.LuaValue[args.length];
+		LuaValue[] vargs = new LuaValue[args.length];
 		for (int i = 0; i < n; ++i)
-			vargs[i] = io.github.taoguan.luaj.LuaValue.valueOf(args[i]);
-		io.github.taoguan.luaj.LuaValue arg = io.github.taoguan.luaj.LuaValue.listOf(vargs);
+			vargs[i] = LuaValue.valueOf(args[i]);
+		LuaValue arg = LuaValue.listOf(vargs);
 		arg.set("n", n);
 		g.set("arg", arg);
 		mainChunk.initupvalue1(g);
-		return mainChunk.invoke(io.github.taoguan.luaj.LuaValue.varargsOf(vargs));
+		return mainChunk.invoke(LuaValue.varargsOf(vargs));
 	}
 }

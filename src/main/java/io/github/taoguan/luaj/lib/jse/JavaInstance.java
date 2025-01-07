@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
  * @see CoerceJavaToLua
  * @see CoerceLuaToJava
  */
-public class JavaInstance extends io.github.taoguan.luaj.LuaUserdata {
+public class JavaInstance extends LuaUserdata {
 
 	JavaClass jclass;
 	
@@ -24,7 +24,7 @@ public class JavaInstance extends io.github.taoguan.luaj.LuaUserdata {
 		super(instance);
 	}
 
-	public io.github.taoguan.luaj.LuaValue get(io.github.taoguan.luaj.LuaValue key) {
+	public LuaValue get(LuaValue key) {
 		if ( jclass == null )
 			jclass = JavaClass.forClass(m_instance.getClass());
 		Field f = jclass.getField(key);
@@ -34,7 +34,7 @@ public class JavaInstance extends io.github.taoguan.luaj.LuaUserdata {
 			} catch (Exception e) {
 				throw new LuaError(e);
 			}
-		io.github.taoguan.luaj.LuaValue m = jclass.getMethod(key);
+		LuaValue m = jclass.getMethod(key);
 		if ( m != null )
 			return m;
 		Class c = jclass.getInnerClass(key);
@@ -43,7 +43,7 @@ public class JavaInstance extends io.github.taoguan.luaj.LuaUserdata {
 		return super.get(key);
 	}
 
-	public void set(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value) {
+	public void set(LuaValue key, LuaValue value) {
 		if ( jclass == null )
 			jclass = JavaClass.forClass(m_instance.getClass());
 		Field f = jclass.getField(key);

@@ -65,7 +65,7 @@ public class JseOsLib extends OsLib {
 		return s != null? s : System.getProperty(varname);
 	}
 
-	protected io.github.taoguan.luaj.Varargs execute(String command) {
+	protected Varargs execute(String command) {
 		int exitValue;
 		try {
 			exitValue = new JseProcess(command, null, globals.STDOUT, globals.STDERR).waitFor();

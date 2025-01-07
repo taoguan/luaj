@@ -55,7 +55,7 @@ public class StringLib extends TwoArgFunction {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, typically a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		LuaTable string = new LuaTable();
 		string.set("byte", new byte_());
 		string.set("char", new char_());
@@ -74,8 +74,8 @@ public class StringLib extends TwoArgFunction {
 		
 		env.set("string", string);
 		if (!env.get("package").isnil()) env.get("package").get("loaded").set("string", string);
-		if (io.github.taoguan.luaj.LuaString.s_metatable == null) {
-			io.github.taoguan.luaj.LuaString.s_metatable = io.github.taoguan.luaj.LuaValue.tableOf(new io.github.taoguan.luaj.LuaValue[] { INDEX, string });
+		if (LuaString.s_metatable == null) {
+			LuaString.s_metatable = LuaValue.tableOf(new LuaValue[] { INDEX, string });
 		}
 		return string;
 	}
@@ -93,7 +93,7 @@ public class StringLib extends TwoArgFunction {
 	 */
 	static final class byte_ extends VarArgFunction {
 		public Varargs invoke(Varargs args) {
-			io.github.taoguan.luaj.LuaString s = args.checkstring(1);
+			LuaString s = args.checkstring(1);
 			int l = s.m_length;
 			int posi = posrelat( args.optint(2,1), l );
 			int pose = posrelat( args.optint(3,posi), l );
@@ -104,7 +104,7 @@ public class StringLib extends TwoArgFunction {
 			n = (int)(pose -  posi + 1);
 			if (posi + n <= pose)  /* overflow? */
 			    error("string slice too long");
-			io.github.taoguan.luaj.LuaValue[] v = new io.github.taoguan.luaj.LuaValue[n];
+			LuaValue[] v = new LuaValue[n];
 			for (i=0; i<n; i++)
 				v[i] = valueOf(s.luaByte(posi+i-1));
 			return varargsOf(v);
@@ -131,7 +131,7 @@ public class StringLib extends TwoArgFunction {
 				if (c<0 || c>=256) argerror(a, "invalid value for string.char [0; 255]: " + c);
 				bytes[i] = (byte) c;
 			}
-			return io.github.taoguan.luaj.LuaString.valueUsing( bytes );
+			return LuaString.valueUsing( bytes );
 		}
 	}
 		
@@ -148,11 +148,11 @@ public class StringLib extends TwoArgFunction {
 	 */
 	static final class dump extends VarArgFunction {
 		public Varargs invoke(Varargs args) {
-			io.github.taoguan.luaj.LuaValue f = args.checkfunction(1);
+			LuaValue f = args.checkfunction(1);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			try {
 				DumpState.dump( ((LuaClosure)f).p, baos, args.optboolean(2, true) );
-				return io.github.taoguan.luaj.LuaString.valueUsing(baos.toByteArray());
+				return LuaString.valueUsing(baos.toByteArray());
 			} catch (IOException e) {
 				return error( e.getMessage() );
 			}
@@ -206,9 +206,9 @@ public class StringLib extends TwoArgFunction {
 	 */
 	final class format extends VarArgFunction {
 		public Varargs invoke(Varargs args) {
-			io.github.taoguan.luaj.LuaString fmt = args.checkstring( 1 );
+			LuaString fmt = args.checkstring( 1 );
 			final int n = fmt.length();
-			io.github.taoguan.luaj.Buffer result = new io.github.taoguan.luaj.Buffer(n);
+			Buffer result = new Buffer(n);
 			int arg = 1;
 			int c;
 			
@@ -254,7 +254,7 @@ public class StringLib extends TwoArgFunction {
 								addquoted( result, args.checkstring( arg ) );
 								break;
 							case 's': {
-								io.github.taoguan.luaj.LuaString s = args.checkstring( arg );
+								LuaString s = args.checkstring( arg );
 								if ( fdsc.precision == -1 && s.length() >= 100 ) {
 									result.append( s );
 								} else {
@@ -274,7 +274,7 @@ public class StringLib extends TwoArgFunction {
 		}
 	}
 	
-	static void addquoted(io.github.taoguan.luaj.Buffer buf, io.github.taoguan.luaj.LuaString s) {
+	static void addquoted(Buffer buf, LuaString s) {
 		int c;
 		buf.append( (byte) '"' );
 		for ( int i = 0, n = s.length(); i < n; i++ ) {
@@ -321,7 +321,7 @@ public class StringLib extends TwoArgFunction {
 		
 		public final String src;
 		
-		public FormatDesc(Varargs args, io.github.taoguan.luaj.LuaString strfrmt, final int start) {
+		public FormatDesc(Varargs args, LuaString strfrmt, final int start) {
 			int p = start, n = strfrmt.length();
 			int c = 0;
 			
@@ -371,12 +371,12 @@ public class StringLib extends TwoArgFunction {
 			src = strfrmt.substring(start - 1, p).tojstring();
 		}
 		
-		public void format(io.github.taoguan.luaj.Buffer buf, byte c) {
+		public void format(Buffer buf, byte c) {
 			// TODO: not clear that any of width, precision, or flags apply here.
 			buf.append(c);
 		}
 		
-		public void format(io.github.taoguan.luaj.Buffer buf, long number) {
+		public void format(Buffer buf, long number) {
 			String digits;
 			
 			if ( number == 0 && precision == 0 ) {
@@ -443,18 +443,18 @@ public class StringLib extends TwoArgFunction {
 				pad( buf, ' ', nspaces );
 		}
 		
-		public void format(io.github.taoguan.luaj.Buffer buf, double x) {
+		public void format(Buffer buf, double x) {
 			buf.append( StringLib.this.format(src, x) );
 		}
 		
-		public void format(io.github.taoguan.luaj.Buffer buf, io.github.taoguan.luaj.LuaString s) {
+		public void format(Buffer buf, LuaString s) {
 			int nullindex = s.indexOf( (byte)'\0', 0 );
 			if ( nullindex != -1 )
 				s = s.substring( 0, nullindex );
 			buf.append(s);
 		}
 		
-		public final void pad(io.github.taoguan.luaj.Buffer buf, char c, int n) {
+		public final void pad(Buffer buf, char c, int n) {
 			byte b = (byte)c;
 			while ( n-- > 0 )
 				buf.append(b);
@@ -491,8 +491,8 @@ public class StringLib extends TwoArgFunction {
 	 */
 	static final class gmatch extends VarArgFunction {
 		public Varargs invoke(Varargs args) {
-			io.github.taoguan.luaj.LuaString src = args.checkstring( 1 );
-			io.github.taoguan.luaj.LuaString pat = args.checkstring( 2 );
+			LuaString src = args.checkstring( 1 );
+			LuaString pat = args.checkstring( 2 );
 			return new GMatchAux(args, src, pat);
 		}
 	}
@@ -501,7 +501,7 @@ public class StringLib extends TwoArgFunction {
 		private final int srclen;
 		private final MatchState ms;
 		private int soffset;
-		public GMatchAux(Varargs args, io.github.taoguan.luaj.LuaString src, io.github.taoguan.luaj.LuaString pat) {
+		public GMatchAux(Varargs args, LuaString src, LuaString pat) {
 			this.srclen = src.length();
 			this.ms = new MatchState(args, src, pat);
 			this.soffset = 0;
@@ -569,14 +569,14 @@ public class StringLib extends TwoArgFunction {
 	 */
 	static final class gsub extends VarArgFunction {
 		public Varargs invoke(Varargs args) {
-			io.github.taoguan.luaj.LuaString src = args.checkstring( 1 );
+			LuaString src = args.checkstring( 1 );
 			final int srclen = src.length();
-			io.github.taoguan.luaj.LuaString p = args.checkstring( 2 );
-			io.github.taoguan.luaj.LuaValue repl = args.arg( 3 );
+			LuaString p = args.checkstring( 2 );
+			LuaValue repl = args.arg( 3 );
 			int max_s = args.optint( 4, srclen + 1 );
 			final boolean anchor = p.length() > 0 && p.charAt( 0 ) == '^';
 			
-			io.github.taoguan.luaj.Buffer lbuf = new io.github.taoguan.luaj.Buffer( srclen );
+			Buffer lbuf = new Buffer( srclen );
 			MatchState ms = new MatchState( args, src, p );
 			
 			int soffset = 0;
@@ -609,7 +609,7 @@ public class StringLib extends TwoArgFunction {
 	 * Embedded zeros are counted, so "a\000bc\000" has length 5.
 	 */
 	static final class len extends OneArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+		public LuaValue call(LuaValue arg) {
 			return arg.checkstring().len();
 		}
 	}
@@ -622,7 +622,7 @@ public class StringLib extends TwoArgFunction {
 	 * The definition of what an uppercase letter is depends on the current locale.
 	 */
 	static final class lower extends OneArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+		public LuaValue call(LuaValue arg) {
 			return valueOf( arg.checkjstring().toLowerCase() );
 		}
 	}
@@ -649,14 +649,14 @@ public class StringLib extends TwoArgFunction {
 	 */
 	static final class rep extends VarArgFunction {
 		public Varargs invoke(Varargs args) {
-			io.github.taoguan.luaj.LuaString s = args.checkstring( 1 );
+			LuaString s = args.checkstring( 1 );
 			int n = args.checkint( 2 );
 			final byte[] bytes = new byte[ s.length() * n ];
 			int len = s.length();
 			for ( int offset = 0; offset < bytes.length; offset += len ) {
 				s.copyInto( 0, bytes, offset, len );
 			}
-			return io.github.taoguan.luaj.LuaString.valueUsing( bytes );
+			return LuaString.valueUsing( bytes );
 		}
 	}
 
@@ -666,13 +666,13 @@ public class StringLib extends TwoArgFunction {
 	 * Returns a string that is the string s reversed.
 	 */
 	static final class reverse extends OneArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
-			io.github.taoguan.luaj.LuaString s = arg.checkstring();
+		public LuaValue call(LuaValue arg) {
+			LuaString s = arg.checkstring();
 			int n = s.length();
 			byte[] b = new byte[n];
 			for ( int i=0, j=n-1; i<n; i++, j-- )
 				b[j] = (byte) s.luaByte(i);
-			return io.github.taoguan.luaj.LuaString.valueUsing( b );
+			return LuaString.valueUsing( b );
 		}
 	}
 
@@ -689,7 +689,7 @@ public class StringLib extends TwoArgFunction {
 	 */
 	static final class sub extends VarArgFunction {
 		public Varargs invoke(Varargs args) {
-			final io.github.taoguan.luaj.LuaString s = args.checkstring( 1 );
+			final LuaString s = args.checkstring( 1 );
 			final int l = s.length();
 			
 			int start = posrelat( args.checkint( 2 ), l );
@@ -716,7 +716,7 @@ public class StringLib extends TwoArgFunction {
 	 * The definition of what a lowercase letter is depends on the current locale.
 	 */
 	static final class upper extends OneArgFunction {
-		public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+		public LuaValue call(LuaValue arg) {
 			return valueOf(arg.checkjstring().toUpperCase());
 		}
 	}
@@ -725,8 +725,8 @@ public class StringLib extends TwoArgFunction {
 	 * This utility method implements both string.find and string.match.
 	 */
 	static Varargs str_find_aux( Varargs args, boolean find ) {
-		io.github.taoguan.luaj.LuaString s = args.checkstring( 1 );
-		io.github.taoguan.luaj.LuaString pat = args.checkstring( 2 );
+		LuaString s = args.checkstring( 1 );
+		LuaString pat = args.checkstring( 2 );
 		int init = args.optint( 3, 1 );
 		
 		if ( init > 0 ) {
@@ -775,7 +775,7 @@ public class StringLib extends TwoArgFunction {
 	// Pattern matching implementation
 	
 	private static final int L_ESC = '%';
-	private static final io.github.taoguan.luaj.LuaString SPECIALS = valueOf("^$*+?.([%-");
+	private static final LuaString SPECIALS = valueOf("^$*+?.([%-");
 	private static final int MAX_CAPTURES = 32;
 	
 	private static final int CAP_UNFINISHED = -1;
@@ -821,14 +821,14 @@ public class StringLib extends TwoArgFunction {
 	};
 	
 	static class MatchState {
-		final io.github.taoguan.luaj.LuaString s;
-		final io.github.taoguan.luaj.LuaString p;
+		final LuaString s;
+		final LuaString p;
 		final Varargs args;
 		int level;
 		int[] cinit;
 		int[] clen;
 		
-		MatchState(Varargs args, io.github.taoguan.luaj.LuaString s, io.github.taoguan.luaj.LuaString pattern ) {
+		MatchState(Varargs args, LuaString s, LuaString pattern ) {
 			this.s = s;
 			this.p = pattern;
 			this.args = args;
@@ -841,7 +841,7 @@ public class StringLib extends TwoArgFunction {
 			level = 0;
 		}
 		
-		private void add_s(io.github.taoguan.luaj.Buffer lbuf, io.github.taoguan.luaj.LuaString news, int soff, int e ) {
+		private void add_s(Buffer lbuf, LuaString news, int soff, int e ) {
 			int l = news.length();
 			for ( int i = 0; i < l; ++i ) {
 				byte b = (byte) news.luaByte( i );
@@ -867,18 +867,18 @@ public class StringLib extends TwoArgFunction {
 			}
 		}
 		
-		public void add_value(io.github.taoguan.luaj.Buffer lbuf, int soffset, int end, io.github.taoguan.luaj.LuaValue repl ) {
+		public void add_value(Buffer lbuf, int soffset, int end, LuaValue repl ) {
 			switch ( repl.type() ) {
-			case io.github.taoguan.luaj.LuaValue.TSTRING:
-			case io.github.taoguan.luaj.LuaValue.TNUMBER:
+			case LuaValue.TSTRING:
+			case LuaValue.TNUMBER:
 				add_s( lbuf, repl.strvalue(), soffset, end );
 				return;
 				
-			case io.github.taoguan.luaj.LuaValue.TFUNCTION:
+			case LuaValue.TFUNCTION:
 				repl = repl.invoke( push_captures( true, soffset, end ) ).arg1();
 				break;
 				
-			case io.github.taoguan.luaj.LuaValue.TTABLE:
+			case LuaValue.TTABLE:
 				// Need to call push_onecapture here for the error checking
 				repl = repl.get( push_onecapture( 0, soffset, end ) );
 				break;
@@ -902,13 +902,13 @@ public class StringLib extends TwoArgFunction {
 			case 0: return NONE;
 			case 1: return push_onecapture( 0, soff, end );
 			}
-			io.github.taoguan.luaj.LuaValue[] v = new io.github.taoguan.luaj.LuaValue[nlevels];
+			LuaValue[] v = new LuaValue[nlevels];
 			for ( int i = 0; i < nlevels; ++i )
 				v[i] = push_onecapture( i, soff, end );
 			return varargsOf(v);
 		}
 		
-		private io.github.taoguan.luaj.LuaValue push_onecapture(int i, int soff, int end ) {
+		private LuaValue push_onecapture(int i, int soff, int end ) {
 			if ( i >= this.level ) {
 				if ( i == 0 ) {
 					return s.substring( soff, end );
@@ -1156,7 +1156,7 @@ public class StringLib extends TwoArgFunction {
 			l = check_capture( l );
 			int len = clen[ l ];
 			if ( ( s.length() - soff ) >= len &&
-				 io.github.taoguan.luaj.LuaString.equals( s, cinit[l], s, soff, len ) )
+				 LuaString.equals( s, cinit[l], s, soff, len ) )
 				return soff + len;
 			else
 				return -1;

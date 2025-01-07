@@ -28,19 +28,19 @@ abstract public class VarArgFunction extends LibFunction {
 	public VarArgFunction() {
 	}
 	
-	public io.github.taoguan.luaj.LuaValue call() {
+	public LuaValue call() {
 		return invoke(NONE).arg1();
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg) {
+	public LuaValue call(LuaValue arg) {
 		return invoke(arg).arg1();
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2) {
+	public LuaValue call(LuaValue arg1, LuaValue arg2) {
 		return invoke(varargsOf(arg1,arg2)).arg1();
 	}
 
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue arg1, io.github.taoguan.luaj.LuaValue arg2, io.github.taoguan.luaj.LuaValue arg3) {
+	public LuaValue call(LuaValue arg1, LuaValue arg2, LuaValue arg3) {
 		return invoke(varargsOf(arg1,arg2,arg3)).arg1();
 	}
 

@@ -65,7 +65,7 @@ import java.io.InputStream;
 public class LoadState {
 
 	/** Shared instance of Globals.Undumper to use loading prototypes from binary lua files */
-	public static final io.github.taoguan.luaj.Globals.Undumper instance = new GlobalsUndumper();
+	public static final Globals.Undumper instance = new GlobalsUndumper();
 	
 	/** format corresponding to non-number-patched lua, all numbers are floats or doubles */
 	public static final int NUMBER_FORMAT_FLOATS_OR_DOUBLES    = 0;
@@ -129,10 +129,10 @@ public class LoadState {
 	/** Name of what is being loaded? */
 	String name;
 
-	private static final io.github.taoguan.luaj.LuaValue[]     NOVALUES    = {};
-	private static final io.github.taoguan.luaj.Prototype[] NOPROTOS    = {};
-	private static final io.github.taoguan.luaj.LocVars[]   NOLOCVARS   = {};
-	private static final io.github.taoguan.luaj.LuaString[]  NOSTRVALUES = {};
+	private static final LuaValue[]     NOVALUES    = {};
+	private static final Prototype[] NOPROTOS    = {};
+	private static final LocVars[]   NOLOCVARS   = {};
+	private static final LuaString[]  NOSTRVALUES = {};
 	private static final Upvaldesc[]  NOUPVALDESCS = {};
 	private static final int[]       NOINTS      = {};
 	
@@ -140,7 +140,7 @@ public class LoadState {
 	private byte[] buf = new byte[512];
 
 	/** Install this class as the standard Globals.Undumper for the supplied Globals */
-	public static void install(io.github.taoguan.luaj.Globals globals) {
+	public static void install(Globals globals) {
 		globals.undumper = instance;
 	}
 	
@@ -192,25 +192,25 @@ public class LoadState {
 	}
 
 	/** Load a lua strin gvalue from the input stream
-	 * @return the {@link io.github.taoguan.luaj.LuaString} value laoded.
+	 * @return the {@link LuaString} value laoded.
 	 **/
-	io.github.taoguan.luaj.LuaString loadString() throws IOException {
+	LuaString loadString() throws IOException {
 		int size = this.luacSizeofSizeT == 8? (int) loadInt64(): loadInt();
 		if ( size == 0 )
 			return null;
 		byte[] bytes = new byte[size];
 		is.readFully( bytes, 0, size );
-		return io.github.taoguan.luaj.LuaString.valueUsing( bytes, 0, bytes.length - 1 );
+		return LuaString.valueUsing( bytes, 0, bytes.length - 1 );
 	}
 	
 	/**
-	 * Convert bits in a long value to a {@link io.github.taoguan.luaj.LuaValue}.
+	 * Convert bits in a long value to a {@link LuaValue}.
 	 * @param bits long value containing the bits
 	 * @return {@link LuaInteger} or {@link LuaDouble} whose value corresponds to the bits provided.
 	 */
-	public static io.github.taoguan.luaj.LuaValue longBitsToLuaNumber(long bits ) {
+	public static LuaValue longBitsToLuaNumber(long bits ) {
 		if ( ( bits & ( ( 1L << 63 ) - 1 ) ) == 0L ) {
-			return io.github.taoguan.luaj.LuaValue.ZERO;
+			return LuaValue.ZERO;
 		}
 		
 		int e = (int)((bits >> 52) & 0x7ffL) - 1023;
@@ -225,15 +225,15 @@ public class LoadState {
 			}
 		}
 		
-		return io.github.taoguan.luaj.LuaValue.valueOf( Double.longBitsToDouble(bits) );
+		return LuaValue.valueOf( Double.longBitsToDouble(bits) );
 	}
 	
 	/** 
 	 * Load a number from a binary chunk
-	 * @return the {@link io.github.taoguan.luaj.LuaValue} loaded
+	 * @return the {@link LuaValue} loaded
 	 * @throws IOException if an i/o exception occurs
 	 */
-	io.github.taoguan.luaj.LuaValue loadNumber() throws IOException {
+	LuaValue loadNumber() throws IOException {
 		if ( luacNumberFormat == NUMBER_FORMAT_INTS_ONLY ) {
 			return LuaInteger.valueOf( loadInt() );
 		} else {
@@ -246,16 +246,16 @@ public class LoadState {
 	 * @param f the function prototype
 	 * @throws IOException if an i/o exception occurs
 	 */
-	void loadConstants(io.github.taoguan.luaj.Prototype f) throws IOException {
+	void loadConstants(Prototype f) throws IOException {
 		int n = loadInt();
-		io.github.taoguan.luaj.LuaValue[] values = n>0? new io.github.taoguan.luaj.LuaValue[n]: NOVALUES;
+		LuaValue[] values = n>0? new LuaValue[n]: NOVALUES;
 		for ( int i=0; i<n; i++ ) {
 			switch ( is.readByte() ) {
 			case LUA_TNIL:
-				values[i] = io.github.taoguan.luaj.LuaValue.NIL;
+				values[i] = LuaValue.NIL;
 				break;
 			case LUA_TBOOLEAN:
-				values[i] = (0 != is.readUnsignedByte()? io.github.taoguan.luaj.LuaValue.TRUE: io.github.taoguan.luaj.LuaValue.FALSE);
+				values[i] = (0 != is.readUnsignedByte()? LuaValue.TRUE: LuaValue.FALSE);
 				break;
 			case LUA_TINT:
 				values[i] = LuaInteger.valueOf( loadInt() );
@@ -273,14 +273,14 @@ public class LoadState {
 		f.k = values;
 		
 		n = loadInt();
-		io.github.taoguan.luaj.Prototype[] protos = n>0? new io.github.taoguan.luaj.Prototype[n]: NOPROTOS;
+		Prototype[] protos = n>0? new Prototype[n]: NOPROTOS;
 		for ( int i=0; i<n; i++ )
 			protos[i] = loadFunction(f.source);
 		f.p = protos;
 	}
 
 
-	void loadUpvalues(io.github.taoguan.luaj.Prototype f) throws IOException {
+	void loadUpvalues(Prototype f) throws IOException {
 		int n = loadInt();
 		f.upvalues = n>0? new Upvaldesc[n]: NOUPVALDESCS;
 		for (int i=0; i<n; i++) {
@@ -295,16 +295,16 @@ public class LoadState {
 	 * @param f the function Prototype
 	 * @throws IOException if there is an i/o exception
 	 */
-	void loadDebug( io.github.taoguan.luaj.Prototype f ) throws IOException {
+	void loadDebug( Prototype f ) throws IOException {
 		f.source = loadString();
 		f.lineinfo = loadIntArray();
 		int n = loadInt();
-		f.locvars = n>0? new io.github.taoguan.luaj.LocVars[n]: NOLOCVARS;
+		f.locvars = n>0? new LocVars[n]: NOLOCVARS;
 		for ( int i=0; i<n; i++ ) {
-			io.github.taoguan.luaj.LuaString varname = loadString();
+			LuaString varname = loadString();
 			int startpc = loadInt();
 			int endpc = loadInt();
-			f.locvars[i] = new io.github.taoguan.luaj.LocVars(varname, startpc, endpc);
+			f.locvars[i] = new LocVars(varname, startpc, endpc);
 		}
 		
 		n = loadInt();
@@ -315,11 +315,11 @@ public class LoadState {
 	/** 
 	 * Load a function prototype from the input stream
 	 * @param p name of the source
-	 * @return {@link io.github.taoguan.luaj.Prototype} instance that was loaded
+	 * @return {@link Prototype} instance that was loaded
 	 * @throws IOException
 	 */
-	public io.github.taoguan.luaj.Prototype loadFunction(io.github.taoguan.luaj.LuaString p) throws IOException {
-		io.github.taoguan.luaj.Prototype f = new io.github.taoguan.luaj.Prototype();
+	public Prototype loadFunction(LuaString p) throws IOException {
+		Prototype f = new Prototype();
 ////		this.L.push(f);
 //		f.source = loadString();
 //		if ( f.source == null )
@@ -364,10 +364,10 @@ public class LoadState {
 	 * Load input stream as a lua binary chunk if the first 4 bytes are the lua binary signature.
 	 * @param stream InputStream to read, after having read the first byte already
 	 * @param chunkname Name to apply to the loaded chunk
-	 * @return {@link io.github.taoguan.luaj.Prototype} that was loaded, or null if the first 4 bytes were not the lua signature.
+	 * @return {@link Prototype} that was loaded, or null if the first 4 bytes were not the lua signature.
 	 * @throws IOException if an IOException occurs
 	 */
-	public static io.github.taoguan.luaj.Prototype undump(InputStream stream, String chunkname) throws IOException {
+	public static Prototype undump(InputStream stream, String chunkname) throws IOException {
 		// check rest of signature
 		if ( stream.read() != LUA_SIGNATURE[0] 
 		   || stream.read() != LUA_SIGNATURE[1]
@@ -389,7 +389,7 @@ public class LoadState {
 		default:
 			throw new LuaError("unsupported int size");
 		}
-		return s.loadFunction( io.github.taoguan.luaj.LuaString.valueOf(sname) );
+		return s.loadFunction( LuaString.valueOf(sname) );
 	}
 	
 	/**
@@ -412,8 +412,8 @@ public class LoadState {
 		this.is = new DataInputStream( stream );
 	}
 	
-	private static final class GlobalsUndumper implements io.github.taoguan.luaj.Globals.Undumper {
-		public io.github.taoguan.luaj.Prototype undump(InputStream stream, String chunkname)
+	private static final class GlobalsUndumper implements Globals.Undumper {
+		public Prototype undump(InputStream stream, String chunkname)
 				throws IOException {
 			return LoadState.undump(stream,  chunkname);
 		}

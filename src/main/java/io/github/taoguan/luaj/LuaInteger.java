@@ -76,16 +76,16 @@ public class LuaInteger extends LuaNumber {
 		return Integer.toString(v);
 	}
 
-	public io.github.taoguan.luaj.LuaString strvalue() {
-		return io.github.taoguan.luaj.LuaString.valueOf(Integer.toString(v));
+	public LuaString strvalue() {
+		return LuaString.valueOf(Integer.toString(v));
 	}
 		
-	public io.github.taoguan.luaj.LuaString optstring(io.github.taoguan.luaj.LuaString defval) {
-		return io.github.taoguan.luaj.LuaString.valueOf(Integer.toString(v));
+	public LuaString optstring(LuaString defval) {
+		return LuaString.valueOf(Integer.toString(v));
 	}
 	
-	public io.github.taoguan.luaj.LuaValue tostring() {
-		return io.github.taoguan.luaj.LuaString.valueOf(Integer.toString(v));
+	public LuaValue tostring() {
+		return LuaString.valueOf(Integer.toString(v));
 	}
 		
 	public String optjstring(String defval) { 
@@ -109,78 +109,78 @@ public class LuaInteger extends LuaNumber {
 	}
 
 	// unary operators
-	public io.github.taoguan.luaj.LuaValue neg() { return valueOf(-(long)v); }
+	public LuaValue neg() { return valueOf(-(long)v); }
 	
 	// object equality, used for key comparison
 	public boolean equals(Object o) { return o instanceof LuaInteger? ((LuaInteger)o).v == v: false; }
 	
 	// equality w/ metatable processing
-	public io.github.taoguan.luaj.LuaValue eq(io.github.taoguan.luaj.LuaValue val )    { return val.raweq(v)? TRUE: FALSE; }
-	public boolean eq_b( io.github.taoguan.luaj.LuaValue val )   { return val.raweq(v); }
+	public LuaValue eq(LuaValue val )    { return val.raweq(v)? TRUE: FALSE; }
+	public boolean eq_b( LuaValue val )   { return val.raweq(v); }
 	
 	// equality w/o metatable processing
-	public boolean raweq( io.github.taoguan.luaj.LuaValue val )  { return val.raweq(v); }
+	public boolean raweq( LuaValue val )  { return val.raweq(v); }
 	public boolean raweq( double val )    { return v == val; }
 	public boolean raweq( int val )       { return v == val; }
 	
 	// arithmetic operators
-	public io.github.taoguan.luaj.LuaValue add(io.github.taoguan.luaj.LuaValue rhs )        { return rhs.add(v); }
-	public io.github.taoguan.luaj.LuaValue add(double lhs )     { return LuaDouble.valueOf(lhs + v); }
-	public io.github.taoguan.luaj.LuaValue add(int lhs )        { return LuaInteger.valueOf(lhs + (long)v); }
-	public io.github.taoguan.luaj.LuaValue sub(io.github.taoguan.luaj.LuaValue rhs )        { return rhs.subFrom(v); }
-	public io.github.taoguan.luaj.LuaValue sub(double rhs )        { return LuaDouble.valueOf(v - rhs); }
-	public io.github.taoguan.luaj.LuaValue sub(int rhs )        { return LuaDouble.valueOf(v - rhs); }
-	public io.github.taoguan.luaj.LuaValue subFrom(double lhs )   { return LuaDouble.valueOf(lhs - v); }
-	public io.github.taoguan.luaj.LuaValue subFrom(int lhs )      { return LuaInteger.valueOf(lhs - (long)v); }
-	public io.github.taoguan.luaj.LuaValue mul(io.github.taoguan.luaj.LuaValue rhs )        { return rhs.mul(v); }
-	public io.github.taoguan.luaj.LuaValue mul(double lhs )   { return LuaDouble.valueOf(lhs * v); }
-	public io.github.taoguan.luaj.LuaValue mul(int lhs )      { return LuaInteger.valueOf(lhs * (long)v); }
-	public io.github.taoguan.luaj.LuaValue pow(io.github.taoguan.luaj.LuaValue rhs )        { return rhs.powWith(v); }
-	public io.github.taoguan.luaj.LuaValue pow(double rhs )        { return MathLib.dpow(v,rhs); }
-	public io.github.taoguan.luaj.LuaValue pow(int rhs )        { return MathLib.dpow(v,rhs); }
-	public io.github.taoguan.luaj.LuaValue powWith(double lhs )   { return MathLib.dpow(lhs,v); }
-	public io.github.taoguan.luaj.LuaValue powWith(int lhs )      { return MathLib.dpow(lhs,v); }
-	public io.github.taoguan.luaj.LuaValue div(io.github.taoguan.luaj.LuaValue rhs )        { return rhs.divInto(v); }
-	public io.github.taoguan.luaj.LuaValue div(double rhs )        { return LuaDouble.ddiv(v,rhs); }
-	public io.github.taoguan.luaj.LuaValue div(int rhs )        { return LuaDouble.ddiv(v,rhs); }
-	public io.github.taoguan.luaj.LuaValue divInto(double lhs )   { return LuaDouble.ddiv(lhs,v); }
-	public io.github.taoguan.luaj.LuaValue idiv(io.github.taoguan.luaj.LuaValue rhs )        { return rhs.idivInto(v); }
-	public io.github.taoguan.luaj.LuaValue idiv(double rhs )        { return LuaDouble.valueOf(MathLib.floorDiv(v,rhs)); }
-	public io.github.taoguan.luaj.LuaValue idiv(int rhs )        { return LuaDouble.valueOf(MathLib.floorDiv(v,rhs)); }
-	public io.github.taoguan.luaj.LuaValue idivInto(double lhs )   { return LuaDouble.valueOf(MathLib.floorDiv(lhs,v)); }
-	public io.github.taoguan.luaj.LuaValue mod(io.github.taoguan.luaj.LuaValue rhs )        { return rhs.modFrom(v); }
-	public io.github.taoguan.luaj.LuaValue mod(double rhs )        { return LuaDouble.dmod(v,rhs); }
-	public io.github.taoguan.luaj.LuaValue mod(int rhs )        { return LuaDouble.dmod(v,rhs); }
-	public io.github.taoguan.luaj.LuaValue modFrom(double lhs )   { return LuaDouble.dmod(lhs,v); }
+	public LuaValue add(LuaValue rhs )        { return rhs.add(v); }
+	public LuaValue add(double lhs )     { return LuaDouble.valueOf(lhs + v); }
+	public LuaValue add(int lhs )        { return LuaInteger.valueOf(lhs + (long)v); }
+	public LuaValue sub(LuaValue rhs )        { return rhs.subFrom(v); }
+	public LuaValue sub(double rhs )        { return LuaDouble.valueOf(v - rhs); }
+	public LuaValue sub(int rhs )        { return LuaDouble.valueOf(v - rhs); }
+	public LuaValue subFrom(double lhs )   { return LuaDouble.valueOf(lhs - v); }
+	public LuaValue subFrom(int lhs )      { return LuaInteger.valueOf(lhs - (long)v); }
+	public LuaValue mul(LuaValue rhs )        { return rhs.mul(v); }
+	public LuaValue mul(double lhs )   { return LuaDouble.valueOf(lhs * v); }
+	public LuaValue mul(int lhs )      { return LuaInteger.valueOf(lhs * (long)v); }
+	public LuaValue pow(LuaValue rhs )        { return rhs.powWith(v); }
+	public LuaValue pow(double rhs )        { return MathLib.dpow(v,rhs); }
+	public LuaValue pow(int rhs )        { return MathLib.dpow(v,rhs); }
+	public LuaValue powWith(double lhs )   { return MathLib.dpow(lhs,v); }
+	public LuaValue powWith(int lhs )      { return MathLib.dpow(lhs,v); }
+	public LuaValue div(LuaValue rhs )        { return rhs.divInto(v); }
+	public LuaValue div(double rhs )        { return LuaDouble.ddiv(v,rhs); }
+	public LuaValue div(int rhs )        { return LuaDouble.ddiv(v,rhs); }
+	public LuaValue divInto(double lhs )   { return LuaDouble.ddiv(lhs,v); }
+	public LuaValue idiv(LuaValue rhs )        { return rhs.idivInto(v); }
+	public LuaValue idiv(double rhs )        { return LuaDouble.valueOf(MathLib.floorDiv(v,rhs)); }
+	public LuaValue idiv(int rhs )        { return LuaDouble.valueOf(MathLib.floorDiv(v,rhs)); }
+	public LuaValue idivInto(double lhs )   { return LuaDouble.valueOf(MathLib.floorDiv(lhs,v)); }
+	public LuaValue mod(LuaValue rhs )        { return rhs.modFrom(v); }
+	public LuaValue mod(double rhs )        { return LuaDouble.dmod(v,rhs); }
+	public LuaValue mod(int rhs )        { return LuaDouble.dmod(v,rhs); }
+	public LuaValue modFrom(double lhs )   { return LuaDouble.dmod(lhs,v); }
 	
 	// relational operators
-	public io.github.taoguan.luaj.LuaValue lt(io.github.taoguan.luaj.LuaValue rhs )         { return rhs.gt_b(v)? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue lt(double rhs )      { return v < rhs? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue lt(int rhs )         { return v < rhs? TRUE: FALSE; }
-	public boolean lt_b( io.github.taoguan.luaj.LuaValue rhs )       { return rhs.gt_b(v); }
+	public LuaValue lt(LuaValue rhs )         { return rhs.gt_b(v)? TRUE: FALSE; }
+	public LuaValue lt(double rhs )      { return v < rhs? TRUE: FALSE; }
+	public LuaValue lt(int rhs )         { return v < rhs? TRUE: FALSE; }
+	public boolean lt_b( LuaValue rhs )       { return rhs.gt_b(v); }
 	public boolean lt_b( int rhs )         { return v < rhs; }
 	public boolean lt_b( double rhs )      { return v < rhs; }
-	public io.github.taoguan.luaj.LuaValue lteq(io.github.taoguan.luaj.LuaValue rhs )       { return rhs.gteq_b(v)? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue lteq(double rhs )    { return v <= rhs? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue lteq(int rhs )       { return v <= rhs? TRUE: FALSE; }
-	public boolean lteq_b( io.github.taoguan.luaj.LuaValue rhs )     { return rhs.gteq_b(v); }
+	public LuaValue lteq(LuaValue rhs )       { return rhs.gteq_b(v)? TRUE: FALSE; }
+	public LuaValue lteq(double rhs )    { return v <= rhs? TRUE: FALSE; }
+	public LuaValue lteq(int rhs )       { return v <= rhs? TRUE: FALSE; }
+	public boolean lteq_b( LuaValue rhs )     { return rhs.gteq_b(v); }
 	public boolean lteq_b( int rhs )       { return v <= rhs; }
 	public boolean lteq_b( double rhs )    { return v <= rhs; }
-	public io.github.taoguan.luaj.LuaValue gt(io.github.taoguan.luaj.LuaValue rhs )         { return rhs.lt_b(v)? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue gt(double rhs )      { return v > rhs? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue gt(int rhs )         { return v > rhs? TRUE: FALSE; }
-	public boolean gt_b( io.github.taoguan.luaj.LuaValue rhs )       { return rhs.lt_b(v); }
+	public LuaValue gt(LuaValue rhs )         { return rhs.lt_b(v)? TRUE: FALSE; }
+	public LuaValue gt(double rhs )      { return v > rhs? TRUE: FALSE; }
+	public LuaValue gt(int rhs )         { return v > rhs? TRUE: FALSE; }
+	public boolean gt_b( LuaValue rhs )       { return rhs.lt_b(v); }
 	public boolean gt_b( int rhs )         { return v > rhs; }
 	public boolean gt_b( double rhs )      { return v > rhs; }
-	public io.github.taoguan.luaj.LuaValue gteq(io.github.taoguan.luaj.LuaValue rhs )       { return rhs.lteq_b(v)? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue gteq(double rhs )    { return v >= rhs? TRUE: FALSE; }
-	public io.github.taoguan.luaj.LuaValue gteq(int rhs )       { return v >= rhs? TRUE: FALSE; }
-	public boolean gteq_b( io.github.taoguan.luaj.LuaValue rhs )     { return rhs.lteq_b(v); }
+	public LuaValue gteq(LuaValue rhs )       { return rhs.lteq_b(v)? TRUE: FALSE; }
+	public LuaValue gteq(double rhs )    { return v >= rhs? TRUE: FALSE; }
+	public LuaValue gteq(int rhs )       { return v >= rhs? TRUE: FALSE; }
+	public boolean gteq_b( LuaValue rhs )     { return rhs.lteq_b(v); }
 	public boolean gteq_b( int rhs )       { return v >= rhs; }
 	public boolean gteq_b( double rhs )    { return v >= rhs; }
 	
 	// string comparison
-	public int strcmp( io.github.taoguan.luaj.LuaString rhs )      { typerror("attempt to compare number with string"); return 0; }
+	public int strcmp( LuaString rhs )      { typerror("attempt to compare number with string"); return 0; }
 	
 	public int checkint() { 
 		return v; 
@@ -194,7 +194,7 @@ public class LuaInteger extends LuaNumber {
 	public String checkjstring() { 
 		return String.valueOf(v); 
 	}
-	public io.github.taoguan.luaj.LuaString checkstring() {
+	public LuaString checkstring() {
 		return valueOf( String.valueOf(v) ); 
 	}
 

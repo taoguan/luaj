@@ -3,7 +3,7 @@ package io.github.taoguan.luaj;
 public class Upvaldesc {
 
 	/* upvalue name (for debug information) */
-	public io.github.taoguan.luaj.LuaString name;
+	public LuaString name;
 	
 	/* whether it is in stack */
 	public final boolean instack;
@@ -11,7 +11,7 @@ public class Upvaldesc {
 	/* index of upvalue (in stack or in outer function's list) */
 	public final short idx;
 	
-	public Upvaldesc(io.github.taoguan.luaj.LuaString name, boolean instack, int idx) {
+	public Upvaldesc(LuaString name, boolean instack, int idx) {
 		this.name = name;
 		this.instack = instack;
 		this.idx = (short) idx;

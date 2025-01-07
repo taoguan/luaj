@@ -37,7 +37,7 @@ import java.util.Hashtable;
  * @see io.github.taoguan.luaj.compiler.LuaC
  * @see LuaValue
  */
-public class LuaJC implements io.github.taoguan.luaj.Globals.Loader {
+public class LuaJC implements Globals.Loader {
 	
 	public static final LuaJC instance = new LuaJC();
 	
@@ -45,19 +45,19 @@ public class LuaJC implements io.github.taoguan.luaj.Globals.Loader {
 	 * Install the compiler as the main Globals.Loader to use in a set of globals. 
 	 * Will fall back to the LuaC prototype compiler.
 	 */
-	public static final void install(io.github.taoguan.luaj.Globals G) {
+	public static final void install(Globals G) {
 		G.loader = instance; 
 	}
 	
 	protected LuaJC() {}
 
-	public Hashtable compileAll(InputStream script, String chunkname, String filename, io.github.taoguan.luaj.Globals globals, boolean genmain) throws IOException {
+	public Hashtable compileAll(InputStream script, String chunkname, String filename, Globals globals, boolean genmain) throws IOException {
 		final String classname = toStandardJavaClassName( chunkname );
 		final Prototype p = globals.loadPrototype(script, classname, "bt");
 		return compileProtoAndSubProtos(p, classname, filename, genmain);
 	}
 	
-	public Hashtable compileAll(Reader script, String chunkname, String filename, io.github.taoguan.luaj.Globals globals, boolean genmain) throws IOException {
+	public Hashtable compileAll(Reader script, String chunkname, String filename, Globals globals, boolean genmain) throws IOException {
 		final String classname = toStandardJavaClassName( chunkname );
 		final Prototype p = globals.compilePrototype(script, classname);
 		return compileProtoAndSubProtos(p, classname, filename, genmain);

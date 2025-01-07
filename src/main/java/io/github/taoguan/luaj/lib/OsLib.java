@@ -85,7 +85,7 @@ public class OsLib extends TwoArgFunction {
 	private static final long t0 = System.currentTimeMillis();
 	private static long tmpnames = t0;
 
-	protected io.github.taoguan.luaj.Globals globals;
+	protected Globals globals;
 	
 	/**
 	 * Create and OsLib instance.
@@ -99,7 +99,7 @@ public class OsLib extends TwoArgFunction {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, typically a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		globals = env.checkglobals();
 		LuaTable os = new LuaTable();
 		for (int i = 0; i < NAMES.length; ++i)
@@ -125,16 +125,16 @@ public class OsLib extends TwoArgFunction {
 					if (s.equals("*t")) {
 						Calendar d = Calendar.getInstance();
 						d.setTime(new Date((long)(t*1000)));
-						LuaTable tbl = io.github.taoguan.luaj.LuaValue.tableOf();
-						tbl.set("year", io.github.taoguan.luaj.LuaValue.valueOf(d.get(Calendar.YEAR)));
-						tbl.set("month", io.github.taoguan.luaj.LuaValue.valueOf(d.get(Calendar.MONTH)+1));
-						tbl.set("day", io.github.taoguan.luaj.LuaValue.valueOf(d.get(Calendar.DAY_OF_MONTH)));
-						tbl.set("hour", io.github.taoguan.luaj.LuaValue.valueOf(d.get(Calendar.HOUR_OF_DAY)));
-						tbl.set("min", io.github.taoguan.luaj.LuaValue.valueOf(d.get(Calendar.MINUTE)));
-						tbl.set("sec", io.github.taoguan.luaj.LuaValue.valueOf(d.get(Calendar.SECOND)));
-						tbl.set("wday", io.github.taoguan.luaj.LuaValue.valueOf(d.get(Calendar.DAY_OF_WEEK)));
-						tbl.set("yday", io.github.taoguan.luaj.LuaValue.valueOf(d.get(0x6))); // Day of year
-						tbl.set("isdst", io.github.taoguan.luaj.LuaValue.valueOf(isDaylightSavingsTime(d)));
+						LuaTable tbl = LuaValue.tableOf();
+						tbl.set("year", LuaValue.valueOf(d.get(Calendar.YEAR)));
+						tbl.set("month", LuaValue.valueOf(d.get(Calendar.MONTH)+1));
+						tbl.set("day", LuaValue.valueOf(d.get(Calendar.DAY_OF_MONTH)));
+						tbl.set("hour", LuaValue.valueOf(d.get(Calendar.HOUR_OF_DAY)));
+						tbl.set("min", LuaValue.valueOf(d.get(Calendar.MINUTE)));
+						tbl.set("sec", LuaValue.valueOf(d.get(Calendar.SECOND)));
+						tbl.set("wday", LuaValue.valueOf(d.get(Calendar.DAY_OF_WEEK)));
+						tbl.set("yday", LuaValue.valueOf(d.get(0x6))); // Day of year
+						tbl.set("isdst", LuaValue.valueOf(isDaylightSavingsTime(d)));
 						return tbl;
 					}
 					return valueOf( date(s, t==-1? time(null): t) );
@@ -152,10 +152,10 @@ public class OsLib extends TwoArgFunction {
 				}
 				case REMOVE:
 					remove(args.checkjstring(1));
-					return io.github.taoguan.luaj.LuaValue.TRUE;
+					return LuaValue.TRUE;
 				case RENAME:
 					rename(args.checkjstring(1), args.checkjstring(2));
-					return io.github.taoguan.luaj.LuaValue.TRUE;
+					return LuaValue.TRUE;
 				case SETLOCALE: {
 					String s = setlocale(args.optjstring(1,null), args.optjstring(2, "all"));
 					return s!=null? valueOf(s): NIL;
@@ -234,7 +234,7 @@ public class OsLib extends TwoArgFunction {
 				if (i >= n) break;
 				switch ( c = fmt[i++ ] ) {
 				default:
-					io.github.taoguan.luaj.LuaValue.argerror(1, "invalid conversion specifier '%"+c+"'");
+					LuaValue.argerror(1, "invalid conversion specifier '%"+c+"'");
 					break;
 				case '%':
 					result.append( (byte)'%' );

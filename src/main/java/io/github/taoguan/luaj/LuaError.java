@@ -28,7 +28,7 @@ public class LuaError extends RuntimeException {
 	
 	protected Throwable cause;
 
-	private io.github.taoguan.luaj.LuaValue object;
+	private LuaValue object;
 	
 	/** Get the string message if it was supplied, or a string 
 	 * representation of the message object if that was supplied.
@@ -49,10 +49,10 @@ public class LuaError extends RuntimeException {
 	 * @return LuaValue which was used in the constructor, or a LuaString
 	 * containing the message.
 	 */
-	public io.github.taoguan.luaj.LuaValue getMessageObject() {
+	public LuaValue getMessageObject() {
 		if (object != null) return object;
 		String m = getMessage();
-		return m != null ? io.github.taoguan.luaj.LuaValue.valueOf(m): null;
+		return m != null ? LuaValue.valueOf(m): null;
 	}
 	
 	/** Construct LuaError when a program exception occurs. 
@@ -91,7 +91,7 @@ public class LuaError extends RuntimeException {
 	 * and level to draw line number information from.
 	 * @param message_object message string or object to supply
 	 */
-	public LuaError(io.github.taoguan.luaj.LuaValue message_object) {
+	public LuaError(LuaValue message_object) {
 		super( message_object.tojstring() );
 		this.object = message_object;
 		this.level = 1;

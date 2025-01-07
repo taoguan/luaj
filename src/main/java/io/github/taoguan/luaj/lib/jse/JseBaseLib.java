@@ -52,7 +52,7 @@ public class JseBaseLib extends BaseLib {
 	 * @param modname the module name supplied if this is loaded via 'require'.
 	 * @param env the environment to load into, which must be a Globals instance.
 	 */
-	public io.github.taoguan.luaj.LuaValue call(io.github.taoguan.luaj.LuaValue modname, io.github.taoguan.luaj.LuaValue env) {
+	public LuaValue call(LuaValue modname, LuaValue env) {
 		super.call(modname, env);
 		env.checkglobals().STDIN = System.in;
 		return env;

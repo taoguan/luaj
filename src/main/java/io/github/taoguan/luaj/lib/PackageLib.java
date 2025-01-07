@@ -76,7 +76,7 @@ public class PackageLib extends TwoArgFunction {
 	static final LuaString _SEARCHERS   = valueOf("searchers");
 	
 	/** The globals that were used to load this library. */
-	io.github.taoguan.luaj.Globals globals;
+	Globals globals;
 
 	/** The table for this package. */
 	LuaTable package_;

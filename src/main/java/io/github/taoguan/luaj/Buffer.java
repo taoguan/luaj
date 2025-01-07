@@ -32,7 +32,7 @@ public final class Buffer {
 	private int offset;
 	
 	/** Value of this buffer, when not represented in bytes */
-	private io.github.taoguan.luaj.LuaValue value;
+	private LuaValue value;
 	
 	/**
 	 * Create buffer with default capacity
@@ -57,25 +57,25 @@ public final class Buffer {
 	 * Create buffer with specified initial value
 	 * @param value the initial value
 	 */
-	public Buffer(io.github.taoguan.luaj.LuaValue value) {
+	public Buffer(LuaValue value) {
 		bytes = NOBYTES;
 		length = offset = 0;
 		this.value = value;
 	}
 
 	/** 
-	 * Get buffer contents as a {@link io.github.taoguan.luaj.LuaValue}
-	 * @return value as a {@link io.github.taoguan.luaj.LuaValue}, converting as necessary
+	 * Get buffer contents as a {@link LuaValue}
+	 * @return value as a {@link LuaValue}, converting as necessary
 	 */
-	public io.github.taoguan.luaj.LuaValue value() {
+	public LuaValue value() {
 		return value != null? value: this.tostring();
 	}
 
 	/** 
-	 * Set buffer contents as a {@link io.github.taoguan.luaj.LuaValue}
+	 * Set buffer contents as a {@link LuaValue}
 	 * @param value value to set
 	 */
-	public Buffer setvalue(io.github.taoguan.luaj.LuaValue value) {
+	public Buffer setvalue(LuaValue value) {
 		bytes = NOBYTES;
 		offset = length = 0;
 		this.value = value;
@@ -83,12 +83,12 @@ public final class Buffer {
 	}
 	
 	/** 
-	 * Convert the buffer to a {@link io.github.taoguan.luaj.LuaString}
-	 * @return the value as a {@link io.github.taoguan.luaj.LuaString}
+	 * Convert the buffer to a {@link LuaString}
+	 * @return the value as a {@link LuaString}
 	 */
-	public final io.github.taoguan.luaj.LuaString tostring() {
+	public final LuaString tostring() {
 		realloc( length, 0 );
-		return io.github.taoguan.luaj.LuaString.valueOf( bytes, offset, length );
+		return LuaString.valueOf( bytes, offset, length );
 	}
 	
 	/** 
@@ -118,19 +118,19 @@ public final class Buffer {
 	}
 
 	/** 
-	 * Append a {@link io.github.taoguan.luaj.LuaValue} to the buffer.
+	 * Append a {@link LuaValue} to the buffer.
 	 * @return {@code this} to allow call chaining
 	 */
-	public final Buffer append( io.github.taoguan.luaj.LuaValue val ) {
+	public final Buffer append( LuaValue val ) {
 		append( val.strvalue() );
 		return this;
 	}
 	
 	/** 
-	 * Append a {@link io.github.taoguan.luaj.LuaString} to the buffer.
+	 * Append a {@link LuaString} to the buffer.
 	 * @return {@code this} to allow call chaining
 	 */
-	public final Buffer append( io.github.taoguan.luaj.LuaString str ) {
+	public final Buffer append( LuaString str ) {
 		final int n = str.m_length;
 		makeroom( 0, n );
 		str.copyInto( 0, bytes, offset + length, n );
@@ -142,30 +142,30 @@ public final class Buffer {
 	 * Append a Java String to the buffer.
 	 * The Java string will be converted to bytes using the UTF8 encoding. 
 	 * @return {@code this} to allow call chaining
-	 * @see io.github.taoguan.luaj.LuaString#encodeToUtf8(char[], int, byte[], int)
+	 * @see LuaString#encodeToUtf8(char[], int, byte[], int)
 	 */
 	public final Buffer append( String str ) {
 		char[] c = str.toCharArray();
-		final int n = io.github.taoguan.luaj.LuaString.lengthAsUtf8( c );
+		final int n = LuaString.lengthAsUtf8( c );
 		makeroom( 0, n );
-		io.github.taoguan.luaj.LuaString.encodeToUtf8( c, c.length, bytes, offset + length );
+		LuaString.encodeToUtf8( c, c.length, bytes, offset + length );
 		length += n;
 		return this;
 	}
 
-	/** Concatenate this buffer onto a {@link io.github.taoguan.luaj.LuaValue}
+	/** Concatenate this buffer onto a {@link LuaValue}
 	 * @param lhs the left-hand-side value onto which we are concatenating {@code this} 
 	 * @return {@link Buffer} for use in call chaining.
 	 */
-	public Buffer concatTo(io.github.taoguan.luaj.LuaValue lhs) {
+	public Buffer concatTo(LuaValue lhs) {
 		return setvalue(lhs.concat(value()));
 	}
 
-	/** Concatenate this buffer onto a {@link io.github.taoguan.luaj.LuaString}
+	/** Concatenate this buffer onto a {@link LuaString}
 	 * @param lhs the left-hand-side value onto which we are concatenating {@code this} 
 	 * @return {@link Buffer} for use in call chaining.
 	 */
-	public Buffer concatTo(io.github.taoguan.luaj.LuaString lhs) {
+	public Buffer concatTo(LuaString lhs) {
 		return value!=null&&!value.isstring()? setvalue(lhs.concat(value)): prepend(lhs);
 	}
 
@@ -179,11 +179,11 @@ public final class Buffer {
 		return value!=null&&!value.isstring()? setvalue(lhs.concat(value)): prepend(lhs.strvalue());
 	}
 
-	/** Concatenate bytes from a {@link io.github.taoguan.luaj.LuaString} onto the front of this buffer
+	/** Concatenate bytes from a {@link LuaString} onto the front of this buffer
 	 * @param s the left-hand-side value which we will concatenate onto the front of {@code this} 
 	 * @return {@link Buffer} for use in call chaining.
 	 */
-	public Buffer prepend(io.github.taoguan.luaj.LuaString s) {
+	public Buffer prepend(LuaString s) {
 		int n = s.m_length;
 		makeroom( n, 0 );
 		System.arraycopy( s.m_bytes, s.m_offset, bytes, offset-n, n );
@@ -199,7 +199,7 @@ public final class Buffer {
 	 */
 	public final void makeroom( int nbefore, int nafter ) {
 		if ( value != null ) {
-			io.github.taoguan.luaj.LuaString s = value.strvalue();
+			LuaString s = value.strvalue();
 			value = null;
 			length = s.m_length;
 			offset = nbefore;

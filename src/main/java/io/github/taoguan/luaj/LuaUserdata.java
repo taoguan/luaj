@@ -1,16 +1,16 @@
 package io.github.taoguan.luaj;
 
 
-public class LuaUserdata extends io.github.taoguan.luaj.LuaValue {
+public class LuaUserdata extends LuaValue {
 	
 	public Object m_instance;
-	public io.github.taoguan.luaj.LuaValue m_metatable;
+	public LuaValue m_metatable;
 	
 	public LuaUserdata(Object obj) {
 		m_instance = obj;
 	}
 	
-	public LuaUserdata(Object obj, io.github.taoguan.luaj.LuaValue metatable) {
+	public LuaUserdata(Object obj, LuaValue metatable) {
 		m_instance = obj;
 		m_metatable = metatable;
 	}
@@ -20,7 +20,7 @@ public class LuaUserdata extends io.github.taoguan.luaj.LuaValue {
 	}
 	
 	public int type() {
-		return io.github.taoguan.luaj.LuaValue.TUSERDATA;
+		return LuaValue.TUSERDATA;
 	}
 	
 	public String typename() {
@@ -46,11 +46,11 @@ public class LuaUserdata extends io.github.taoguan.luaj.LuaValue {
 		return m_instance;
 	}
 	
-	public io.github.taoguan.luaj.LuaValue getmetatable() {
+	public LuaValue getmetatable() {
 		return m_metatable;
 	}
 
-	public io.github.taoguan.luaj.LuaValue setmetatable(io.github.taoguan.luaj.LuaValue metatable) {
+	public LuaValue setmetatable(LuaValue metatable) {
 		this.m_metatable = metatable;
 		return this;
 	}
@@ -65,11 +65,11 @@ public class LuaUserdata extends io.github.taoguan.luaj.LuaValue {
 		return typerror(c.getName());
 	}
 	
-	public io.github.taoguan.luaj.LuaValue get(io.github.taoguan.luaj.LuaValue key ) {
+	public LuaValue get(LuaValue key ) {
 		return m_metatable!=null? gettable(this,key): NIL;
 	}
 	
-	public void set(io.github.taoguan.luaj.LuaValue key, io.github.taoguan.luaj.LuaValue value ) {
+	public void set(LuaValue key, LuaValue value ) {
 		if ( m_metatable==null || ! settable(this,key,value) )
 			error( "cannot set "+key+" for userdata" );
 	}
@@ -84,22 +84,22 @@ public class LuaUserdata extends io.github.taoguan.luaj.LuaValue {
 	}
 
 	// equality w/ metatable processing
-	public io.github.taoguan.luaj.LuaValue eq(io.github.taoguan.luaj.LuaValue val )     { return eq_b(val)? TRUE: FALSE; }
-	public boolean eq_b( io.github.taoguan.luaj.LuaValue val ) {
+	public LuaValue eq(LuaValue val )     { return eq_b(val)? TRUE: FALSE; }
+	public boolean eq_b( LuaValue val ) {
 		if ( val.raweq(this) ) return true;
 		if ( m_metatable == null || !val.isuserdata() ) return false;
-		io.github.taoguan.luaj.LuaValue valmt = val.getmetatable();
-		return valmt!=null && io.github.taoguan.luaj.LuaValue.eqmtcall(this, m_metatable, val, valmt);
+		LuaValue valmt = val.getmetatable();
+		return valmt!=null && LuaValue.eqmtcall(this, m_metatable, val, valmt);
 	}
 	
 	// equality w/o metatable processing
-	public boolean raweq( io.github.taoguan.luaj.LuaValue val )      { return val.raweq(this); }
+	public boolean raweq( LuaValue val )      { return val.raweq(this); }
 	public boolean raweq( LuaUserdata val )   {
 		return this == val || (m_metatable == val.m_metatable && m_instance.equals(val.m_instance)); 
 	}
 	
 	// __eq metatag processing
-	public boolean eqmt( io.github.taoguan.luaj.LuaValue val ) {
-		return m_metatable!=null && val.isuserdata()? io.github.taoguan.luaj.LuaValue.eqmtcall(this, m_metatable, val, val.getmetatable()): false;
+	public boolean eqmt( LuaValue val ) {
+		return m_metatable!=null && val.isuserdata()? LuaValue.eqmtcall(this, m_metatable, val, val.getmetatable()): false;
 	}
 }

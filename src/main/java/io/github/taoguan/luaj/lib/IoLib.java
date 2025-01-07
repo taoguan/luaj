@@ -50,7 +50,7 @@ public class IoLib extends TwoArgFunction {
 
 	abstract
 	protected class File extends LuaValue{
-		abstract public void write( io.github.taoguan.luaj.LuaString string ) throws IOException;
+		abstract public void write( LuaString string ) throws IOException;
 		abstract public void flush() throws IOException;
 		abstract public boolean isstdfile();
 		abstract public void close() throws IOException;
@@ -203,7 +203,7 @@ public class IoLib extends TwoArgFunction {
 
 	LuaTable filemethods;
 	
-	protected io.github.taoguan.luaj.Globals globals;
+	protected Globals globals;
 	
 	public LuaValue call(LuaValue modname, LuaValue env) {
 		globals = env.checkglobals();
@@ -466,7 +466,7 @@ public class IoLib extends TwoArgFunction {
 		int i,n=args.narg();
 		LuaValue[] v = new LuaValue[n];
 		LuaValue ai,vi;
-		io.github.taoguan.luaj.LuaString fmt;
+		LuaString fmt;
 		for ( i=0; i<n; ) {
 			item: switch ( (ai = args.arg(i+1)).type() ) {
 				case LuaValue.TNUMBER:
@@ -529,7 +529,7 @@ public class IoLib extends TwoArgFunction {
 		int r;
 		if ( ( r = f.read(b,0,b.length) ) < 0 )
 			return NIL;
-		return io.github.taoguan.luaj.LuaString.valueUsing(b, 0, r);
+		return LuaString.valueUsing(b, 0, r);
 	}
 	public static LuaValue freaduntil(File f,boolean lineonly) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -552,7 +552,7 @@ public class IoLib extends TwoArgFunction {
 		}
 		return ( c < 0 && baos.size() == 0 )?
 			(LuaValue) NIL:
-			(LuaValue) io.github.taoguan.luaj.LuaString.valueUsing(baos.toByteArray());
+			(LuaValue) LuaString.valueUsing(baos.toByteArray());
 	}
 	public static LuaValue freadline(File f) throws IOException {
 		return freaduntil(f,true);

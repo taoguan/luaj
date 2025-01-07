@@ -1,5 +1,6 @@
 package io.github.taoguan.luaj.luajc;
 
+import  io.github.taoguan.luaj.*;
 import io.github.taoguan.luaj.vm.LuaInstruction;
 import io.github.taoguan.luaj.vm.OpCode;
 
@@ -12,7 +13,7 @@ public class JavaGen {
 	public final byte[] bytecode;
 	public final JavaGen[] inners;
 	
-	public JavaGen(io.github.taoguan.luaj.Prototype p, String classname, String filename, boolean genmain ) {
+	public JavaGen(Prototype p, String classname, String filename, boolean genmain ) {
 		this( new ProtoInfo(p,classname), classname, filename, genmain );
 	}
 	
@@ -23,7 +24,7 @@ public class JavaGen {
 		JavaBuilder builder = new JavaBuilder(pi, classname, filename);
 		scanInstructions(pi, classname, builder);
 		for (int i = 0; i < pi.prototype.locvars.length; ++i) {
-			io.github.taoguan.luaj.LocVars l = pi.prototype.locvars[i];
+			LocVars l = pi.prototype.locvars[i];
 			builder.setVarStartEnd(i, l.startpc, l.endpc, l.varname.tojstring());
 		}
 		this.bytecode = builder.completeClass(genmain);
@@ -40,7 +41,7 @@ public class JavaGen {
 	}
 
 	private void scanInstructions(ProtoInfo pi, String classname, JavaBuilder builder) {
-		io.github.taoguan.luaj.Prototype p = pi.prototype;
+		Prototype p = pi.prototype;
 		int vresultbase = -1;
 		
 		for ( int bi=0; bi<pi.blocklist.length; bi++ ) {
@@ -371,7 +372,7 @@ public class JavaGen {
 					
 				case CLOSURE: /*	A Bx	R(A):= closure(KPROTO[Bx], R(A), ... ,R(A+n))	*/
 				{
-					io.github.taoguan.luaj.Prototype newp = p.p[bx];
+					Prototype newp = p.p[bx];
 					int nup = newp.upvalues.length;
 					String protoname = pi.subprotos[bx].name;
 					builder.closureCreate( protoname );
@@ -381,7 +382,7 @@ public class JavaGen {
 					for ( int up=0; up<nup; ++up ) {
 						if ( up+1 < nup )
 							builder.dup();
-						io.github.taoguan.luaj.Upvaldesc u = newp.upvalues[up];
+						Upvaldesc u = newp.upvalues[up];
 						if (u.instack)
 							builder.closureInitUpvalueFromLocal( protoname, up, pc, u.idx );
 						else
@@ -420,7 +421,7 @@ public class JavaGen {
 		}
 	}
 
-	private void loadLocalOrConstant(io.github.taoguan.luaj.Prototype p, JavaBuilder builder, int pc, int borc) {
+	private void loadLocalOrConstant(Prototype p, JavaBuilder builder, int pc, int borc) {
 		if ( borc<=0xff )
 			builder.loadLocal( pc, borc );
 		else
